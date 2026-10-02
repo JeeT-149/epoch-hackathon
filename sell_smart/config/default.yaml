@@ -1,0 +1,124 @@
+# Sell Smart — Default Configuration
+# All tunable parameters. Override via environment or a run-specific YAML.
+
+project:
+  name: sell_smart
+  version: "1.0"
+  seed: 42
+
+paths:
+  raw:       data/raw
+  silver:    data/silver
+  gold:      data/gold
+  synthetic: data/synthetic
+  reports:   reports
+  artifacts: artifacts
+  models:    artifacts/models
+
+# ── Data Quality ──────────────────────────────────────────────────────────────
+quality:
+  outlier_k: 6                # MAD multiplier for suspect_outlier flag
+  min_price_threshold: 1.0    # modal_price <= this is dropped
+  duplicate_strategy: median  # how to resolve conflicting duplicates
+  max_unparseable_date_rate: 0.001  # fail loudly above this fraction
+
+# ── Calendar / Gaps ───────────────────────────────────────────────────────────
+calendar:
+  open_threshold: 0.5         # fraction of weekday dates a mandi must report to be "open"
+  default_schedule: Mon-Sat   # fallback if data sparse; flagged calendar_assumed
+  max_ffill_days: 3           # forward-fill up to N days; beyond = NaN
+  target_tolerance_days: 0    # 0 = exact date only; 1 = nearest within 1 day (flagged)
+
+# ── Mandi Selection ───────────────────────────────────────────────────────────
+mandi_select:
+  min_coverage: 0.40          # fraction of trading days with a price
+  max_gap_days: 14            # maximum consecutive missing days
+  min_mandis_target: 10       # target minimum
+  max_mandis_target: 15       # target maximum
+  max_radius_km: 400          # geographic spread constraint from demo centre
+  demo_centre:
+    lat: 20.00                # Central India (MP focus given dataset)
+    lon: 77.00
+
+# ── Features ─────────────────────────────────────────────────────────────────
+features:
+  calendar_min_years: 2       # disable month/doy features below this history
+  use_weather: false          # disabled until Open-Meteo verified
+  lags: [1, 2, 3, 5, 7, 14]
+  rolling_windows: [7, 14, 21]
+  horizon_days: [1, 3, 5, 7, 10, 14]   # forecast horizons
+
+# ── Forecasting ───────────────────────────────────────────────────────────────
+forecast:
+  quantiles: [0.1, 0.25, 0.5, 0.75, 0.9]
+  lgbm:
+    num_leaves: 63
+    learning_rate: 0.05
+    n_estimators: 500
+    min_child_samples: 20
+    subsample: 0.8
+    colsample_bytree: 0.8
+  conformal:
+    alpha: 0.1               # target coverage = 1 - alpha = 90%
+    min_calibration_size: 50
+  train_fraction: 0.70        # of non-test data
+  val_fraction: 0.15
+  test_fraction: 0.15         # touched once with --final flag
+
+# ── Backtest ─────────────────────────────────────────────────────────────────
+backtest:
+  n_scenarios: 500
+  report_where_we_lose: true  # R7 mandatory
+
+# ── Synthetic scenarios ───────────────────────────────────────────────────────
+synth:
+  village_km_min: 5
+  village_km_max: 60
+  quantity_choices: [10, 20, 50, 100]
+  cash_deadline_days_choices: [0, 3, 7, 14, 21]
+  cash_deadline_days_weights: [0.1, 0.2, 0.3, 0.25, 0.15]
+  offer_discount:
+    type: mixture
+    components:
+      - {delta: 0.00, weight: 0.20}   # trader at mandi price
+      - {mean: 0.05, std: 0.02, weight: 0.50}
+      - {mean: 0.12, std: 0.04, weight: 0.30}
+
+# ── Confidence Labelling ──────────────────────────────────────────────────────
+confidence:
+  dq_weight: 0.4
+  model_weight: 0.3
+  economics_weight: 0.3
+  thresholds:
+    HIGH: 0.70
+    MEDIUM: 0.45
+
+# ── Data Quality Score weights (per mandi/crop) ───────────────────────────────
+dq_score:
+  coverage_weight: 0.40
+  gap_penalty_weight: 0.25
+  recency_weight: 0.20
+  suspect_rate_weight: 0.15
+  lookback_days: 90
+
+# ── Trigger Engine ────────────────────────────────────────────────────────────
+trigger:
+  price_drop_pct: 0.10        # trigger if price drops >= 10% from signal
+  price_rise_pct: 0.10        # trigger SELL if above expectation by >= 10%
+  monitoring_hour: 8          # UTC+5:30 hour for daily check
+  state_timeout_days: 30      # auto-expire WAIT state
+
+# ── Shock Radar ───────────────────────────────────────────────────────────────
+shock:
+  z_threshold: 3.0            # z-score for policy shock detection
+  lookback_window: 30         # rolling window for baseline
+
+# ── Geocoding ────────────────────────────────────────────────────────────────
+geocoding:
+  provider: nominatim         # UNVERIFIED: rate-limited; respect 1 req/sec
+  road_factor: 1.35           # haversine x road_factor fallback
+  confidence_threshold: 0.7   # below this = flagged for human review
+
+# ── Reproducibility ───────────────────────────────────────────────────────────
+run:
+  log_test_access: reports/test_access_log.json

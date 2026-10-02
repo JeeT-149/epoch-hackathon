@@ -1,0 +1,52 @@
+# Sell Smart — Message Templates (slot-based)
+# LLM may only fill slots. Numbers must come from decision engine (R1).
+# Slots: {crop}, {action}, {net_return}, {horizon_days}, {confidence},
+#        {mandi_name}, {uncertainty_range}, {deadline_note}, {disclaimer}
+
+messages:
+  sell_now:
+    short: "Sell {crop} today at {mandi_name}. Expected net ₹{net_return}/quintal. {confidence} confidence."
+    full: |
+      Recommendation: SELL NOW
+      Crop: {crop}
+      Best mandi: {mandi_name}
+      Expected net return: ₹{net_return}/quintal (range: ₹{uncertainty_range})
+      Confidence: {confidence}
+      {deadline_note}
+      {disclaimer}
+
+  wait:
+    short: "Wait {horizon_days} days before selling {crop}. Price expected ₹{net_return}/quintal. {confidence} confidence."
+    full: |
+      Recommendation: WAIT
+      Crop: {crop}
+      Suggested re-check in: {horizon_days} days
+      Expected net return if waited: ₹{net_return}/quintal (range: ₹{uncertainty_range})
+      Confidence: {confidence}
+      {deadline_note}
+      {disclaimer}
+
+  switch_mandi:
+    short: "Consider selling {crop} at {mandi_name} instead. Net ₹{net_return}/quintal after transport."
+    full: |
+      Recommendation: SWITCH MANDI
+      Crop: {crop}
+      Recommended mandi: {mandi_name}
+      Expected net return after transport: ₹{net_return}/quintal (range: ₹{uncertainty_range})
+      Confidence: {confidence}
+      {deadline_note}
+      {disclaimer}
+
+  hold_suspended:
+    short: "Hold suspended for {crop} due to market shock. Reassess in {horizon_days} days."
+    full: |
+      Recommendation: HOLD SUSPENDED — SHOCK DETECTED
+      Crop: {crop}
+      Reason: unusual price movement detected
+      Reassess in: {horizon_days} days
+      {disclaimer}
+
+disclaimer: |
+  ⚠ This is decision support under uncertainty. Modal price is a market-level
+  reference, not a guaranteed realisation price. Actual prices may differ.
+  Spoilage, transport and storage estimates use proxy parameters (source: PLACEHOLDER).

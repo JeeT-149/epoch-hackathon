@@ -1,0 +1,10 @@
+date,event_type,crop,description,source,impact_direction,verified
+# EMPTY TEMPLATE — fill with known policy/market events
+# Columns:
+#   date:             ISO-8601 date (YYYY-MM-DD)
+#   event_type:       export_ban | msp_change | flood | drought | policy | other
+#   crop:             soybean | onion | tomato | all
+#   description:      human-readable description
+#   source:           URL or citation
+#   impact_direction: up | down | unknown
+#   verified:         true | false

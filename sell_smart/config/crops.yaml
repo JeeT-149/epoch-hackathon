@@ -1,0 +1,93 @@
+# Sell Smart — Crop Economics & Spoilage Configuration
+# source registry: PLACEHOLDER means not yet verified from field data.
+# When source: PLACEHOLDER, demo_ready=false is enforced per R6.
+
+crops:
+  tomato:
+    display_name: Tomato
+    hold_allowed_default: false
+    max_storage_days: 5
+    spoilage:
+      curve: exponential
+      daily_rate_pct: 8.0         # % weight loss per day, ambient storage
+      source: PLACEHOLDER         # TODO: verify from NHRDF or ICAR data
+      notes: "Highly perishable; rates vary sharply with temperature"
+      conditions:
+        ambient:  {daily_rate_pct: 8.0}
+        cold:     {daily_rate_pct: 1.5, available: false}  # cold chain not modelled yet
+    transport:
+      vehicle_types:
+        - {name: tempo, capacity_q: 25, cost_per_km: 18.0, source: PLACEHOLDER}
+        - {name: truck, capacity_q: 100, cost_per_km: 28.0, source: PLACEHOLDER}
+      loading_cost_per_q: 15.0     # ₹/quintal, source: PLACEHOLDER
+    storage:
+      cost_per_q_per_day: 2.5      # ₹/quintal/day, source: PLACEHOLDER
+    fees:
+      mandi_commission_pct: 2.0    # source: PLACEHOLDER (Maharashtra APMC typical)
+      weighing_per_q: 2.0          # source: PLACEHOLDER
+    commodity_variants:            # populated by commodity_map.yaml
+      canonical: Tomato
+
+  onion:
+    display_name: Onion
+    hold_allowed_default: true
+    max_storage_days: 90           # well-cured onion; varieties differ
+    spoilage:
+      curve: linear_then_step      # low rot initially, then accelerates
+      daily_rate_pct: 1.0          # early-stage; source: PLACEHOLDER
+      source: PLACEHOLDER
+      notes: "Highly dependent on curing quality, humidity, ventilation"
+      conditions:
+        ambient_dry:  {daily_rate_pct: 1.0}
+        humid:        {daily_rate_pct: 3.0}
+        cold_store:   {daily_rate_pct: 0.3, available: false}
+      rot_acceleration_day: 45     # after day 45, rate multiplies
+      rot_acceleration_factor: 2.5
+    transport:
+      vehicle_types:
+        - {name: tempo, capacity_q: 25, cost_per_km: 16.0, source: PLACEHOLDER}
+        - {name: truck, capacity_q: 100, cost_per_km: 26.0, source: PLACEHOLDER}
+      loading_cost_per_q: 12.0     # source: PLACEHOLDER
+    storage:
+      cost_per_q_per_day: 1.5      # source: PLACEHOLDER
+    fees:
+      mandi_commission_pct: 2.0    # source: PLACEHOLDER
+      weighing_per_q: 2.0          # source: PLACEHOLDER
+    commodity_variants:
+      canonical: Onion
+
+  soybean:
+    display_name: Soybean
+    hold_allowed_default: true
+    max_storage_days: 180
+    spoilage:
+      curve: moisture_threshold    # minimal loss unless moisture > threshold
+      daily_rate_pct: 0.1          # dry storage; source: PLACEHOLDER
+      source: PLACEHOLDER
+      notes: "Grade matters (FAQ vs non-FAQ). MSP reference is important."
+      moisture_threshold_pct: 12.0
+      above_threshold_rate_multiplier: 5.0
+      conditions:
+        dry:  {daily_rate_pct: 0.1}
+        moist: {daily_rate_pct: 0.5}
+    quality_factor:
+      FAQ:     {price_haircut_pct: 0.0}
+      non_FAQ: {price_haircut_pct: 5.0}   # source: PLACEHOLDER
+      source: PLACEHOLDER
+    msp:
+      enabled: true
+      value_rs_per_q: null         # human must supply current MSP; null = disabled
+      source: PLACEHOLDER
+    transport:
+      vehicle_types:
+        - {name: tempo, capacity_q: 25, cost_per_km: 15.0, source: PLACEHOLDER}
+        - {name: truck, capacity_q: 100, cost_per_km: 25.0, source: PLACEHOLDER}
+      loading_cost_per_q: 10.0     # source: PLACEHOLDER
+    storage:
+      cost_per_q_per_day: 1.0      # source: PLACEHOLDER
+    fees:
+      mandi_commission_pct: 2.0    # source: PLACEHOLDER
+      weighing_per_q: 2.0          # source: PLACEHOLDER
+    commodity_variants:
+      canonical: Soyabean
+      aliases: ["Soybean", "Soyabean", "Soybeen", "Soya Bean", "Soya"]
