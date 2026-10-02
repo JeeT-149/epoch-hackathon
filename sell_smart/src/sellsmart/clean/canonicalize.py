@@ -188,11 +188,15 @@ def canonicalize(
         df = df[~dupes_mask].copy()
         df = pd.concat([df, agg], ignore_index=True)
 
-    # ── 13. Add provenance ────────────────────────────────────────────────────
+    # ── 13. Add provenance & synthetic tagging (ADR-001) ──────────────────────
     if "source" not in df.columns:
         df["source"] = "unknown"
     if "ingested_at" not in df.columns:
         df["ingested_at"] = None
+
+    # Tag synthetic vs real per ADR-001: Soybean = real, Onion/Tomato = synthetic
+    df["is_synthetic"] = df["crop"].isin(["onion", "tomato"])
+    df["price_source"] = df["is_synthetic"].map({True: "synthetic", False: "real"})
 
     # ── 14. Select and order final columns ───────────────────────────────────
     silver_cols = [
@@ -200,6 +204,7 @@ def canonicalize(
         "crop", "commodity_raw", "variety_raw", "grade",
         "min_price", "max_price", "modal_price",
         "dq_flags", "source", "ingested_at",
+        "is_synthetic", "price_source",
     ]
     df = df[[c for c in silver_cols if c in df.columns]].copy()
     df = df.sort_values(["date", "mandi_id", "crop"]).reset_index(drop=True)

@@ -1,0 +1,758 @@
+[
+  {
+    "timestamp": "2026-10-02T21:09:38.538158+00:00",
+    "crop": "soybean",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:39.481210+00:00",
+    "crop": "soybean",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:40.725841+00:00",
+    "crop": "soybean",
+    "horizon": 5,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:41.922066+00:00",
+    "crop": "soybean",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:43.283710+00:00",
+    "crop": "soybean",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:44.823748+00:00",
+    "crop": "soybean",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:46.467160+00:00",
+    "crop": "onion",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:48.047731+00:00",
+    "crop": "onion",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:49.502922+00:00",
+    "crop": "onion",
+    "horizon": 5,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:51.479320+00:00",
+    "crop": "onion",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:52.945180+00:00",
+    "crop": "onion",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:54.264657+00:00",
+    "crop": "onion",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:55.419115+00:00",
+    "crop": "tomato",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:56.251629+00:00",
+    "crop": "tomato",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:57.199174+00:00",
+    "crop": "tomato",
+    "horizon": 5,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:58.136680+00:00",
+    "crop": "tomato",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:58.839674+00:00",
+    "crop": "tomato",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:59.735594+00:00",
+    "crop": "tomato",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:38:54.725316+00:00",
+    "crop": "soybean",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:38:55.807779+00:00",
+    "crop": "soybean",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:38:57.474844+00:00",
+    "crop": "soybean",
+    "horizon": 5,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:38:58.776768+00:00",
+    "crop": "soybean",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:00.307375+00:00",
+    "crop": "soybean",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:01.916852+00:00",
+    "crop": "soybean",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:03.594484+00:00",
+    "crop": "onion",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:05.590989+00:00",
+    "crop": "onion",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:07.190759+00:00",
+    "crop": "onion",
+    "horizon": 5,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:08.943215+00:00",
+    "crop": "onion",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:10.401974+00:00",
+    "crop": "onion",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:12.038989+00:00",
+    "crop": "onion",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:13.312210+00:00",
+    "crop": "tomato",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:14.328456+00:00",
+    "crop": "tomato",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:15.308410+00:00",
+    "crop": "tomato",
+    "horizon": 5,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:16.397146+00:00",
+    "crop": "tomato",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:17.276293+00:00",
+    "crop": "tomato",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:39:18.320849+00:00",
+    "crop": "tomato",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:51:31.574939+00:00",
+    "crop": "soybean",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:51:33.040123+00:00",
+    "crop": "soybean",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:51:34.698402+00:00",
+    "crop": "soybean",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:51:36.631400+00:00",
+    "crop": "soybean",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:51:39.116336+00:00",
+    "crop": "soybean",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:51:58.217245+00:00",
+    "crop": "soybean",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:12.678955+00:00",
+    "crop": "onion",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:15.020100+00:00",
+    "crop": "onion",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:17.044650+00:00",
+    "crop": "onion",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:19.097125+00:00",
+    "crop": "onion",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:28.003459+00:00",
+    "crop": "onion",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:29.803796+00:00",
+    "crop": "onion",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:31.804912+00:00",
+    "crop": "tomato",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:32.869175+00:00",
+    "crop": "tomato",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:33.786845+00:00",
+    "crop": "tomato",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:34.609462+00:00",
+    "crop": "tomato",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:35.853109+00:00",
+    "crop": "tomato",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:52:36.937881+00:00",
+    "crop": "tomato",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:16.754304+00:00",
+    "crop": "soybean",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:30.148291+00:00",
+    "crop": "soybean",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:32.256864+00:00",
+    "crop": "soybean",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:34.752245+00:00",
+    "crop": "soybean",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:37.356444+00:00",
+    "crop": "soybean",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:39.875958+00:00",
+    "crop": "soybean",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:42.176075+00:00",
+    "crop": "onion",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:44.322982+00:00",
+    "crop": "onion",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:46.233996+00:00",
+    "crop": "onion",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:48.255529+00:00",
+    "crop": "onion",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:50.526093+00:00",
+    "crop": "onion",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:52.610181+00:00",
+    "crop": "onion",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:54.848911+00:00",
+    "crop": "tomato",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:56.186995+00:00",
+    "crop": "tomato",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:57.847627+00:00",
+    "crop": "tomato",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:12:59.050004+00:00",
+    "crop": "tomato",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:13:00.390700+00:00",
+    "crop": "tomato",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:13:01.654777+00:00",
+    "crop": "tomato",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:14:44.140815+00:00",
+    "crop": "soybean",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:14:45.923308+00:00",
+    "crop": "soybean",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:14:47.849502+00:00",
+    "crop": "soybean",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:14:50.096909+00:00",
+    "crop": "soybean",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:14:52.717030+00:00",
+    "crop": "soybean",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:14:55.463105+00:00",
+    "crop": "soybean",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:14:57.661341+00:00",
+    "crop": "onion",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:14:59.770138+00:00",
+    "crop": "onion",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:15:02.063162+00:00",
+    "crop": "onion",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:15:04.257506+00:00",
+    "crop": "onion",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:15:06.362042+00:00",
+    "crop": "onion",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:15:08.374473+00:00",
+    "crop": "onion",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:15:11.043354+00:00",
+    "crop": "tomato",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:15:12.837455+00:00",
+    "crop": "tomato",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:15:14.514606+00:00",
+    "crop": "tomato",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:15:15.891215+00:00",
+    "crop": "tomato",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:15:17.424511+00:00",
+    "crop": "tomato",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:15:18.782778+00:00",
+    "crop": "tomato",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:34:56.749545+00:00",
+    "crop": "soybean",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:34:58.405467+00:00",
+    "crop": "soybean",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:34:59.923194+00:00",
+    "crop": "soybean",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:01.952328+00:00",
+    "crop": "soybean",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:04.287561+00:00",
+    "crop": "soybean",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:06.659128+00:00",
+    "crop": "soybean",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:08.643217+00:00",
+    "crop": "onion",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:10.684749+00:00",
+    "crop": "onion",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:12.623783+00:00",
+    "crop": "onion",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:14.403976+00:00",
+    "crop": "onion",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:16.217599+00:00",
+    "crop": "onion",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:17.913013+00:00",
+    "crop": "onion",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:19.860191+00:00",
+    "crop": "tomato",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:20.947346+00:00",
+    "crop": "tomato",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:22.269038+00:00",
+    "crop": "tomato",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:23.341018+00:00",
+    "crop": "tomato",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:24.702835+00:00",
+    "crop": "tomato",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:35:25.769496+00:00",
+    "crop": "tomato",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:37:45.378553+00:00",
+    "crop": "soybean",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:37:47.012740+00:00",
+    "crop": "soybean",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:37:48.547659+00:00",
+    "crop": "soybean",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:37:50.684603+00:00",
+    "crop": "soybean",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:37:53.176950+00:00",
+    "crop": "soybean",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:37:55.854064+00:00",
+    "crop": "soybean",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:37:58.220830+00:00",
+    "crop": "onion",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:00.382292+00:00",
+    "crop": "onion",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:02.482594+00:00",
+    "crop": "onion",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:04.410840+00:00",
+    "crop": "onion",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:06.371471+00:00",
+    "crop": "onion",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:08.209399+00:00",
+    "crop": "onion",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:10.259723+00:00",
+    "crop": "tomato",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:11.317706+00:00",
+    "crop": "tomato",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:12.817473+00:00",
+    "crop": "tomato",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:14.081833+00:00",
+    "crop": "tomato",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:15.318287+00:00",
+    "crop": "tomato",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T22:38:16.415947+00:00",
+    "crop": "tomato",
+    "horizon": 21,
+    "note": "Final test run with --final flag"
+  }
+]

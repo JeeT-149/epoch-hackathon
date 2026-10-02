@@ -1,0 +1,542 @@
+[
+  {
+    "crop": "soybean",
+    "horizon_days": 1,
+    "n_samples": 819,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 35.87,
+    "mean_pinball_loss_b0": 50.54,
+    "mean_pinball_loss_b2": 99.01,
+    "mean_pinball_loss_b3": 35.95,
+    "skill_vs_b0": 0.2903,
+    "skill_vs_b0_ci": [
+      0.2511,
+      0.3285
+    ],
+    "skill_vs_b2": 0.6377,
+    "skill_vs_b3": 0.0022,
+    "skill_vs_b3_ci": [
+      -0.0164,
+      0.0228
+    ],
+    "interval_score_80": 615.56,
+    "interval_score_90": 821.66,
+    "empirical_coverage_80": 0.8071,
+    "coverage_80_wilson_ci": [
+      0.7786,
+      0.8326
+    ],
+    "empirical_coverage_90": 0.9096
+  },
+  {
+    "crop": "soybean",
+    "horizon_days": 3,
+    "n_samples": 819,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 47.31,
+    "mean_pinball_loss_b0": 72.12,
+    "mean_pinball_loss_b2": 97.62,
+    "mean_pinball_loss_b3": 47.25,
+    "skill_vs_b0": 0.344,
+    "skill_vs_b0_ci": [
+      0.29,
+      0.3896
+    ],
+    "skill_vs_b2": 0.5153,
+    "skill_vs_b3": -0.0014,
+    "skill_vs_b3_ci": [
+      -0.0194,
+      0.0194
+    ],
+    "interval_score_80": 772.69,
+    "interval_score_90": 1033.1,
+    "empirical_coverage_80": 0.823,
+    "coverage_80_wilson_ci": [
+      0.7953,
+      0.8476
+    ],
+    "empirical_coverage_90": 0.9194
+  },
+  {
+    "crop": "soybean",
+    "horizon_days": 7,
+    "n_samples": 819,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 50.61,
+    "mean_pinball_loss_b0": 75.54,
+    "mean_pinball_loss_b2": 101.0,
+    "mean_pinball_loss_b3": 49.77,
+    "skill_vs_b0": 0.33,
+    "skill_vs_b0_ci": [
+      0.2936,
+      0.3663
+    ],
+    "skill_vs_b2": 0.4989,
+    "skill_vs_b3": -0.0169,
+    "skill_vs_b3_ci": [
+      -0.0422,
+      0.0046
+    ],
+    "interval_score_80": 825.19,
+    "interval_score_90": 1111.36,
+    "empirical_coverage_80": 0.8474,
+    "coverage_80_wilson_ci": [
+      0.8211,
+      0.8704
+    ],
+    "empirical_coverage_90": 0.9219
+  },
+  {
+    "crop": "soybean",
+    "horizon_days": 10,
+    "n_samples": 820,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 50.58,
+    "mean_pinball_loss_b0": 76.29,
+    "mean_pinball_loss_b2": 98.74,
+    "mean_pinball_loss_b3": 50.13,
+    "skill_vs_b0": 0.337,
+    "skill_vs_b0_ci": [
+      0.3,
+      0.3789
+    ],
+    "skill_vs_b2": 0.4877,
+    "skill_vs_b3": -0.0089,
+    "skill_vs_b3_ci": [
+      -0.0309,
+      0.012
+    ],
+    "interval_score_80": 823.28,
+    "interval_score_90": 1117.53,
+    "empirical_coverage_80": 0.8256,
+    "coverage_80_wilson_ci": [
+      0.7981,
+      0.85
+    ],
+    "empirical_coverage_90": 0.9305
+  },
+  {
+    "crop": "soybean",
+    "horizon_days": 14,
+    "n_samples": 820,
+    "forecast_usable": false,
+    "gate_reason": "FAILED: P80 coverage (88.9%) outside tolerance +/-7%.",
+    "mean_pinball_loss_m1": 47.88,
+    "mean_pinball_loss_b0": 72.2,
+    "mean_pinball_loss_b2": 94.79,
+    "mean_pinball_loss_b3": 47.71,
+    "skill_vs_b0": 0.3369,
+    "skill_vs_b0_ci": [
+      0.3056,
+      0.368
+    ],
+    "skill_vs_b2": 0.4949,
+    "skill_vs_b3": -0.0035,
+    "skill_vs_b3_ci": [
+      -0.0389,
+      0.0283
+    ],
+    "interval_score_80": 866.39,
+    "interval_score_90": 1164.28,
+    "empirical_coverage_80": 0.889,
+    "coverage_80_wilson_ci": [
+      0.8657,
+      0.9087
+    ],
+    "empirical_coverage_90": 0.9488
+  },
+  {
+    "crop": "soybean",
+    "horizon_days": 21,
+    "n_samples": 820,
+    "forecast_usable": false,
+    "gate_reason": "FAILED: P80 coverage (88.3%) outside tolerance +/-7%.",
+    "mean_pinball_loss_m1": 49.99,
+    "mean_pinball_loss_b0": 74.74,
+    "mean_pinball_loss_b2": 92.54,
+    "mean_pinball_loss_b3": 49.22,
+    "skill_vs_b0": 0.3311,
+    "skill_vs_b0_ci": [
+      0.2746,
+      0.3828
+    ],
+    "skill_vs_b2": 0.4598,
+    "skill_vs_b3": -0.0156,
+    "skill_vs_b3_ci": [
+      -0.0939,
+      0.0442
+    ],
+    "interval_score_80": 892.08,
+    "interval_score_90": 1192.47,
+    "empirical_coverage_80": 0.8829,
+    "coverage_80_wilson_ci": [
+      0.8591,
+      0.9032
+    ],
+    "empirical_coverage_90": 0.9561
+  },
+  {
+    "crop": "onion",
+    "horizon_days": 1,
+    "n_samples": 274,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 14.96,
+    "mean_pinball_loss_b0": 23.45,
+    "mean_pinball_loss_b2": 1017.43,
+    "mean_pinball_loss_b3": 14.97,
+    "skill_vs_b0": 0.3621,
+    "skill_vs_b0_ci": [
+      0.3392,
+      0.383
+    ],
+    "skill_vs_b2": 0.9853,
+    "skill_vs_b3": 0.0007,
+    "skill_vs_b3_ci": [
+      -0.0315,
+      0.036
+    ],
+    "interval_score_80": 245.49,
+    "interval_score_90": 284.88,
+    "empirical_coverage_80": 0.8431,
+    "coverage_80_wilson_ci": [
+      0.7953,
+      0.8814
+    ],
+    "empirical_coverage_90": 0.9234
+  },
+  {
+    "crop": "onion",
+    "horizon_days": 3,
+    "n_samples": 274,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 23.97,
+    "mean_pinball_loss_b0": 42.67,
+    "mean_pinball_loss_b2": 1010.26,
+    "mean_pinball_loss_b3": 25.0,
+    "skill_vs_b0": 0.4382,
+    "skill_vs_b0_ci": [
+      0.3969,
+      0.4769
+    ],
+    "skill_vs_b2": 0.9763,
+    "skill_vs_b3": 0.041,
+    "skill_vs_b3_ci": [
+      -0.0122,
+      0.0775
+    ],
+    "interval_score_80": 381.47,
+    "interval_score_90": 463.64,
+    "empirical_coverage_80": 0.865,
+    "coverage_80_wilson_ci": [
+      0.8194,
+      0.9004
+    ],
+    "empirical_coverage_90": 0.9489
+  },
+  {
+    "crop": "onion",
+    "horizon_days": 7,
+    "n_samples": 274,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 32.22,
+    "mean_pinball_loss_b0": 56.77,
+    "mean_pinball_loss_b2": 992.33,
+    "mean_pinball_loss_b3": 34.81,
+    "skill_vs_b0": 0.4324,
+    "skill_vs_b0_ci": [
+      0.3839,
+      0.4771
+    ],
+    "skill_vs_b2": 0.9675,
+    "skill_vs_b3": 0.0744,
+    "skill_vs_b3_ci": [
+      0.0058,
+      0.1431
+    ],
+    "interval_score_80": 506.5,
+    "interval_score_90": 639.3,
+    "empirical_coverage_80": 0.8686,
+    "coverage_80_wilson_ci": [
+      0.8235,
+      0.9036
+    ],
+    "empirical_coverage_90": 0.9562
+  },
+  {
+    "crop": "onion",
+    "horizon_days": 10,
+    "n_samples": 274,
+    "forecast_usable": false,
+    "gate_reason": "FAILED: P80 coverage (90.1%) outside tolerance +/-7%.",
+    "mean_pinball_loss_m1": 35.98,
+    "mean_pinball_loss_b0": 64.24,
+    "mean_pinball_loss_b2": 980.58,
+    "mean_pinball_loss_b3": 40.57,
+    "skill_vs_b0": 0.4399,
+    "skill_vs_b0_ci": [
+      0.3645,
+      0.508
+    ],
+    "skill_vs_b2": 0.9633,
+    "skill_vs_b3": 0.1132,
+    "skill_vs_b3_ci": [
+      0.0333,
+      0.18
+    ],
+    "interval_score_80": 595.78,
+    "interval_score_90": 708.73,
+    "empirical_coverage_80": 0.9015,
+    "coverage_80_wilson_ci": [
+      0.8604,
+      0.9314
+    ],
+    "empirical_coverage_90": 0.9854
+  },
+  {
+    "crop": "onion",
+    "horizon_days": 14,
+    "n_samples": 274,
+    "forecast_usable": false,
+    "gate_reason": "FAILED: P80 coverage (89.1%) outside tolerance +/-7%.",
+    "mean_pinball_loss_m1": 38.91,
+    "mean_pinball_loss_b0": 77.44,
+    "mean_pinball_loss_b2": 964.16,
+    "mean_pinball_loss_b3": 47.84,
+    "skill_vs_b0": 0.4975,
+    "skill_vs_b0_ci": [
+      0.4089,
+      0.5679
+    ],
+    "skill_vs_b2": 0.9596,
+    "skill_vs_b3": 0.1867,
+    "skill_vs_b3_ci": [
+      0.0833,
+      0.2651
+    ],
+    "interval_score_80": 634.05,
+    "interval_score_90": 754.01,
+    "empirical_coverage_80": 0.8905,
+    "coverage_80_wilson_ci": [
+      0.848,
+      0.9222
+    ],
+    "empirical_coverage_90": 0.9599
+  },
+  {
+    "crop": "onion",
+    "horizon_days": 21,
+    "n_samples": 274,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 44.53,
+    "mean_pinball_loss_b0": 103.17,
+    "mean_pinball_loss_b2": 928.9,
+    "mean_pinball_loss_b3": 63.05,
+    "skill_vs_b0": 0.5684,
+    "skill_vs_b0_ci": [
+      0.499,
+      0.6213
+    ],
+    "skill_vs_b2": 0.9521,
+    "skill_vs_b3": 0.2938,
+    "skill_vs_b3_ci": [
+      0.2149,
+      0.3739
+    ],
+    "interval_score_80": 633.11,
+    "interval_score_90": 762.7,
+    "empirical_coverage_80": 0.8248,
+    "coverage_80_wilson_ci": [
+      0.7754,
+      0.8652
+    ],
+    "empirical_coverage_90": 0.9015
+  },
+  {
+    "crop": "tomato",
+    "horizon_days": 1,
+    "n_samples": 220,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 12.4,
+    "mean_pinball_loss_b0": 19.25,
+    "mean_pinball_loss_b2": 1098.27,
+    "mean_pinball_loss_b3": 12.64,
+    "skill_vs_b0": 0.3559,
+    "skill_vs_b0_ci": [
+      0.3245,
+      0.3964
+    ],
+    "skill_vs_b2": 0.9887,
+    "skill_vs_b3": 0.0189,
+    "skill_vs_b3_ci": [
+      -0.0437,
+      0.0947
+    ],
+    "interval_score_80": 192.6,
+    "interval_score_90": 239.31,
+    "empirical_coverage_80": 0.8,
+    "coverage_80_wilson_ci": [
+      0.7422,
+      0.8475
+    ],
+    "empirical_coverage_90": 0.9
+  },
+  {
+    "crop": "tomato",
+    "horizon_days": 3,
+    "n_samples": 220,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 22.47,
+    "mean_pinball_loss_b0": 36.53,
+    "mean_pinball_loss_b2": 1093.21,
+    "mean_pinball_loss_b3": 22.41,
+    "skill_vs_b0": 0.3849,
+    "skill_vs_b0_ci": [
+      0.3624,
+      0.4097
+    ],
+    "skill_vs_b2": 0.9794,
+    "skill_vs_b3": -0.0026,
+    "skill_vs_b3_ci": [
+      -0.0757,
+      0.0798
+    ],
+    "interval_score_80": 308.8,
+    "interval_score_90": 365.77,
+    "empirical_coverage_80": 0.8273,
+    "coverage_80_wilson_ci": [
+      0.7718,
+      0.8715
+    ],
+    "empirical_coverage_90": 0.9273
+  },
+  {
+    "crop": "tomato",
+    "horizon_days": 7,
+    "n_samples": 220,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 30.18,
+    "mean_pinball_loss_b0": 52.12,
+    "mean_pinball_loss_b2": 1079.72,
+    "mean_pinball_loss_b3": 33.79,
+    "skill_vs_b0": 0.421,
+    "skill_vs_b0_ci": [
+      0.304,
+      0.5178
+    ],
+    "skill_vs_b2": 0.972,
+    "skill_vs_b3": 0.1069,
+    "skill_vs_b3_ci": [
+      -0.0317,
+      0.2176
+    ],
+    "interval_score_80": 488.23,
+    "interval_score_90": 617.26,
+    "empirical_coverage_80": 0.8227,
+    "coverage_80_wilson_ci": [
+      0.7669,
+      0.8675
+    ],
+    "empirical_coverage_90": 0.9182
+  },
+  {
+    "crop": "tomato",
+    "horizon_days": 10,
+    "n_samples": 220,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 35.21,
+    "mean_pinball_loss_b0": 58.42,
+    "mean_pinball_loss_b2": 1066.51,
+    "mean_pinball_loss_b3": 39.25,
+    "skill_vs_b0": 0.3972,
+    "skill_vs_b0_ci": [
+      0.1806,
+      0.5351
+    ],
+    "skill_vs_b2": 0.967,
+    "skill_vs_b3": 0.1029,
+    "skill_vs_b3_ci": [
+      -0.1142,
+      0.2799
+    ],
+    "interval_score_80": 562.47,
+    "interval_score_90": 676.91,
+    "empirical_coverage_80": 0.8364,
+    "coverage_80_wilson_ci": [
+      0.7818,
+      0.8794
+    ],
+    "empirical_coverage_90": 0.9409
+  },
+  {
+    "crop": "tomato",
+    "horizon_days": 14,
+    "n_samples": 220,
+    "forecast_usable": true,
+    "gate_reason": "PASSED: Calibrated coverage and positive skill over baselines.",
+    "mean_pinball_loss_m1": 36.1,
+    "mean_pinball_loss_b0": 72.16,
+    "mean_pinball_loss_b2": 1050.48,
+    "mean_pinball_loss_b3": 48.71,
+    "skill_vs_b0": 0.4997,
+    "skill_vs_b0_ci": [
+      0.3467,
+      0.5951
+    ],
+    "skill_vs_b2": 0.9656,
+    "skill_vs_b3": 0.2589,
+    "skill_vs_b3_ci": [
+      0.1067,
+      0.3709
+    ],
+    "interval_score_80": 587.83,
+    "interval_score_90": 717.57,
+    "empirical_coverage_80": 0.85,
+    "coverage_80_wilson_ci": [
+      0.7968,
+      0.8912
+    ],
+    "empirical_coverage_90": 0.9455
+  },
+  {
+    "crop": "tomato",
+    "horizon_days": 21,
+    "n_samples": 220,
+    "forecast_usable": false,
+    "gate_reason": "FAILED: P80 coverage (91.4%) outside tolerance +/-7%.",
+    "mean_pinball_loss_m1": 42.18,
+    "mean_pinball_loss_b0": 97.38,
+    "mean_pinball_loss_b2": 1020.44,
+    "mean_pinball_loss_b3": 65.07,
+    "skill_vs_b0": 0.5668,
+    "skill_vs_b0_ci": [
+      0.4803,
+      0.6366
+    ],
+    "skill_vs_b2": 0.9587,
+    "skill_vs_b3": 0.3517,
+    "skill_vs_b3_ci": [
+      0.2838,
+      0.4115
+    ],
+    "interval_score_80": 735.84,
+    "interval_score_90": 883.46,
+    "empirical_coverage_80": 0.9136,
+    "coverage_80_wilson_ci": [
+      0.8691,
+      0.944
+    ],
+    "empirical_coverage_90": 0.9909
+  }
+]

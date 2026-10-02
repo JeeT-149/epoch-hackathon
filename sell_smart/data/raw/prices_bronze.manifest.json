@@ -1,0 +1,24 @@
+{
+  "stage": "raw",
+  "output_path": "C:\\Users\\Gauri\\epoch-hackathon\\sell_smart\\data\\raw\\prices_bronze.parquet",
+  "created_at": "2026-10-02T23:22:18.398818+00:00",
+  "row_count": 60565,
+  "columns": [
+    "sl_no",
+    "district_name",
+    "market_name",
+    "commodity",
+    "variety",
+    "grade",
+    "min_price",
+    "max_price",
+    "modal_price",
+    "price_date",
+    "state",
+    "source",
+    "ingested_at"
+  ],
+  "config_hash": "",
+  "seed": 42,
+  "data_hash": "79207aca1cd0bb50"
+}
