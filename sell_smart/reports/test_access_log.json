@@ -1,0 +1,110 @@
+[
+  {
+    "timestamp": "2026-10-02T21:09:38.538158+00:00",
+    "crop": "soybean",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:39.481210+00:00",
+    "crop": "soybean",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:40.725841+00:00",
+    "crop": "soybean",
+    "horizon": 5,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:41.922066+00:00",
+    "crop": "soybean",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:43.283710+00:00",
+    "crop": "soybean",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:44.823748+00:00",
+    "crop": "soybean",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:46.467160+00:00",
+    "crop": "onion",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:48.047731+00:00",
+    "crop": "onion",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:49.502922+00:00",
+    "crop": "onion",
+    "horizon": 5,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:51.479320+00:00",
+    "crop": "onion",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:52.945180+00:00",
+    "crop": "onion",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:54.264657+00:00",
+    "crop": "onion",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:55.419115+00:00",
+    "crop": "tomato",
+    "horizon": 1,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:56.251629+00:00",
+    "crop": "tomato",
+    "horizon": 3,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:57.199174+00:00",
+    "crop": "tomato",
+    "horizon": 5,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:58.136680+00:00",
+    "crop": "tomato",
+    "horizon": 7,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:58.839674+00:00",
+    "crop": "tomato",
+    "horizon": 10,
+    "note": "Final test run with --final flag"
+  },
+  {
+    "timestamp": "2026-10-02T21:09:59.735594+00:00",
+    "crop": "tomato",
+    "horizon": 14,
+    "note": "Final test run with --final flag"
+  }
+]

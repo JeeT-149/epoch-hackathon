@@ -1,0 +1,686 @@
+[
+  {
+    "crop": "soybean",
+    "mandi_id": "",
+    "horizon_days": 1,
+    "n_test_samples": 2684,
+    "generated_at": "2026-10-02T21:09:39.460895+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.06594634873323398,
+        "calibration_error": 0.03405365126676603
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.18517138599105812,
+        "calibration_error": 0.06482861400894188
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.4180327868852459,
+        "calibration_error": 0.08196721311475408
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.7060357675111774,
+        "calibration_error": 0.04396423248882264
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.8438897168405365,
+        "calibration_error": 0.056110283159463537
+      },
+      "conformal": {
+        "empirical_coverage": 0.9072280178837556,
+        "mean_interval_width": 546.4375119745018
+      }
+    }
+  },
+  {
+    "crop": "soybean",
+    "mandi_id": "",
+    "horizon_days": 3,
+    "n_test_samples": 2672,
+    "generated_at": "2026-10-02T21:09:40.711971+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.0718562874251497,
+        "calibration_error": 0.028143712574850308
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.19760479041916168,
+        "calibration_error": 0.05239520958083832
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.4651946107784431,
+        "calibration_error": 0.034805389221556904
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.7069610778443114,
+        "calibration_error": 0.04303892215568861
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.8473053892215568,
+        "calibration_error": 0.052694610778443174
+      },
+      "conformal": {
+        "empirical_coverage": 0.9094311377245509,
+        "mean_interval_width": 514.8189150712533
+      }
+    }
+  },
+  {
+    "crop": "soybean",
+    "mandi_id": "",
+    "horizon_days": 5,
+    "n_test_samples": 2659,
+    "generated_at": "2026-10-02T21:09:41.901702+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.06468597216998871,
+        "calibration_error": 0.035314027830011294
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.20308386611508086,
+        "calibration_error": 0.04691613388491914
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.4655885671305002,
+        "calibration_error": 0.034411432869499825
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.6938698758931929,
+        "calibration_error": 0.05613012410680707
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.8375329071079353,
+        "calibration_error": 0.06246709289206476
+      },
+      "conformal": {
+        "empirical_coverage": 0.9093644227153065,
+        "mean_interval_width": 515.8752105405696
+      }
+    }
+  },
+  {
+    "crop": "soybean",
+    "mandi_id": "",
+    "horizon_days": 7,
+    "n_test_samples": 2646,
+    "generated_at": "2026-10-02T21:09:43.263454+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.07218442932728647,
+        "calibration_error": 0.027815570672713535
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.20521541950113378,
+        "calibration_error": 0.04478458049886622
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.4618291761148904,
+        "calibration_error": 0.03817082388510962
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.6893424036281179,
+        "calibration_error": 0.06065759637188206
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.8291761148904006,
+        "calibration_error": 0.07082388510959947
+      },
+      "conformal": {
+        "empirical_coverage": 0.9089191232048375,
+        "mean_interval_width": 521.7265052043621
+      }
+    }
+  },
+  {
+    "crop": "soybean",
+    "mandi_id": "",
+    "horizon_days": 10,
+    "n_test_samples": 2625,
+    "generated_at": "2026-10-02T21:09:44.803132+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.06247619047619048,
+        "calibration_error": 0.03752380952380953
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.19923809523809524,
+        "calibration_error": 0.05076190476190476
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.45676190476190476,
+        "calibration_error": 0.04323809523809524
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.6819047619047619,
+        "calibration_error": 0.0680952380952381
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.8278095238095238,
+        "calibration_error": 0.07219047619047625
+      },
+      "conformal": {
+        "empirical_coverage": 0.9108571428571428,
+        "mean_interval_width": 514.3502384849598
+      }
+    }
+  },
+  {
+    "crop": "soybean",
+    "mandi_id": "",
+    "horizon_days": 14,
+    "n_test_samples": 2596,
+    "generated_at": "2026-10-02T21:09:46.449453+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.07704160246533127,
+        "calibration_error": 0.02295839753466873
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.17103235747303544,
+        "calibration_error": 0.07896764252696456
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.44838212634822805,
+        "calibration_error": 0.05161787365177195
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.6868258859784283,
+        "calibration_error": 0.06317411402157169
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.8409090909090909,
+        "calibration_error": 0.05909090909090908
+      },
+      "conformal": {
+        "empirical_coverage": 0.9063944530046225,
+        "mean_interval_width": 546.1788976592105
+      }
+    }
+  },
+  {
+    "crop": "onion",
+    "mandi_id": "",
+    "horizon_days": 1,
+    "n_test_samples": 910,
+    "generated_at": "2026-10-02T21:09:48.032370+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.06043956043956044,
+        "calibration_error": 0.039560439560439566
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.17582417582417584,
+        "calibration_error": 0.07417582417582416
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.33076923076923076,
+        "calibration_error": 0.16923076923076924
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.5362637362637362,
+        "calibration_error": 0.21373626373626375
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.7670329670329671,
+        "calibration_error": 0.13296703296703294
+      },
+      "conformal": {
+        "empirical_coverage": 0.7967032967032966,
+        "mean_interval_width": 312.5190785806026
+      }
+    }
+  },
+  {
+    "crop": "onion",
+    "mandi_id": "",
+    "horizon_days": 3,
+    "n_test_samples": 905,
+    "generated_at": "2026-10-02T21:09:49.494286+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.045303867403314914,
+        "calibration_error": 0.05469613259668509
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.17900552486187846,
+        "calibration_error": 0.07099447513812154
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.33259668508287293,
+        "calibration_error": 0.16740331491712707
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.5281767955801105,
+        "calibration_error": 0.22182320441988945
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.7381215469613259,
+        "calibration_error": 0.1618784530386741
+      },
+      "conformal": {
+        "empirical_coverage": 0.8154696132596685,
+        "mean_interval_width": 583.1672078210405
+      }
+    }
+  },
+  {
+    "crop": "onion",
+    "mandi_id": "",
+    "horizon_days": 5,
+    "n_test_samples": 900,
+    "generated_at": "2026-10-02T21:09:51.470613+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.07222222222222222,
+        "calibration_error": 0.02777777777777779
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.18555555555555556,
+        "calibration_error": 0.06444444444444444
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.3188888888888889,
+        "calibration_error": 0.1811111111111111
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.48,
+        "calibration_error": 0.27
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.7144444444444444,
+        "calibration_error": 0.18555555555555558
+      },
+      "conformal": {
+        "empirical_coverage": 0.8177777777777778,
+        "mean_interval_width": 595.7991314874147
+      }
+    }
+  },
+  {
+    "crop": "onion",
+    "mandi_id": "",
+    "horizon_days": 7,
+    "n_test_samples": 895,
+    "generated_at": "2026-10-02T21:09:52.935465+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.07932960893854749,
+        "calibration_error": 0.02067039106145252
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.17430167597765364,
+        "calibration_error": 0.07569832402234636
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.3486033519553073,
+        "calibration_error": 0.15139664804469272
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.5553072625698324,
+        "calibration_error": 0.19469273743016757
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.7061452513966481,
+        "calibration_error": 0.19385474860335195
+      },
+      "conformal": {
+        "empirical_coverage": 0.8223463687150838,
+        "mean_interval_width": 669.0710357236912
+      }
+    }
+  },
+  {
+    "crop": "onion",
+    "mandi_id": "",
+    "horizon_days": 10,
+    "n_test_samples": 888,
+    "generated_at": "2026-10-02T21:09:54.251011+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.08333333333333333,
+        "calibration_error": 0.016666666666666677
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.1858108108108108,
+        "calibration_error": 0.0641891891891892
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.3096846846846847,
+        "calibration_error": 0.19031531531531531
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.5382882882882883,
+        "calibration_error": 0.21171171171171166
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.6970720720720721,
+        "calibration_error": 0.2029279279279279
+      },
+      "conformal": {
+        "empirical_coverage": 0.8164414414414415,
+        "mean_interval_width": 614.6736012022302
+      }
+    }
+  },
+  {
+    "crop": "onion",
+    "mandi_id": "",
+    "horizon_days": 14,
+    "n_test_samples": 878,
+    "generated_at": "2026-10-02T21:09:55.408290+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.10250569476082004,
+        "calibration_error": 0.0025056947608200347
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.1845102505694761,
+        "calibration_error": 0.06548974943052391
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.34965831435079725,
+        "calibration_error": 0.15034168564920275
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.5011389521640092,
+        "calibration_error": 0.24886104783599083
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.6822323462414579,
+        "calibration_error": 0.21776765375854212
+      },
+      "conformal": {
+        "empirical_coverage": 0.8223234624145785,
+        "mean_interval_width": 479.88453689982543
+      }
+    }
+  },
+  {
+    "crop": "tomato",
+    "mandi_id": "",
+    "horizon_days": 1,
+    "n_test_samples": 728,
+    "generated_at": "2026-10-02T21:09:56.241470+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.10851648351648352,
+        "calibration_error": 0.008516483516483514
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.2802197802197802,
+        "calibration_error": 0.030219780219780223
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.41895604395604397,
+        "calibration_error": 0.08104395604395603
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.614010989010989,
+        "calibration_error": 0.13598901098901095
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.7843406593406593,
+        "calibration_error": 0.11565934065934069
+      },
+      "conformal": {
+        "empirical_coverage": 0.9807692307692307,
+        "mean_interval_width": 574.6438871557943
+      }
+    }
+  },
+  {
+    "crop": "tomato",
+    "mandi_id": "",
+    "horizon_days": 3,
+    "n_test_samples": 724,
+    "generated_at": "2026-10-02T21:09:57.190990+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.1132596685082873,
+        "calibration_error": 0.01325966850828729
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.23342541436464087,
+        "calibration_error": 0.01657458563535913
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.4116022099447514,
+        "calibration_error": 0.08839779005524862
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.5870165745856354,
+        "calibration_error": 0.1629834254143646
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.7790055248618785,
+        "calibration_error": 0.12099447513812156
+      },
+      "conformal": {
+        "empirical_coverage": 0.9792817679558011,
+        "mean_interval_width": 697.1974901539882
+      }
+    }
+  },
+  {
+    "crop": "tomato",
+    "mandi_id": "",
+    "horizon_days": 5,
+    "n_test_samples": 720,
+    "generated_at": "2026-10-02T21:09:58.128604+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.11805555555555555,
+        "calibration_error": 0.018055555555555547
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.23333333333333334,
+        "calibration_error": 0.016666666666666663
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.42083333333333334,
+        "calibration_error": 0.07916666666666666
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.6055555555555555,
+        "calibration_error": 0.1444444444444445
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.7347222222222223,
+        "calibration_error": 0.16527777777777775
+      },
+      "conformal": {
+        "empirical_coverage": 0.9763888888888889,
+        "mean_interval_width": 751.9153217825113
+      }
+    }
+  },
+  {
+    "crop": "tomato",
+    "mandi_id": "",
+    "horizon_days": 7,
+    "n_test_samples": 716,
+    "generated_at": "2026-10-02T21:09:58.831302+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.11173184357541899,
+        "calibration_error": 0.011731843575418982
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.23324022346368714,
+        "calibration_error": 0.01675977653631286
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.4106145251396648,
+        "calibration_error": 0.08938547486033521
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.6061452513966481,
+        "calibration_error": 0.1438547486033519
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.7597765363128491,
+        "calibration_error": 0.14022346368715088
+      },
+      "conformal": {
+        "empirical_coverage": 0.9818435754189944,
+        "mean_interval_width": 758.1134653225232
+      }
+    }
+  },
+  {
+    "crop": "tomato",
+    "mandi_id": "",
+    "horizon_days": 10,
+    "n_test_samples": 710,
+    "generated_at": "2026-10-02T21:09:59.726470+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.10985915492957747,
+        "calibration_error": 0.009859154929577466
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.23661971830985915,
+        "calibration_error": 0.013380281690140855
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.4154929577464789,
+        "calibration_error": 0.08450704225352113
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.604225352112676,
+        "calibration_error": 0.14577464788732397
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.7619718309859155,
+        "calibration_error": 0.13802816901408455
+      },
+      "conformal": {
+        "empirical_coverage": 0.9746478873239437,
+        "mean_interval_width": 816.9076475097685
+      }
+    }
+  },
+  {
+    "crop": "tomato",
+    "mandi_id": "",
+    "horizon_days": 14,
+    "n_test_samples": 702,
+    "generated_at": "2026-10-02T21:10:00.638636+00:00",
+    "calibration": {
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.1339031339031339,
+        "calibration_error": 0.0339031339031339
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.2336182336182336,
+        "calibration_error": 0.01638176638176639
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.4031339031339031,
+        "calibration_error": 0.09686609686609687
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.6310541310541311,
+        "calibration_error": 0.1189458689458689
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.7663817663817664,
+        "calibration_error": 0.13361823361823366
+      },
+      "conformal": {
+        "empirical_coverage": 0.9786324786324786,
+        "mean_interval_width": 858.6650707713002
+      }
+    }
+  }
+]

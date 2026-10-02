@@ -52,6 +52,10 @@ from sellsmart.shock.radar import detect_shocks
 from sellsmart.regret.receipt import compute_regret
 from sellsmart.trigger.compute import compute_trigger_signals
 from sellsmart.trigger.state import TriggerState, TriggerStateRecord
+from sellsmart.backtest.scenarios import build_scenarios
+from sellsmart.ingest.climate_factors import (
+    ClimateFactorsIngestor, encode_climate_silver, compute_climate_summary
+)
 
 logger = get_logger("sell_smart.pipeline")
 
@@ -131,7 +135,16 @@ def main():
     else:
         df_synth_crops_raw = pd.DataFrame()
 
-    # Combine into raw bronze panel
+    # 1.3 Ingest Climate Change Agriculture Factors Dataset
+    climate_csv = Path("ML/climate_change_agriculture_dataset.csv")
+    climate_ingestor = ClimateFactorsIngestor(csv_path=climate_csv)
+    df_climate_bronze = climate_ingestor.ingest(output_dir=RAW_DIR)
+    if not df_climate_bronze.empty:
+        print(f"--> Ingested climate factors: {len(df_climate_bronze):,} scenarios from {climate_csv}")
+    else:
+        print("    Warning: Climate factors dataset not found. Climate features will be NaN.")
+
+    # Combine price data into raw bronze panel
     df_raw = pd.concat([df_kaggle_sub, df_synth_crops_raw], ignore_index=True)
     raw_path = RAW_DIR / "prices_bronze.parquet"
     df_raw.to_parquet(raw_path, index=False)
@@ -158,6 +171,22 @@ def main():
     df_silver_flagged.to_parquet(silver_path, index=False)
     write_manifest("silver", silver_path, df_silver_flagged)
     print(f"[OK] Stage 2 Complete: Cleaned silver panel written to {silver_path}")
+
+    # 2.2 Encode and save climate silver + compute summary statistics
+    climate_summary = {}
+    if not df_climate_bronze.empty:
+        df_climate_silver = encode_climate_silver(df_climate_bronze)
+        climate_silver_path = SILVER_DIR / "climate_factors_silver.parquet"
+        df_climate_silver.to_parquet(climate_silver_path, index=False)
+        climate_summary = compute_climate_summary(df_climate_silver)
+        print(f"   Climate silver: {len(df_climate_silver):,} encoded scenarios -> {climate_silver_path}")
+        print(f"   Climate summary: mean_temp={climate_summary['mean_temperature_c']}C, "
+              f"mean_precip={climate_summary['mean_precipitation_mm']}mm, "
+              f"stress_index={climate_summary['mean_climate_stress_index']:.3f}, "
+              f"extreme_event_rate={climate_summary['extreme_event_rate']:.1%}")
+    else:
+        df_climate_silver = pd.DataFrame()
+        print("   Climate silver: skipped (no data).")
 
     # ──────────────────────────────────────────────────────────────────────────
     # STAGE 3: MANDI SELECTION & TRADING CALENDAR ANALYSIS
@@ -200,7 +229,7 @@ def main():
     print(f"   Gold panel: {len(gold_panel):,} rows across {gold_panel['mandi_id'].nunique()} mandis.")
 
     print("-> Engineering past-only lag features, rolling windows, and price spreads...")
-    features_df = build_features(gold_panel, config_dict, use_calendar=True)
+    features_df = build_features(gold_panel, config_dict, use_calendar=True, climate_summary=climate_summary)
     
     # Strictly enforce zero future leakage
     assert_no_leakage(features_df)
@@ -278,6 +307,34 @@ def main():
         json.dump(all_passports, f, indent=2)
     print(f"[OK] Stage 5 Complete: Calibration Passports written to {passport_path}")
 
+    # Build combined forecast table for all crops (used in Stage 6)
+    all_forecast_frames = []
+    for crop in target_crops:
+        crop_data = features_df[features_df["crop"] == crop]
+        if len(crop_data) == 0:
+            continue
+        for h in horizons:
+            target_col = f"target_{h}d"
+            if target_col not in crop_data.columns:
+                continue
+            if (crop, h, 0.5) not in forecaster.models:
+                continue
+            preds = forecaster.predict(features_df, horizon=h, crop=crop)
+            all_forecast_frames.append(preds)
+    # Merge all horizon predictions per (date, mandi_id, crop)
+    if all_forecast_frames:
+        combined_forecasts = all_forecast_frames[0]
+        for frame in all_forecast_frames[1:]:
+            pred_cols = [c for c in frame.columns if c not in ["date", "mandi_id", "crop"]]
+            combined_forecasts = combined_forecasts.merge(
+                frame[["date", "mandi_id", "crop"] + pred_cols],
+                on=["date", "mandi_id", "crop"],
+                how="outer",
+            )
+    else:
+        combined_forecasts = pd.DataFrame(columns=["date", "mandi_id", "crop"])
+        print("   Warning: No forecast models were trained. Stage 6 will use fallback modal prices.")
+
     # ──────────────────────────────────────────────────────────────────────────
     # STAGE 6: DECISION INTELLIGENCE & ECONOMICS ENGINE EVALUATION
     # ──────────────────────────────────────────────────────────────────────────
@@ -297,6 +354,12 @@ def main():
         
     mandis_lookup = {m["mandi_id"]: m for m in mandis_meta}
     
+    # Get most recent date in gold panel to use as today for forecast lookup
+    gold_latest_date = gold_panel["date"].max() if "date" in gold_panel.columns else today
+    forecast_today = combined_forecasts[
+        combined_forecasts["date"] == pd.Timestamp(gold_latest_date)
+    ] if not combined_forecasts.empty else pd.DataFrame()
+
     decision_results = []
     today = date(2025, 4, 15)
     
@@ -307,25 +370,36 @@ def main():
         deadline = farmer["cash_deadline_days"]
         farm_lat = farmer["village_lat"]
         farm_lon = farmer["village_lon"]
-        
-        # Economics evaluation closure
-        def _econ(m_info, days_held):
-            # Distance from farm to candidate mandi
-            m_lat = m_info.get("lat") or farm_lat
-            m_lon = m_info.get("lon") or farm_lon
-            # Simple euclidean distance approx
-            dist = np.sqrt(((m_lat - farm_lat) * 111.0)**2 + ((m_lon - farm_lon) * 111.0 * np.cos(np.radians(farm_lat)))**2)
-            
+        vehicle = farmer.get("vehicle_type", "tempo")
+        storage_cond = farmer.get("storage_condition", "ambient")
+        quality = farmer.get("quality_factor", 1.0)
+
+        # Economics evaluation closure — uses actual modal_price from forecast (Issue 5 fix)
+        def _econ(m_info, days_held, modal_price=None, _farm_lat=farm_lat, _farm_lon=farm_lon,
+                  _qty=qty, _vehicle=vehicle, _storage=storage_cond,
+                  _quality=quality, _crop=crop):
+            m_lat = m_info.get("lat") or _farm_lat
+            m_lon = m_info.get("lon") or _farm_lon
+            dist = np.sqrt(
+                ((_farm_lat - m_lat) * 111.0) ** 2
+                + ((_farm_lon - m_lon) * 111.0 * np.cos(np.radians(_farm_lat))) ** 2
+            )
+            # Use forecast modal_price if provided; fall back to last known gold price
+            if modal_price is None or modal_price <= 0:
+                crop_prices = gold_panel[
+                    (gold_panel["crop"] == _crop) & (gold_panel["mandi_id"] == m_info.get("mandi_id", ""))
+                ]["modal_price"].dropna()
+                modal_price = float(crop_prices.iloc[-1]) if len(crop_prices) > 0 else 2200.0
+
             econ_res = compute_net_return(
-                modal_price=2200.0,
-                crop=crop,
+                modal_price=modal_price,
+                crop=_crop,
                 distance_km=max(5.0, float(dist)),
-                quantity_q=qty,
+                quantity_q=_qty,
                 days_held=days_held,
                 crops_config=crops_cfg,
-                vehicle_type=farmer["vehicle_type"],
-                storage_condition=farmer["storage_condition"],
-                grade="FAQ",
+                storage_condition=_storage,
+                quality_factor=_quality,
             )
             return econ_res
             
@@ -333,12 +407,19 @@ def main():
         crop_mandis = [m for m in mandis_meta if m.get("crop") == crop]
         if not crop_mandis:
             crop_mandis = [mandis_meta[0]] if mandis_meta else [{"mandi_id": m_id, "lat": farm_lat, "lon": farm_lon}]
-            
+        
+        # Subset combined_forecasts to crop + relevant mandis (Issue 4 fix)
+        mandi_ids_for_crop = [m["mandi_id"] for m in crop_mandis]
+        fcast_for_options = forecast_today[
+            (forecast_today["crop"] == crop)
+            & (forecast_today["mandi_id"].isin(mandi_ids_for_crop))
+        ] if not forecast_today.empty else pd.DataFrame(columns=["date", "mandi_id", "crop"])
+
         options = generate_options(
             crop=crop,
             today=today,
             mandis=crop_mandis,
-            forecasts=pd.DataFrame(),
+            forecasts=fcast_for_options,  # real forecasts now passed (Issue 4 fix)
             calendar_df=calendar_df,
             economics_fn=_econ,
             max_days=14,
@@ -347,6 +428,30 @@ def main():
         
         # Trader offer benchmark (simulated 5% discount)
         trader_offer = 2200.0 * 0.95
+
+        # Compute real confidence score using DQ and model calibration
+        from sellsmart.decision.confidence import compute_confidence
+        mandi_dq = dq_scores[
+            (dq_scores["mandi_id"] == m_id) & (dq_scores["crop"] == crop)
+        ]["dq_score"].values
+        dq_score_val = float(mandi_dq[0]) if len(mandi_dq) > 0 else 0.5
+        # Estimate interval width from calibration passports
+        relevant_passport = next(
+            (p for p in all_passports if p["crop"] == crop and p["horizon_days"] == 7), None
+        )
+        interval_width = 200.0  # fallback ₹200/q
+        if relevant_passport:
+            conf_data = relevant_passport.get("calibration", {}).get("conformal", {})
+            interval_width = conf_data.get("mean_interval_width", interval_width)
+        has_placeholder = not crops_cfg.get(crop, {}).get("spoilage", {}).get("source", "PLACEHOLDER").startswith("PLACEHOLDER")
+        conf_label, conf_score = compute_confidence(
+            dq_score=dq_score_val,
+            model_interval_width=interval_width,
+            modal_price=2200.0,
+            is_placeholder=(not has_placeholder),
+            config=config_dict,
+            climate_summary=climate_summary,
+        )
         
         # Decision engine execution
         res = decide(
@@ -356,8 +461,8 @@ def main():
             trader_offer_per_q=trader_offer,
             cash_deadline_days=deadline,
             shock_detected=False,
-            confidence_score=0.75,
-            confidence_label="HIGH",
+            confidence_score=conf_score,
+            confidence_label=conf_label,
         )
         
         decision_results.append({
@@ -367,6 +472,7 @@ def main():
             "cash_deadline_days": deadline,
             "recommendation": res.recommendation.value,
             "confidence": res.confidence_label,
+            "confidence_score": round(conf_score, 3),
             "best_mandi": res.best_option.mandi_id if res.best_option else m_id,
             "best_sell_date": str(res.best_option.sell_date) if res.best_option else str(today),
             "days_to_wait": res.best_option.days_from_now if res.best_option else 0,
@@ -389,11 +495,23 @@ def main():
     print_header("Trigger Engine, Policy-Shock Radar & Regret Receipts", 7)
     
     # 7.1 Policy Shock Radar
+    # Adjust z-threshold using climate shock prior probability.
+    # A higher prior (more extreme events in dataset) → lower threshold → more sensitive.
+    base_z = 3.0
+    if climate_summary:
+        prior = climate_summary.get("shock_prior_probability", 0.0)
+        # Scale: prior=0.25 (baseline equal) → z=3.0; prior=0.75 → z=2.5
+        z_adjusted = round(max(2.0, base_z - (prior - 0.25) * 2.0), 2)
+        if z_adjusted != base_z:
+            print(f"   Shock radar z-threshold adjusted to {z_adjusted} "
+                  f"(climate prior={prior:.1%})")
+    else:
+        z_adjusted = base_z
     sample_series = gold_panel[gold_panel["crop"] == "onion"].set_index("date")["modal_price"].dropna()
     if len(sample_series) > 30:
-        shocks = detect_shocks(sample_series, z_threshold=3.0, lookback_window=30)
+        shocks = detect_shocks(sample_series, z_threshold=z_adjusted, lookback_window=30)
         n_shocks = shocks["is_shock"].sum()
-        print(f"-> Policy-Shock Radar: Scanned {len(sample_series)} dates, detected {n_shocks} shock regime(s).")
+        print(f"-> Policy-Shock Radar: Scanned {len(sample_series)} dates, detected {n_shocks} shock regime(s) (z={z_adjusted}).")
     
     # 7.2 Trigger Engine State Machine Simulation
     print("-> Running Trigger Engine state machine check...")
@@ -423,7 +541,110 @@ def main():
     )
     print(f"-> Regret Receipt generated: Farmer gained +₹{receipt.regret_per_q:.2f}/quintal over immediate sale.")
 
-    # 7.4 Summary Report
+    # 7.4 Walk-Forward Backtest (Issue 7 — wired in)
+    # -------------------------------------------------------------------------
+    print("--> Running walk-forward backtest across scenarios...")
+    backtest_results = []
+    if mandis_meta and len(gold_panel) > 0:
+        scenarios_df = build_scenarios(
+            gold_df=gold_panel,
+            mandis=mandis_meta,
+            config=config_dict,
+            seed=42,
+        )
+        for _, sc in scenarios_df.head(config_dict.get("backtest", {}).get("n_scenarios", 100)).iterrows():
+            sc_crop = sc.get("crop", "soybean")
+            sc_mandi = sc.get("mandi_id", "")
+            sc_qty = float(sc.get("quantity_q", 20.0))
+            sc_deadline = int(sc.get("cash_deadline_days", 7))
+            sc_lat = float(sc.get("village_lat", 22.0))
+            sc_lon = float(sc.get("village_lon", 77.0))
+            sc_modal = float(sc.get("modal_price", 2200.0))
+            sc_storage = sc.get("storage_condition", "ambient")
+            sc_quality = float(sc.get("quality_factor", 1.0))
+            sc_date = sc.get("date", today)
+            # Outcome: check actual price at h=7 if available
+            actual_col = "target_7d"
+            actual_price = sc.get(actual_col, None)
+            if actual_price is None or (hasattr(actual_price, '__float__') and np.isnan(float(actual_price))):
+                continue  # exclude cases with no verifiable outcome (R3)
+            actual_price = float(actual_price)
+
+            def _sc_econ(m_info, days_held, modal_price=None,
+                         _lat=sc_lat, _lon=sc_lon, _qty=sc_qty,
+                         _crop=sc_crop, _storage=sc_storage, _quality=sc_quality):
+                m_lat = m_info.get("lat") or _lat
+                m_lon = m_info.get("lon") or _lon
+                dist = max(5.0, np.sqrt(((_lat - m_lat) * 111.0)**2 + ((_lon - m_lon) * 111.0 * np.cos(np.radians(_lat)))**2))
+                if modal_price is None or modal_price <= 0:
+                    modal_price = sc_modal
+                return compute_net_return(
+                    modal_price=modal_price, crop=_crop, distance_km=dist,
+                    quantity_q=_qty, days_held=days_held,
+                    crops_config=crops_cfg, storage_condition=_storage, quality_factor=_quality,
+                )
+
+            sc_crop_mandis = [m for m in mandis_meta if m.get("crop") == sc_crop]
+            if not sc_crop_mandis:
+                continue
+            sc_forecast_row = combined_forecasts[
+                (combined_forecasts["crop"] == sc_crop)
+                & (combined_forecasts["mandi_id"] == sc_mandi)
+            ] if not combined_forecasts.empty else pd.DataFrame(columns=["date", "mandi_id", "crop"])
+            sc_options = generate_options(
+                crop=sc_crop, today=sc_date if hasattr(sc_date, 'year') else today,
+                mandis=sc_crop_mandis, forecasts=sc_forecast_row,
+                calendar_df=calendar_df, economics_fn=_sc_econ,
+                max_days=7, cash_deadline_days=sc_deadline,
+            )
+            if not sc_options:
+                continue
+            sc_res = decide(
+                options=sc_options, crop=sc_crop, crops_config=crops_cfg,
+                trader_offer_per_q=sc_modal * 0.95, cash_deadline_days=sc_deadline,
+                shock_detected=False, confidence_score=0.5, confidence_label="MEDIUM",
+            )
+            rec_return = sc_res.best_option.net_return_per_q if sc_res.best_option else sc_modal
+            actual_econ = compute_net_return(
+                modal_price=actual_price, crop=sc_crop, distance_km=20.0,
+                quantity_q=sc_qty, days_held=0, crops_config=crops_cfg,
+            )
+            actual_net = actual_econ["net_return_per_q"]
+            regret = compute_regret(
+                actual_net_return=actual_net,
+                counterfactual_net_return=rec_return,
+                crop=sc_crop, mandi_id=sc_mandi,
+                decision_date=today, sell_date=today,
+                recommended_action=sc_res.recommendation.value,
+                actual_price_received=actual_price,
+                counterfactual_price=sc_modal,
+                days_held=0, is_placeholder=sc_res.is_placeholder,
+            )
+            backtest_results.append({
+                "crop": sc_crop, "mandi_id": sc_mandi,
+                "recommendation": sc_res.recommendation.value,
+                "rec_net_return": round(rec_return, 2),
+                "actual_net_return": round(actual_net, 2),
+                "regret_per_q": round(regret.regret_per_q, 2),
+                "positive_regret": regret.regret_per_q >= 0,
+            })
+
+    backtest_df = pd.DataFrame(backtest_results)
+    if len(backtest_df) > 0:
+        backtest_csv = REPORTS_DIR / "backtest_results.csv"
+        backtest_df.to_csv(backtest_csv, index=False)
+        win_rate = backtest_df["positive_regret"].mean() * 100
+        avg_regret = backtest_df["regret_per_q"].mean()
+        losing = backtest_df[backtest_df["regret_per_q"] < 0]
+        print(f"   Backtest: {len(backtest_df)} scenarios. Win rate: {win_rate:.1f}%. Avg regret: {avg_regret:.2f} Rs/q")
+        print(f"   [R7] Where we lose money: {len(losing)} scenarios negative ({100-win_rate:.1f}%)")
+        if len(losing) > 0:
+            print(f"   Largest losses by crop: {losing.groupby('crop')['regret_per_q'].min().to_dict()}")
+    else:
+        print("   Backtest: insufficient scenarios (no mandis or outcomes). Skipped.")
+        backtest_csv = None
+
+    # 7.5 Summary Report
     elapsed = time.time() - start_time
     summary_report = f"""# Sell Smart ML & Decision Pipeline Execution Summary
 
@@ -432,15 +653,15 @@ def main():
 - **Status**: SUCCESS
 
 ## Summary of Executed Stages:
-1. **Stage 1 (Bronze Ingestion)**: Ingested {len(df_raw):,} total raw observations (`data/raw/prices_bronze.parquet`).
-2. **Stage 2 (Silver Canonicalization)**: Cleaned, deduplicated, flagged outliers (rolling MAD $k=6$) across Soybean, Onion, and Tomato (`data/silver/prices_daily.parquet`).
+1. **Stage 1 (Bronze Ingestion)**: Ingested {len(df_raw):,} total raw observations (`data/raw/prices_bronze.parquet`) and {len(df_climate_bronze):,} climate risk scenarios (`data/raw/climate_factors_bronze.parquet`).
+2. **Stage 2 (Silver Canonicalization)**: Cleaned, deduplicated, flagged outliers (rolling MAD $k=6$) across Soybean, Onion, and Tomato (`data/silver/prices_daily.parquet`); encoded climate silver scenarios (`data/silver/climate_factors_silver.parquet`).
 3. **Stage 3 (Mandi Selection)**: Selected {len(selected_mandi_ids)} APMC mandis using coverage and gap constraints (`config/mandis.yaml`).
-4. **Stage 4 (Gold Feature Engineering)**: Generated past-only features with strict zero-leakage assertions (`data/gold/features_panel.parquet`).
+4. **Stage 4 (Gold Feature Engineering)**: Generated past-only features with strict zero-leakage assertions and activated climate risk features (`data/gold/features_panel.parquet`).
 5. **Stage 5 (Quantile Modeling & Conformal)**: Trained {models_trained} LightGBM Quantile models across 5 horizons and 5 quantiles; computed Calibration Passports (`artifacts/calibration_passport.json`).
-6. **Stage 6 (Decision Intelligence)**: Evaluated net-return options factoring in transport, storage, and non-linear spoilage curves for 50 farmer scenarios.
+6. **Stage 6 (Decision Intelligence)**: Evaluated net-return options factoring in transport, storage, climate risk confidence discount, and non-linear spoilage curves for 50 farmer scenarios.
    - Recommendation breakdown: `{rec_counts}`
    - Results: `reports/farmer_decision_batch_results.csv`
-7. **Stage 7 (Triggers & Receipts)**: Verified Shock Radar, state machine transitions, and generated farmer Regret Receipts.
+7. **Stage 7 (Triggers & Receipts)**: Verified Climate-informed Shock Radar (z={z_adjusted}), state machine transitions, and generated farmer Regret Receipts.
 """
     summary_path = REPORTS_DIR / "pipeline_execution_summary.md"
     with open(summary_path, "w") as f:

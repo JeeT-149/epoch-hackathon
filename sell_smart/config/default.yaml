@@ -42,7 +42,11 @@ mandi_select:
 
 # ── Features ─────────────────────────────────────────────────────────────────
 features:
-  calendar_min_years: 2       # disable month/doy features below this history
+  calendar_min_years: 1.0     # enable month/doy features when history >= 1 year
+  force_calendar_features: true  # override: enable calendar features regardless of span
+  # NOTE: With only 12 months, seasonal patterns are single observations (anecdotal).
+  # The model uses month/day_of_year as categorical signals, not as confirmed cycles.
+  # Report results honestly as anecdotal per PRD 4.2.3.
   use_weather: false          # disabled until Open-Meteo verified
   lags: [1, 2, 3, 5, 7, 14]
   rolling_windows: [7, 14, 21]

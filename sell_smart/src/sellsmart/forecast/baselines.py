@@ -55,10 +55,12 @@ class SeasonalNaiveForecaster:
 class RollingMeanForecaster:
     """Predict rolling mean of last N days."""
 
-    name = "rolling_mean_14d"
+    def __init__(self, window: int = 14):
+        self.window = window
+        self.name = f"rolling_mean_{window}d"
 
     def predict(self, features_df: pd.DataFrame, horizon: int) -> pd.Series:
-        col = "roll_mean_14d"
+        col = f"roll_mean_{self.window}d"
         if col in features_df.columns:
             return features_df[col].rename(f"pred_{horizon}d")
         return pd.Series(np.nan, index=features_df.index, name=f"pred_{horizon}d")

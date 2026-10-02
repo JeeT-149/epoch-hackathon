@@ -37,6 +37,9 @@ FEATURE_COLS_BASE = [
     "activity_proxy_7d",
     "month", "day_of_year",
     "mandi_id_enc",
+    "weather_temp_mean", "weather_rain_7d",
+    "climate_stress_index", "climate_stress_p95",
+    "disease_incidence_enc", "water_stress_enc", "shock_prior_prob",
 ]
 
 
@@ -53,7 +56,7 @@ class LGBMQuantileForecaster:
         self.feature_cols: list[str] = []
 
     def _get_feature_cols(self, df: pd.DataFrame) -> list[str]:
-        return [c for c in FEATURE_COLS_BASE if c in df.columns]
+        return [c for c in FEATURE_COLS_BASE if c in df.columns and not df[c].isna().all()]
 
     def fit(
         self,
