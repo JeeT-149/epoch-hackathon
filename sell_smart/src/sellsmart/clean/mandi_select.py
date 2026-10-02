@@ -32,11 +32,42 @@ def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 
 def _geocode_mandi(market: str, district: str, state: str) -> dict:
     """
-    Attempt to geocode a mandi via Nominatim.
-    Returns dict with lat, lon, confidence, source.
-    Falls back to NaN with confidence=0 and flags for review.
-    UNVERIFIED: Nominatim rate limit is 1 req/sec. Respects that.
+    Attempt to geocode a mandi:
+    1. First check offline India Cities LatLng.csv dataset.
+    2. Fall back to Nominatim API (1 req/sec).
+    3. Fall back to NaN with needs_review=True.
     """
+    import unicodedata
+    from pathlib import Path
+
+    def _norm(s: str) -> str:
+        return unicodedata.normalize("NFKD", str(s)).encode("ASCII", "ignore").decode("utf-8").lower().strip()
+
+    # 1. Local offline lookup
+    local_csv = Path("ML/India Cities LatLng.csv")
+    if local_csv.exists():
+        try:
+            geo_df = pd.read_csv(local_csv)
+            geo_df["city_norm"] = geo_df["city"].apply(_norm)
+            m_norm = _norm(market)
+            d_norm = _norm(district)
+
+            match = geo_df[geo_df["city_norm"] == m_norm]
+            if len(match) == 0:
+                match = geo_df[geo_df["city_norm"] == d_norm]
+            if len(match) > 0:
+                row = match.iloc[0]
+                return {
+                    "lat": float(row["lat"]),
+                    "lon": float(row["lng"]),
+                    "geocode_confidence": 0.95,
+                    "geocode_source": "india_cities_latlng_csv",
+                    "needs_review": False,
+                }
+        except Exception as e:
+            logger.debug(f"Offline geocode lookup failed: {e}")
+
+    # 2. Remote Nominatim
     try:
         import httpx
         import time
@@ -48,7 +79,7 @@ def _geocode_mandi(market: str, district: str, state: str) -> dict:
             headers={"User-Agent": "SellSmartML/1.0"},
             timeout=10,
         )
-        time.sleep(1.1)  # UNVERIFIED rate limit — 1 req/sec for Nominatim
+        time.sleep(1.1)  # Rate limit — 1 req/sec for Nominatim
         results = resp.json()
         if results:
             r = results[0]
@@ -211,7 +242,7 @@ def select_mandis(
     reports_dir = Path(reports_dir)
     reports_dir.mkdir(parents=True, exist_ok=True)
     report_path = reports_dir / "mandi_selection_report.md"
-    with open(report_path, "w") as f:
+    with open(report_path, "w", encoding="utf-8") as f:
         f.write("\n".join(report_lines))
     logger.info(f"Mandi selection report written to {report_path}")
 
@@ -237,7 +268,7 @@ def select_mandis(
 
     mandis_yaml = {"mandis": mandis_list}
     out_yaml = Path(output_dir) / "mandis.yaml"
-    with open(out_yaml, "w") as f:
+    with open(out_yaml, "w", encoding="utf-8") as f:
         yaml.dump(mandis_yaml, f, allow_unicode=True, default_flow_style=False)
     logger.info(f"mandis.yaml written with {len(mandis_list)} entries.")
 

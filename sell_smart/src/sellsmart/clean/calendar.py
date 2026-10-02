@@ -141,9 +141,9 @@ def build_gold_panel(
             .ffill()
             .fillna(0)
         )
-        grp["modal_price"] = grp["modal_price"].fillna(method="ffill", limit=max_ffill_days)
-        grp["min_price"] = grp["min_price"].fillna(method="ffill", limit=max_ffill_days)
-        grp["max_price"] = grp["max_price"].fillna(method="ffill", limit=max_ffill_days)
+        grp["modal_price"] = grp["modal_price"].ffill(limit=max_ffill_days)
+        grp["min_price"] = grp["min_price"].ffill(limit=max_ffill_days)
+        grp["max_price"] = grp["max_price"].ffill(limit=max_ffill_days)
 
         # Add trading day flag from calendar
         cal_sub = calendar_df[

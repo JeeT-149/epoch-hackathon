@@ -1,0 +1,28 @@
+{
+  "stage": "silver",
+  "output_path": "D:\\Machine Learning\\epoch-hackathon\\sell_smart\\data\\silver\\prices_daily.parquet",
+  "created_at": "2026-10-02T19:49:30.259986+00:00",
+  "row_count": 60565,
+  "columns": [
+    "date",
+    "state",
+    "district",
+    "mandi_id",
+    "market_raw",
+    "crop",
+    "commodity_raw",
+    "variety_raw",
+    "grade",
+    "min_price",
+    "max_price",
+    "modal_price",
+    "dq_flags",
+    "source",
+    "ingested_at"
+  ],
+  "config_hash": "",
+  "seed": 42,
+  "data_hash": "037db193a37f1235",
+  "min_date": "2024-08-15 00:00:00",
+  "max_date": "2025-08-14 00:00:00"
+}
