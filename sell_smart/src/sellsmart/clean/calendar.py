@@ -133,6 +133,8 @@ def build_gold_panel(
         grp.index.name = "date"
         grp["mandi_id"] = mandi_id
         grp["crop"] = crop
+        grp["is_synthetic"] = crop in ["onion", "tomato"]
+        grp["price_source"] = "synthetic" if crop in ["onion", "tomato"] else "real"
 
         # Forward-fill price, track days_since_obs
         grp["days_since_obs"] = grp["modal_price"].isna().cumsum()

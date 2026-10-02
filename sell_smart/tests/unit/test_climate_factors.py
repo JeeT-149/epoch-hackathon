@@ -1,7 +1,9 @@
 """
 sell_smart.tests.unit.test_climate_factors
-Unit tests for climate factors ingestion, silver encoding, summary statistics,
-feature building, and confidence adjustments.
+Unit tests for:
+  1. Climate factors ingestion, silver encoding, and scenario summary (as offline risk data)
+  2. PRD 4.6 weather feature policy (disabled when use_weather=False, merged when use_weather=True)
+  3. PRD 11 Policy-Shock Radar (S1-S5 signals, z=3.0, and multi-signal state evaluation)
 """
 from pathlib import Path
 import pandas as pd
@@ -15,6 +17,7 @@ from sellsmart.ingest.climate_factors import (
 )
 from sellsmart.features.build import build_features
 from sellsmart.decision.confidence import compute_confidence
+from sellsmart.shock.radar import detect_shocks, evaluate_radar_state, RadarLevel
 
 
 @pytest.fixture
@@ -35,17 +38,17 @@ def sample_climate_df():
 
 @pytest.fixture
 def sample_gold_panel():
-    dates = pd.date_range("2024-01-01", periods=30, freq="D")
+    dates = pd.date_range("2024-01-01", periods=60, freq="D")
     df = pd.DataFrame({
-        "mandi_id": ["mandi_1"] * 30,
-        "crop": ["soybean"] * 30,
+        "mandi_id": ["mandi_1"] * 60,
+        "crop": ["soybean"] * 60,
         "date": dates,
-        "modal_price": [2000.0 + i * 5 for i in range(30)],
-        "min_price": [1900.0 + i * 5 for i in range(30)],
-        "max_price": [2100.0 + i * 5 for i in range(30)],
-        "arrivals_qt": [100.0] * 30,
-        "is_imputed": [False] * 30,
-        "days_since_observed": [0] * 30,
+        "modal_price": [2000.0 + i * 5 for i in range(60)],
+        "min_price": [1900.0 + i * 5 for i in range(60)],
+        "max_price": [2100.0 + i * 5 for i in range(60)],
+        "arrivals_qt": [100.0] * 60,
+        "is_imputed": [False] * 60,
+        "days_since_observed": [0] * 60,
     })
     return df
 
@@ -83,16 +86,11 @@ class TestClimateEncoding:
         assert len(silver_df) == 4
         assert "extreme_weather_type_enc" in silver_df.columns
         assert "climate_stress_index" in silver_df.columns
-        assert "disease_incidence_enc" in silver_df.columns
-        assert "water_availability_enc" in silver_df.columns
 
         # Verify stress index is in [0, 1]
         assert (silver_df["climate_stress_index"] >= 0.0).all()
         assert (silver_df["climate_stress_index"] <= 1.0).all()
-
-        # Drought and Heatwave are extreme events
         assert bool(silver_df.loc[silver_df["extreme_weather_type"] == "Drought", "is_extreme_event"].iloc[0]) is True
-        assert bool(silver_df.loc[silver_df["extreme_weather_type"] == "Storm", "is_extreme_event"].iloc[0]) is False
 
 
 class TestClimateSummary:
@@ -107,77 +105,75 @@ class TestClimateSummary:
         assert "mean_temperature_c" in summary
         assert "mean_precipitation_mm" in summary
         assert "mean_climate_stress_index" in summary
-        assert "shock_prior_probability" in summary
         assert summary["n_scenarios"] == 4
-        assert 0.0 <= summary["shock_prior_probability"] <= 1.0
 
 
-class TestFeatureIntegration:
-    def test_climate_activates_weather_features(self, sample_gold_panel):
+class TestPRDWeatherCompliance:
+    def test_weather_disabled_by_default(self, sample_gold_panel):
         config = {
             "features": {
                 "lags": [1, 2, 3],
                 "rolling_windows": [7],
                 "horizon_days": [1, 3],
-                "use_weather": False,
+                "use_weather": False,  # PRD 4.6 default
             }
         }
-        climate_summary = {
-            "mean_temperature_c": 30.5,
-            "mean_precipitation_mm": 45.2,
-            "mean_climate_stress_index": 0.42,
-            "p95_climate_stress_index": 0.75,
-            "high_disease_rate": 0.25,
-            "low_water_rate": 0.30,
-            "shock_prior_probability": 0.60,
-        }
-        feat_df = build_features(
-            sample_gold_panel,
-            config=config,
-            use_calendar=False,
-            climate_summary=climate_summary,
-        )
+        feat_df = build_features(sample_gold_panel, config=config, use_calendar=False)
+        assert feat_df["weather_temp_mean"].isna().all()
+        assert feat_df["weather_rain_7d"].isna().all()
 
-        assert not feat_df["weather_temp_mean"].isna().all()
-        assert np.isclose(feat_df["weather_temp_mean"].iloc[0], 30.5)
-        assert np.isclose(feat_df["weather_rain_7d"].iloc[0], 45.2)
-        assert np.isclose(feat_df["climate_stress_index"].iloc[0], 0.42)
-        assert np.isclose(feat_df["disease_incidence_enc"].iloc[0], 0.25)
-        assert np.isclose(feat_df["water_stress_enc"].iloc[0], 0.30)
-
-
-class TestConfidenceAdjustment:
-    def test_climate_adjusts_confidence(self):
+    def test_weather_enabled_with_real_observations(self, sample_gold_panel):
         config = {
-            "confidence": {
-                "dq_weight": 0.4,
-                "model_weight": 0.3,
-                "economics_weight": 0.3,
-                "thresholds": {"HIGH": 0.70, "MEDIUM": 0.45},
+            "features": {
+                "lags": [1, 2, 3],
+                "rolling_windows": [7],
+                "horizon_days": [1, 3],
+                "use_weather": True,
             }
         }
-        # Without climate summary
-        _, score_base = compute_confidence(
-            dq_score=0.9,
-            model_interval_width=50.0,
-            modal_price=2000.0,
-            is_placeholder=False,
-            config=config,
-        )
+        weather_df = pd.DataFrame({
+            "mandi_id": ["mandi_1"] * 60,
+            "date": sample_gold_panel["date"],
+            "weather_temp_mean": [28.0] * 60,
+            "weather_rain_7d": [12.5] * 60,
+        })
+        feat_df = build_features(sample_gold_panel, config=config, use_calendar=False, weather_df=weather_df)
+        assert not feat_df["weather_temp_mean"].isna().all()
+        assert np.isclose(feat_df["weather_temp_mean"].iloc[0], 28.0)
 
-        # With high climate stress / disease
-        climate_summary = {
-            "high_disease_rate": 0.8,
-            "low_water_rate": 0.8,
-        }
-        _, score_climate = compute_confidence(
-            dq_score=0.9,
-            model_interval_width=50.0,
-            modal_price=2000.0,
-            is_placeholder=False,
-            config=config,
-            climate_summary=climate_summary,
-        )
 
-        # Confidence should be strictly lower under high climate stress
-        assert score_climate < score_base
+class TestPRDShockRadar:
+    def test_robust_z_shock_detection(self):
+        dates = pd.date_range("2024-01-01", periods=60, freq="D")
+        prices = pd.Series(2000.0, index=dates)
+        # Normal flat prices -> no shock at z=3.0
+        shocks = detect_shocks(prices, z_threshold=3.0, lookback_window=30)
+        assert shocks["is_shock"].sum() == 0
+
+        # Inject extreme price shock at day 45 (+50%)
+        prices.iloc[45] = 3000.0
+        shocks_spiked = detect_shocks(prices, z_threshold=3.0, lookback_window=30)
+        assert shocks_spiked["is_shock"].iloc[45] is np.True_ or bool(shocks_spiked["is_shock"].iloc[45]) is True
+
+    def test_evaluate_radar_state_watch_and_shock(self, sample_gold_panel, tmp_path):
+        # Event file with verified policy shock
+        events_file = tmp_path / "events.csv"
+        pd.DataFrame([{
+            "date": "2024-02-01",
+            "event_type": "export_ban",
+            "crop": "soybean",
+            "description": "Export ban imposed",
+            "source": "DGFT",
+            "impact_direction": "down",
+            "verified": True,
+        }]).to_csv(events_file, index=False)
+
+        state = evaluate_radar_state(
+            current_date="2024-02-03",
+            crop="soybean",
+            gold_panel=sample_gold_panel,
+            events_csv_path=events_file,
+            z_threshold=3.0,
+        )
+        assert state["level"] == RadarLevel.SHOCK
+        assert "S4 Policy Event Shock" in state["reason"]

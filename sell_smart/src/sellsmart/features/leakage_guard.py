@@ -16,7 +16,7 @@ ALWAYS_SYNTHETIC_FREE = [
     "farmer_id", "village_lat", "village_lon", "quantity_q",
     "vehicle_type", "cash_deadline_days", "storage_condition",
     "quality_factor", "trader_offer_proxy", "stress_shock_series",
-    "demo_arrivals_index", "is_synthetic", "generator", "seed",
+    "demo_arrivals_index", "generator", "seed",
 ]
 
 

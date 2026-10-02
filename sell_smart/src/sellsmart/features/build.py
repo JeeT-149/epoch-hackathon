@@ -45,7 +45,7 @@ def build_features(
     gold_df: pd.DataFrame,
     config: dict,
     use_calendar: bool | None = None,
-    climate_summary: dict | None = None,
+    weather_df: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """
     Build model feature panel from gold daily panel.
@@ -54,9 +54,9 @@ def build_features(
         gold_df: Gold panel with (mandi_id, crop, date, modal_price, ...).
         config: Full config dict.
         use_calendar: Override calendar feature flag; None = auto from config.
-        climate_summary: Optional dict from compute_climate_summary().
-                         When provided, activates weather and climate risk features.
-                         Broadcast uniformly since climate dataset has no date/mandi key.
+        weather_df: Optional DataFrame of observed Open-Meteo weather by (mandi_id, date)
+                    with columns [mandi_id, date, weather_temp_mean, weather_rain_7d].
+                    Used only if features.use_weather is True (PRD Section 4.6).
 
     Returns:
         DataFrame with features and targets.
@@ -71,6 +71,10 @@ def build_features(
 
     df = gold_df.copy()
     df["date"] = pd.to_datetime(df["date"])
+    if use_weather and weather_df is not None and not weather_df.empty:
+        w_df = weather_df.copy()
+        w_df["date"] = pd.to_datetime(w_df["date"])
+        df = df.merge(w_df, on=["mandi_id", "date"], how="left")
     df = df.sort_values(["mandi_id", "crop", "date"])
 
     # Determine history span
@@ -138,27 +142,13 @@ def build_features(
             grp["day_of_year"] = np.nan
             grp["weekday"]    = np.nan
 
-        # -- Weather features (from climate_summary if provided, else NaN) ------
-        if climate_summary:
-            # Activate dormant slots using dataset-derived regional averages.
-            # Note: These are dataset-level aggregates, NOT observation-specific.
-            # They add signal about the general climate risk environment.
-            grp["weather_temp_mean"] = float(climate_summary.get("mean_temperature_c", np.nan))
-            grp["weather_rain_7d"] = float(climate_summary.get("mean_precipitation_mm", np.nan))
-            # New climate risk features (broadcast from climate scenario dataset)
-            grp["climate_stress_index"] = float(climate_summary.get("mean_climate_stress_index", np.nan))
-            grp["climate_stress_p95"] = float(climate_summary.get("p95_climate_stress_index", np.nan))
-            grp["disease_incidence_enc"] = float(climate_summary.get("high_disease_rate", np.nan))
-            grp["water_stress_enc"] = float(climate_summary.get("low_water_rate", np.nan))
-            grp["shock_prior_prob"] = float(climate_summary.get("shock_prior_probability", np.nan))
+        # -- Weather features (PRD 4.6: observed values up to t only; behind use_weather) --
+        if use_weather and "weather_temp_mean" in grp.columns:
+            # Maintained from real observed weather
+            pass
         else:
-            grp["weather_temp_mean"] = np.nan   # disabled
-            grp["weather_rain_7d"] = np.nan     # disabled
-            grp["climate_stress_index"] = np.nan
-            grp["climate_stress_p95"] = np.nan
-            grp["disease_incidence_enc"] = np.nan
-            grp["water_stress_enc"] = np.nan
-            grp["shock_prior_prob"] = np.nan
+            grp["weather_temp_mean"] = np.nan   # disabled per PRD 4.6
+            grp["weather_rain_7d"] = np.nan     # disabled per PRD 4.6
 
         # -- Mandi identity (deterministic MD5 hash -- R10) --------------------
         grp["mandi_id_enc"] = _mandi_hash(mandi_id)
@@ -180,18 +170,14 @@ def build_features(
             "lag_", "roll_", "price_spread", "days_since_obs_feat",
             "activity_proxy", "month", "day_of_year", "weekday",
             "weather_", "mandi_id_enc", "arrivals_qt",
-            "climate_", "disease_incidence_enc", "water_stress_enc", "shock_prior_prob",
         ))
     ]
 
-    # Count non-NaN climate features to report activation status
-    climate_cols = [c for c in feature_cols if c.startswith(("climate_", "weather_", "disease_", "water_", "shock_"))]
-    climate_active = sum(1 for c in climate_cols if features_df[c].notna().any())
-
+    weather_active = features_df["weather_temp_mean"].notna().any() if "weather_temp_mean" in features_df else False
     logger.info(
         f"Features built: {len(features_df):,} rows, {len(feature_cols)} feature columns. "
         f"Calendar: {'ON' if enable_calendar else 'OFF'} "
         f"({'anecdotal - <2yr' if enable_calendar and history_years < 2.0 else 'ok'}). "
-        f"Climate features: {climate_active}/{len(climate_cols)} active."
+        f"Weather features: {'ACTIVE' if weather_active else 'DISABLED (PRD 4.6)'}."
     )
     return features_df

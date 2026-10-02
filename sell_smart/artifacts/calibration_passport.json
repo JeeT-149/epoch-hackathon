@@ -3,37 +3,43 @@
     "crop": "soybean",
     "mandi_id": "",
     "horizon_days": 1,
-    "n_test_samples": 2684,
-    "generated_at": "2026-10-02T21:09:39.460895+00:00",
+    "n_test_samples": 807,
+    "generated_at": "2026-10-02T23:23:36.762254+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.05947955390334572,
+        "calibration_error": 0.00947955390334572
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.06594634873323398,
-        "calibration_error": 0.03405365126676603
+        "empirical_fraction_below": 0.09417596034696406,
+        "calibration_error": 0.005824039653035948
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.18517138599105812,
-        "calibration_error": 0.06482861400894188
+        "empirical_fraction_below": 0.19083023543990088,
+        "calibration_error": 0.05916976456009912
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.4180327868852459,
-        "calibration_error": 0.08196721311475408
+        "empirical_fraction_below": 0.43246592317224286,
+        "calibration_error": 0.06753407682775714
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.7060357675111774,
-        "calibration_error": 0.04396423248882264
+        "empirical_fraction_below": 0.724907063197026,
+        "calibration_error": 0.025092936802973975
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.8438897168405365,
-        "calibration_error": 0.056110283159463537
+        "empirical_fraction_below": 0.8674101610904585,
+        "calibration_error": 0.03258983890954148
       },
-      "conformal": {
-        "empirical_coverage": 0.9072280178837556,
-        "mean_interval_width": 546.4375119745018
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.929368029739777,
+        "calibration_error": 0.02063197026022301
       }
     }
   },
@@ -41,75 +47,43 @@
     "crop": "soybean",
     "mandi_id": "",
     "horizon_days": 3,
-    "n_test_samples": 2672,
-    "generated_at": "2026-10-02T21:09:40.711971+00:00",
+    "n_test_samples": 777,
+    "generated_at": "2026-10-02T23:24:20.561056+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.05405405405405406,
+        "calibration_error": 0.004054054054054054
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.0718562874251497,
-        "calibration_error": 0.028143712574850308
+        "empirical_fraction_below": 0.09523809523809523,
+        "calibration_error": 0.004761904761904773
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.19760479041916168,
-        "calibration_error": 0.05239520958083832
+        "empirical_fraction_below": 0.17117117117117117,
+        "calibration_error": 0.07882882882882883
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.4651946107784431,
-        "calibration_error": 0.034805389221556904
+        "empirical_fraction_below": 0.4118404118404118,
+        "calibration_error": 0.08815958815958819
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.7069610778443114,
-        "calibration_error": 0.04303892215568861
+        "empirical_fraction_below": 0.6332046332046332,
+        "calibration_error": 0.11679536679536684
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.8473053892215568,
-        "calibration_error": 0.052694610778443174
+        "empirical_fraction_below": 0.8468468468468469,
+        "calibration_error": 0.053153153153153165
       },
-      "conformal": {
-        "empirical_coverage": 0.9094311377245509,
-        "mean_interval_width": 514.8189150712533
-      }
-    }
-  },
-  {
-    "crop": "soybean",
-    "mandi_id": "",
-    "horizon_days": 5,
-    "n_test_samples": 2659,
-    "generated_at": "2026-10-02T21:09:41.901702+00:00",
-    "calibration": {
-      "q10": {
-        "target_coverage": 0.1,
-        "empirical_fraction_below": 0.06468597216998871,
-        "calibration_error": 0.035314027830011294
-      },
-      "q25": {
-        "target_coverage": 0.25,
-        "empirical_fraction_below": 0.20308386611508086,
-        "calibration_error": 0.04691613388491914
-      },
-      "q50": {
-        "target_coverage": 0.5,
-        "empirical_fraction_below": 0.4655885671305002,
-        "calibration_error": 0.034411432869499825
-      },
-      "q75": {
-        "target_coverage": 0.75,
-        "empirical_fraction_below": 0.6938698758931929,
-        "calibration_error": 0.05613012410680707
-      },
-      "q90": {
-        "target_coverage": 0.9,
-        "empirical_fraction_below": 0.8375329071079353,
-        "calibration_error": 0.06246709289206476
-      },
-      "conformal": {
-        "empirical_coverage": 0.9093644227153065,
-        "mean_interval_width": 515.8752105405696
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.9163449163449163,
+        "calibration_error": 0.03365508365508363
       }
     }
   },
@@ -117,37 +91,43 @@
     "crop": "soybean",
     "mandi_id": "",
     "horizon_days": 7,
-    "n_test_samples": 2646,
-    "generated_at": "2026-10-02T21:09:43.263454+00:00",
+    "n_test_samples": 717,
+    "generated_at": "2026-10-02T23:25:08.679989+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.0502092050209205,
+        "calibration_error": 0.00020920502092049847
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.07218442932728647,
-        "calibration_error": 0.027815570672713535
+        "empirical_fraction_below": 0.07112970711297072,
+        "calibration_error": 0.02887029288702929
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.20521541950113378,
-        "calibration_error": 0.04478458049886622
+        "empirical_fraction_below": 0.1603905160390516,
+        "calibration_error": 0.0896094839609484
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.4618291761148904,
-        "calibration_error": 0.03817082388510962
+        "empirical_fraction_below": 0.3263598326359833,
+        "calibration_error": 0.17364016736401672
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.6893424036281179,
-        "calibration_error": 0.06065759637188206
+        "empirical_fraction_below": 0.5509065550906556,
+        "calibration_error": 0.19909344490934444
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.8291761148904006,
-        "calibration_error": 0.07082388510959947
+        "empirical_fraction_below": 0.7740585774058577,
+        "calibration_error": 0.12594142259414232
       },
-      "conformal": {
-        "empirical_coverage": 0.9089191232048375,
-        "mean_interval_width": 521.7265052043621
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.8967921896792189,
+        "calibration_error": 0.053207810320781035
       }
     }
   },
@@ -155,37 +135,43 @@
     "crop": "soybean",
     "mandi_id": "",
     "horizon_days": 10,
-    "n_test_samples": 2625,
-    "generated_at": "2026-10-02T21:09:44.803132+00:00",
+    "n_test_samples": 672,
+    "generated_at": "2026-10-02T23:25:44.967532+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.02976190476190476,
+        "calibration_error": 0.020238095238095243
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.06247619047619048,
-        "calibration_error": 0.03752380952380953
+        "empirical_fraction_below": 0.06994047619047619,
+        "calibration_error": 0.030059523809523814
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.19923809523809524,
-        "calibration_error": 0.05076190476190476
+        "empirical_fraction_below": 0.12797619047619047,
+        "calibration_error": 0.12202380952380953
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.45676190476190476,
-        "calibration_error": 0.04323809523809524
+        "empirical_fraction_below": 0.3005952380952381,
+        "calibration_error": 0.19940476190476192
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.6819047619047619,
-        "calibration_error": 0.0680952380952381
+        "empirical_fraction_below": 0.5089285714285714,
+        "calibration_error": 0.2410714285714286
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.8278095238095238,
-        "calibration_error": 0.07219047619047625
+        "empirical_fraction_below": 0.7261904761904762,
+        "calibration_error": 0.17380952380952386
       },
-      "conformal": {
-        "empirical_coverage": 0.9108571428571428,
-        "mean_interval_width": 514.3502384849598
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.8184523809523809,
+        "calibration_error": 0.13154761904761902
       }
     }
   },
@@ -193,37 +179,87 @@
     "crop": "soybean",
     "mandi_id": "",
     "horizon_days": 14,
-    "n_test_samples": 2596,
-    "generated_at": "2026-10-02T21:09:46.449453+00:00",
+    "n_test_samples": 612,
+    "generated_at": "2026-10-02T23:26:14.133620+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.021241830065359478,
+        "calibration_error": 0.028758169934640525
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.07704160246533127,
-        "calibration_error": 0.02295839753466873
+        "empirical_fraction_below": 0.04738562091503268,
+        "calibration_error": 0.05261437908496733
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.17103235747303544,
-        "calibration_error": 0.07896764252696456
+        "empirical_fraction_below": 0.11437908496732026,
+        "calibration_error": 0.13562091503267976
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.44838212634822805,
-        "calibration_error": 0.05161787365177195
+        "empirical_fraction_below": 0.21895424836601307,
+        "calibration_error": 0.28104575163398693
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.6868258859784283,
-        "calibration_error": 0.06317411402157169
+        "empirical_fraction_below": 0.40032679738562094,
+        "calibration_error": 0.34967320261437906
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.8409090909090909,
-        "calibration_error": 0.05909090909090908
+        "empirical_fraction_below": 0.5996732026143791,
+        "calibration_error": 0.30032679738562096
       },
-      "conformal": {
-        "empirical_coverage": 0.9063944530046225,
-        "mean_interval_width": 546.1788976592105
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.738562091503268,
+        "calibration_error": 0.21143790849673194
+      }
+    }
+  },
+  {
+    "crop": "soybean",
+    "mandi_id": "",
+    "horizon_days": 21,
+    "n_test_samples": 507,
+    "generated_at": "2026-10-02T23:26:47.516366+00:00",
+    "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.011834319526627219,
+        "calibration_error": 0.038165680473372786
+      },
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.03550295857988166,
+        "calibration_error": 0.06449704142011835
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.08481262327416174,
+        "calibration_error": 0.16518737672583828
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.15779092702169625,
+        "calibration_error": 0.3422090729783037
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.3076923076923077,
+        "calibration_error": 0.4423076923076923
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.4714003944773176,
+        "calibration_error": 0.42859960552268245
+      },
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.5996055226824457,
+        "calibration_error": 0.35039447731755424
       }
     }
   },
@@ -231,37 +267,43 @@
     "crop": "onion",
     "mandi_id": "",
     "horizon_days": 1,
-    "n_test_samples": 910,
-    "generated_at": "2026-10-02T21:09:48.032370+00:00",
+    "n_test_samples": 269,
+    "generated_at": "2026-10-02T23:27:10.656444+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.026022304832713755,
+        "calibration_error": 0.023977695167286248
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.06043956043956044,
-        "calibration_error": 0.039560439560439566
+        "empirical_fraction_below": 0.055762081784386616,
+        "calibration_error": 0.04423791821561339
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.17582417582417584,
-        "calibration_error": 0.07417582417582416
+        "empirical_fraction_below": 0.23048327137546468,
+        "calibration_error": 0.019516728624535323
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.33076923076923076,
-        "calibration_error": 0.16923076923076924
+        "empirical_fraction_below": 0.5613382899628253,
+        "calibration_error": 0.06133828996282531
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.5362637362637362,
-        "calibration_error": 0.21373626373626375
+        "empirical_fraction_below": 0.8401486988847584,
+        "calibration_error": 0.0901486988847584
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.7670329670329671,
-        "calibration_error": 0.13296703296703294
+        "empirical_fraction_below": 0.9516728624535316,
+        "calibration_error": 0.05167286245353153
       },
-      "conformal": {
-        "empirical_coverage": 0.7967032967032966,
-        "mean_interval_width": 312.5190785806026
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.9776951672862454,
+        "calibration_error": 0.027695167286245437
       }
     }
   },
@@ -269,75 +311,43 @@
     "crop": "onion",
     "mandi_id": "",
     "horizon_days": 3,
-    "n_test_samples": 905,
-    "generated_at": "2026-10-02T21:09:49.494286+00:00",
+    "n_test_samples": 259,
+    "generated_at": "2026-10-02T23:27:34.278900+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.02702702702702703,
+        "calibration_error": 0.022972972972972974
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.045303867403314914,
-        "calibration_error": 0.05469613259668509
+        "empirical_fraction_below": 0.06177606177606178,
+        "calibration_error": 0.03822393822393823
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.17900552486187846,
-        "calibration_error": 0.07099447513812154
+        "empirical_fraction_below": 0.3552123552123552,
+        "calibration_error": 0.10521235521235522
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.33259668508287293,
-        "calibration_error": 0.16740331491712707
+        "empirical_fraction_below": 0.6061776061776062,
+        "calibration_error": 0.10617760617760619
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.5281767955801105,
-        "calibration_error": 0.22182320441988945
+        "empirical_fraction_below": 0.888030888030888,
+        "calibration_error": 0.13803088803088803
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.7381215469613259,
-        "calibration_error": 0.1618784530386741
+        "empirical_fraction_below": 0.9459459459459459,
+        "calibration_error": 0.04594594594594592
       },
-      "conformal": {
-        "empirical_coverage": 0.8154696132596685,
-        "mean_interval_width": 583.1672078210405
-      }
-    }
-  },
-  {
-    "crop": "onion",
-    "mandi_id": "",
-    "horizon_days": 5,
-    "n_test_samples": 900,
-    "generated_at": "2026-10-02T21:09:51.470613+00:00",
-    "calibration": {
-      "q10": {
-        "target_coverage": 0.1,
-        "empirical_fraction_below": 0.07222222222222222,
-        "calibration_error": 0.02777777777777779
-      },
-      "q25": {
-        "target_coverage": 0.25,
-        "empirical_fraction_below": 0.18555555555555556,
-        "calibration_error": 0.06444444444444444
-      },
-      "q50": {
-        "target_coverage": 0.5,
-        "empirical_fraction_below": 0.3188888888888889,
-        "calibration_error": 0.1811111111111111
-      },
-      "q75": {
-        "target_coverage": 0.75,
-        "empirical_fraction_below": 0.48,
-        "calibration_error": 0.27
-      },
-      "q90": {
-        "target_coverage": 0.9,
-        "empirical_fraction_below": 0.7144444444444444,
-        "calibration_error": 0.18555555555555558
-      },
-      "conformal": {
-        "empirical_coverage": 0.8177777777777778,
-        "mean_interval_width": 595.7991314874147
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.9691119691119691,
+        "calibration_error": 0.019111969111969107
       }
     }
   },
@@ -345,37 +355,43 @@
     "crop": "onion",
     "mandi_id": "",
     "horizon_days": 7,
-    "n_test_samples": 895,
-    "generated_at": "2026-10-02T21:09:52.935465+00:00",
+    "n_test_samples": 239,
+    "generated_at": "2026-10-02T23:27:55.169664+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.09205020920502092,
+        "calibration_error": 0.04205020920502092
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.07932960893854749,
-        "calibration_error": 0.02067039106145252
+        "empirical_fraction_below": 0.1506276150627615,
+        "calibration_error": 0.050627615062761505
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.17430167597765364,
-        "calibration_error": 0.07569832402234636
+        "empirical_fraction_below": 0.3054393305439331,
+        "calibration_error": 0.055439330543933074
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.3486033519553073,
-        "calibration_error": 0.15139664804469272
+        "empirical_fraction_below": 0.6527196652719666,
+        "calibration_error": 0.15271966527196656
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.5553072625698324,
-        "calibration_error": 0.19469273743016757
+        "empirical_fraction_below": 0.8744769874476988,
+        "calibration_error": 0.12447698744769875
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.7061452513966481,
-        "calibration_error": 0.19385474860335195
+        "empirical_fraction_below": 0.9707112970711297,
+        "calibration_error": 0.07071129707112966
       },
-      "conformal": {
-        "empirical_coverage": 0.8223463687150838,
-        "mean_interval_width": 669.0710357236912
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.9874476987447699,
+        "calibration_error": 0.03744769874476994
       }
     }
   },
@@ -383,37 +399,43 @@
     "crop": "onion",
     "mandi_id": "",
     "horizon_days": 10,
-    "n_test_samples": 888,
-    "generated_at": "2026-10-02T21:09:54.251011+00:00",
+    "n_test_samples": 224,
+    "generated_at": "2026-10-02T23:28:11.528004+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.10267857142857142,
+        "calibration_error": 0.05267857142857142
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.08333333333333333,
-        "calibration_error": 0.016666666666666677
+        "empirical_fraction_below": 0.12053571428571429,
+        "calibration_error": 0.020535714285714282
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.1858108108108108,
-        "calibration_error": 0.0641891891891892
+        "empirical_fraction_below": 0.33482142857142855,
+        "calibration_error": 0.08482142857142855
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.3096846846846847,
-        "calibration_error": 0.19031531531531531
+        "empirical_fraction_below": 0.6517857142857143,
+        "calibration_error": 0.1517857142857143
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.5382882882882883,
-        "calibration_error": 0.21171171171171166
+        "empirical_fraction_below": 0.8660714285714286,
+        "calibration_error": 0.1160714285714286
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.6970720720720721,
-        "calibration_error": 0.2029279279279279
+        "empirical_fraction_below": 0.9598214285714286,
+        "calibration_error": 0.05982142857142858
       },
-      "conformal": {
-        "empirical_coverage": 0.8164414414414415,
-        "mean_interval_width": 614.6736012022302
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.9776785714285714,
+        "calibration_error": 0.02767857142857144
       }
     }
   },
@@ -421,37 +443,87 @@
     "crop": "onion",
     "mandi_id": "",
     "horizon_days": 14,
-    "n_test_samples": 878,
-    "generated_at": "2026-10-02T21:09:55.408290+00:00",
+    "n_test_samples": 204,
+    "generated_at": "2026-10-02T23:28:31.357828+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.10294117647058823,
+        "calibration_error": 0.05294117647058823
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.10250569476082004,
-        "calibration_error": 0.0025056947608200347
+        "empirical_fraction_below": 0.11764705882352941,
+        "calibration_error": 0.017647058823529405
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.1845102505694761,
-        "calibration_error": 0.06548974943052391
+        "empirical_fraction_below": 0.35294117647058826,
+        "calibration_error": 0.10294117647058826
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.34965831435079725,
-        "calibration_error": 0.15034168564920275
+        "empirical_fraction_below": 0.6225490196078431,
+        "calibration_error": 0.12254901960784315
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.5011389521640092,
-        "calibration_error": 0.24886104783599083
+        "empirical_fraction_below": 0.8627450980392157,
+        "calibration_error": 0.11274509803921573
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.6822323462414579,
-        "calibration_error": 0.21776765375854212
+        "empirical_fraction_below": 0.9509803921568627,
+        "calibration_error": 0.050980392156862675
       },
-      "conformal": {
-        "empirical_coverage": 0.8223234624145785,
-        "mean_interval_width": 479.88453689982543
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.9852941176470589,
+        "calibration_error": 0.03529411764705892
+      }
+    }
+  },
+  {
+    "crop": "onion",
+    "mandi_id": "",
+    "horizon_days": 21,
+    "n_test_samples": 169,
+    "generated_at": "2026-10-02T23:28:55.606666+00:00",
+    "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.14201183431952663,
+        "calibration_error": 0.09201183431952663
+      },
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.21301775147928995,
+        "calibration_error": 0.11301775147928994
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.23668639053254437,
+        "calibration_error": 0.013313609467455634
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.7100591715976331,
+        "calibration_error": 0.2100591715976331
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.8816568047337278,
+        "calibration_error": 0.13165680473372776
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 0.9822485207100592,
+        "calibration_error": 0.08224852071005917
+      },
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 1.0,
+        "calibration_error": 0.050000000000000044
       }
     }
   },
@@ -459,37 +531,43 @@
     "crop": "tomato",
     "mandi_id": "",
     "horizon_days": 1,
-    "n_test_samples": 728,
-    "generated_at": "2026-10-02T21:09:56.241470+00:00",
+    "n_test_samples": 215,
+    "generated_at": "2026-10-02T23:29:18.119684+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.04186046511627907,
+        "calibration_error": 0.008139534883720934
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.10851648351648352,
-        "calibration_error": 0.008516483516483514
+        "empirical_fraction_below": 0.07441860465116279,
+        "calibration_error": 0.025581395348837216
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.2802197802197802,
-        "calibration_error": 0.030219780219780223
+        "empirical_fraction_below": 0.24186046511627907,
+        "calibration_error": 0.008139534883720934
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.41895604395604397,
-        "calibration_error": 0.08104395604395603
+        "empirical_fraction_below": 0.5395348837209303,
+        "calibration_error": 0.03953488372093028
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.614010989010989,
-        "calibration_error": 0.13598901098901095
+        "empirical_fraction_below": 0.8232558139534883,
+        "calibration_error": 0.07325581395348835
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.7843406593406593,
-        "calibration_error": 0.11565934065934069
+        "empirical_fraction_below": 0.9720930232558139,
+        "calibration_error": 0.0720930232558139
       },
-      "conformal": {
-        "empirical_coverage": 0.9807692307692307,
-        "mean_interval_width": 574.6438871557943
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 0.9906976744186047,
+        "calibration_error": 0.04069767441860472
       }
     }
   },
@@ -497,75 +575,43 @@
     "crop": "tomato",
     "mandi_id": "",
     "horizon_days": 3,
-    "n_test_samples": 724,
-    "generated_at": "2026-10-02T21:09:57.190990+00:00",
+    "n_test_samples": 207,
+    "generated_at": "2026-10-02T23:29:32.646743+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.014492753623188406,
+        "calibration_error": 0.035507246376811595
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.1132596685082873,
-        "calibration_error": 0.01325966850828729
+        "empirical_fraction_below": 0.06280193236714976,
+        "calibration_error": 0.037198067632850246
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.23342541436464087,
-        "calibration_error": 0.01657458563535913
+        "empirical_fraction_below": 0.2898550724637681,
+        "calibration_error": 0.039855072463768126
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.4116022099447514,
-        "calibration_error": 0.08839779005524862
+        "empirical_fraction_below": 0.6473429951690821,
+        "calibration_error": 0.1473429951690821
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.5870165745856354,
-        "calibration_error": 0.1629834254143646
+        "empirical_fraction_below": 0.9468599033816425,
+        "calibration_error": 0.1968599033816425
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.7790055248618785,
-        "calibration_error": 0.12099447513812156
+        "empirical_fraction_below": 0.9903381642512077,
+        "calibration_error": 0.09033816425120766
       },
-      "conformal": {
-        "empirical_coverage": 0.9792817679558011,
-        "mean_interval_width": 697.1974901539882
-      }
-    }
-  },
-  {
-    "crop": "tomato",
-    "mandi_id": "",
-    "horizon_days": 5,
-    "n_test_samples": 720,
-    "generated_at": "2026-10-02T21:09:58.128604+00:00",
-    "calibration": {
-      "q10": {
-        "target_coverage": 0.1,
-        "empirical_fraction_below": 0.11805555555555555,
-        "calibration_error": 0.018055555555555547
-      },
-      "q25": {
-        "target_coverage": 0.25,
-        "empirical_fraction_below": 0.23333333333333334,
-        "calibration_error": 0.016666666666666663
-      },
-      "q50": {
-        "target_coverage": 0.5,
-        "empirical_fraction_below": 0.42083333333333334,
-        "calibration_error": 0.07916666666666666
-      },
-      "q75": {
-        "target_coverage": 0.75,
-        "empirical_fraction_below": 0.6055555555555555,
-        "calibration_error": 0.1444444444444445
-      },
-      "q90": {
-        "target_coverage": 0.9,
-        "empirical_fraction_below": 0.7347222222222223,
-        "calibration_error": 0.16527777777777775
-      },
-      "conformal": {
-        "empirical_coverage": 0.9763888888888889,
-        "mean_interval_width": 751.9153217825113
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 1.0,
+        "calibration_error": 0.050000000000000044
       }
     }
   },
@@ -573,37 +619,43 @@
     "crop": "tomato",
     "mandi_id": "",
     "horizon_days": 7,
-    "n_test_samples": 716,
-    "generated_at": "2026-10-02T21:09:58.831302+00:00",
+    "n_test_samples": 191,
+    "generated_at": "2026-10-02T23:29:45.822356+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.06806282722513089,
+        "calibration_error": 0.01806282722513089
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.11173184357541899,
-        "calibration_error": 0.011731843575418982
+        "empirical_fraction_below": 0.14136125654450263,
+        "calibration_error": 0.04136125654450262
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.23324022346368714,
-        "calibration_error": 0.01675977653631286
+        "empirical_fraction_below": 0.3612565445026178,
+        "calibration_error": 0.1112565445026178
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.4106145251396648,
-        "calibration_error": 0.08938547486033521
+        "empirical_fraction_below": 0.6701570680628273,
+        "calibration_error": 0.17015706806282727
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.6061452513966481,
-        "calibration_error": 0.1438547486033519
+        "empirical_fraction_below": 0.9528795811518325,
+        "calibration_error": 0.20287958115183247
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.7597765363128491,
-        "calibration_error": 0.14022346368715088
+        "empirical_fraction_below": 0.9947643979057592,
+        "calibration_error": 0.09476439790575919
       },
-      "conformal": {
-        "empirical_coverage": 0.9818435754189944,
-        "mean_interval_width": 758.1134653225232
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 1.0,
+        "calibration_error": 0.050000000000000044
       }
     }
   },
@@ -611,37 +663,43 @@
     "crop": "tomato",
     "mandi_id": "",
     "horizon_days": 10,
-    "n_test_samples": 710,
-    "generated_at": "2026-10-02T21:09:59.726470+00:00",
+    "n_test_samples": 179,
+    "generated_at": "2026-10-02T23:30:03.045137+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.18994413407821228,
+        "calibration_error": 0.13994413407821227
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.10985915492957747,
-        "calibration_error": 0.009859154929577466
+        "empirical_fraction_below": 0.22905027932960895,
+        "calibration_error": 0.12905027932960894
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.23661971830985915,
-        "calibration_error": 0.013380281690140855
+        "empirical_fraction_below": 0.4860335195530726,
+        "calibration_error": 0.2360335195530726
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.4154929577464789,
-        "calibration_error": 0.08450704225352113
+        "empirical_fraction_below": 0.6871508379888268,
+        "calibration_error": 0.1871508379888268
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.604225352112676,
-        "calibration_error": 0.14577464788732397
+        "empirical_fraction_below": 0.9385474860335196,
+        "calibration_error": 0.18854748603351956
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.7619718309859155,
-        "calibration_error": 0.13802816901408455
+        "empirical_fraction_below": 1.0,
+        "calibration_error": 0.09999999999999998
       },
-      "conformal": {
-        "empirical_coverage": 0.9746478873239437,
-        "mean_interval_width": 816.9076475097685
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 1.0,
+        "calibration_error": 0.050000000000000044
       }
     }
   },
@@ -649,37 +707,87 @@
     "crop": "tomato",
     "mandi_id": "",
     "horizon_days": 14,
-    "n_test_samples": 702,
-    "generated_at": "2026-10-02T21:10:00.638636+00:00",
+    "n_test_samples": 163,
+    "generated_at": "2026-10-02T23:30:19.671797+00:00",
     "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.147239263803681,
+        "calibration_error": 0.09723926380368099
+      },
       "q10": {
         "target_coverage": 0.1,
-        "empirical_fraction_below": 0.1339031339031339,
-        "calibration_error": 0.0339031339031339
+        "empirical_fraction_below": 0.26380368098159507,
+        "calibration_error": 0.16380368098159506
       },
       "q25": {
         "target_coverage": 0.25,
-        "empirical_fraction_below": 0.2336182336182336,
-        "calibration_error": 0.01638176638176639
+        "empirical_fraction_below": 0.5030674846625767,
+        "calibration_error": 0.25306748466257667
       },
       "q50": {
         "target_coverage": 0.5,
-        "empirical_fraction_below": 0.4031339031339031,
-        "calibration_error": 0.09686609686609687
+        "empirical_fraction_below": 0.7055214723926381,
+        "calibration_error": 0.20552147239263807
       },
       "q75": {
         "target_coverage": 0.75,
-        "empirical_fraction_below": 0.6310541310541311,
-        "calibration_error": 0.1189458689458689
+        "empirical_fraction_below": 0.9325153374233128,
+        "calibration_error": 0.18251533742331283
       },
       "q90": {
         "target_coverage": 0.9,
-        "empirical_fraction_below": 0.7663817663817664,
-        "calibration_error": 0.13361823361823366
+        "empirical_fraction_below": 1.0,
+        "calibration_error": 0.09999999999999998
       },
-      "conformal": {
-        "empirical_coverage": 0.9786324786324786,
-        "mean_interval_width": 858.6650707713002
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 1.0,
+        "calibration_error": 0.050000000000000044
+      }
+    }
+  },
+  {
+    "crop": "tomato",
+    "mandi_id": "",
+    "horizon_days": 21,
+    "n_test_samples": 135,
+    "generated_at": "2026-10-02T23:30:36.530203+00:00",
+    "calibration": {
+      "q5": {
+        "target_coverage": 0.05,
+        "empirical_fraction_below": 0.3851851851851852,
+        "calibration_error": 0.3351851851851852
+      },
+      "q10": {
+        "target_coverage": 0.1,
+        "empirical_fraction_below": 0.4,
+        "calibration_error": 0.30000000000000004
+      },
+      "q25": {
+        "target_coverage": 0.25,
+        "empirical_fraction_below": 0.6296296296296297,
+        "calibration_error": 0.37962962962962965
+      },
+      "q50": {
+        "target_coverage": 0.5,
+        "empirical_fraction_below": 0.7703703703703704,
+        "calibration_error": 0.27037037037037037
+      },
+      "q75": {
+        "target_coverage": 0.75,
+        "empirical_fraction_below": 0.9777777777777777,
+        "calibration_error": 0.22777777777777775
+      },
+      "q90": {
+        "target_coverage": 0.9,
+        "empirical_fraction_below": 1.0,
+        "calibration_error": 0.09999999999999998
+      },
+      "q95": {
+        "target_coverage": 0.95,
+        "empirical_fraction_below": 1.0,
+        "calibration_error": 0.050000000000000044
       }
     }
   }

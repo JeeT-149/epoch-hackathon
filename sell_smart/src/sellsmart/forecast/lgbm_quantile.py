@@ -38,8 +38,6 @@ FEATURE_COLS_BASE = [
     "month", "day_of_year",
     "mandi_id_enc",
     "weather_temp_mean", "weather_rain_7d",
-    "climate_stress_index", "climate_stress_p95",
-    "disease_incidence_enc", "water_stress_enc", "shock_prior_prob",
 ]
 
 
@@ -85,8 +83,20 @@ class LGBMQuantileForecaster:
         split_val = int(n * (train_frac + val_frac))
 
         train = df.iloc[:split_train]
-        val = df.iloc[split_train:split_val]
-        test = df.iloc[split_val:]
+        
+        # Embargo between splits: at least max(H) days (default 21 days) per PRD 6.8
+        embargo_days = fc.get("embargo_days", 21)
+        train_end_date = train["date"].max()
+        val_start_date = train_end_date + pd.Timedelta(days=embargo_days)
+        val = df[(df["date"] >= val_start_date) & (df.index < split_val)]
+        if len(val) < 20:
+            val = df.iloc[split_train:split_val]
+
+        val_end_date = val["date"].max() if len(val) > 0 else train_end_date
+        test_start_date = val_end_date + pd.Timedelta(days=embargo_days)
+        test = df[df["date"] >= test_start_date]
+        if len(test) < 20:
+            test = df.iloc[split_val:]
 
         # R4: Log test access if final
         if final and log_path:
@@ -96,13 +106,21 @@ class LGBMQuantileForecaster:
         self.feature_cols = feature_cols
 
         lgb_cfg = fc.get("lgbm", {})
-        quantiles = fc.get("quantiles", [0.1, 0.25, 0.5, 0.75, 0.9])
+        quantiles = fc.get("quantiles", [0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95])
 
         for q in quantiles:
             X_train = train[feature_cols]
-            y_train = train[target_col]
-            X_val = val[feature_cols] if len(val) > 0 else X_train[:1]
-            y_val = val[target_col] if len(val) > 0 else y_train[:1]
+            # PRD 6.2: Target y = log(P[mandi, as_of + h] / P_ref) where P_ref is observed modal price
+            p_ref_train = np.maximum(train["modal_price"].values, 1.0)
+            y_train = np.log(np.maximum(train[target_col].values, 1.0) / p_ref_train)
+
+            if len(val) > 0:
+                X_val = val[feature_cols]
+                p_ref_val = np.maximum(val["modal_price"].values, 1.0)
+                y_val = np.log(np.maximum(val[target_col].values, 1.0) / p_ref_val)
+            else:
+                X_val = X_train[:1]
+                y_val = y_train[:1]
 
             train_data = lgb.Dataset(X_train, label=y_train)
             val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
@@ -129,7 +147,7 @@ class LGBMQuantileForecaster:
             self.models[(crop, horizon, q)] = model
 
         logger.info(
-            f"Fitted {len(quantiles)} quantile models for crop={crop}, horizon={horizon}d. "
+            f"Fitted {len(quantiles)} quantile models for crop={crop}, horizon={horizon}d (log-return target). "
             f"Train: {len(train)}, Val: {len(val)}, Test: {len(test)} rows."
         )
 
@@ -139,22 +157,49 @@ class LGBMQuantileForecaster:
         horizon: int,
         crop: str,
     ) -> pd.DataFrame:
-        """Return DataFrame with one column per quantile: pred_q{q}_h{h}d."""
+        """
+        Return DataFrame with price predictions per quantile: pred_q{q}_h{h}d.
+        Converts log-return predictions back to price via PRD 6.2: P_q = P_ref * exp(y_q).
+        Enforces quantile monotonicity (PRD 6.4).
+        """
         fc = self.config.get("forecast", {})
-        quantiles = fc.get("quantiles", [0.1, 0.25, 0.5, 0.75, 0.9])
-        feature_cols = self._get_feature_cols(features_df)
+        quantiles = sorted(fc.get("quantiles", [0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95]))
+        feature_cols = self.feature_cols if self.feature_cols else self._get_feature_cols(features_df)
 
         df = features_df[features_df["crop"] == crop].copy()
         result = df[["date", "mandi_id", "crop"]].copy()
 
+        # Ensure all trained feature cols exist in df
+        for col in feature_cols:
+            if col not in df.columns:
+                df[col] = np.nan
+
+        # Reference price for conversion: modal_price (or lag_1d fallback)
+        p_ref = df["modal_price"].values if "modal_price" in df.columns else df["lag_1d"].values
+        p_ref = np.where(np.isnan(p_ref) | (p_ref <= 0), 1000.0, p_ref)
+
+        q_preds = []
         for q in quantiles:
             key = (crop, horizon, q)
             if key not in self.models:
-                result[f"pred_q{int(q*100)}_h{horizon}d"] = np.nan
-                continue
-            model = self.models[key]
-            X = df[feature_cols]
-            result[f"pred_q{int(q*100)}_h{horizon}d"] = model.predict(X)
+                price_preds = np.full(len(df), np.nan)
+            else:
+                model = self.models[key]
+                X = df[feature_cols]
+                log_ret_preds = model.predict(X)
+                # PRD 6.2: Convert log return back to price: P_q = P_ref * exp(y_q)
+                price_preds = p_ref * np.exp(log_ret_preds)
+            q_preds.append(price_preds)
+
+        # Monotonicity enforcement across quantiles (PRD 6.4)
+        if q_preds and not np.isnan(q_preds[0]).all():
+            arr = np.array(q_preds)  # shape: (n_quantiles, n_samples)
+            arr_sorted = np.sort(arr, axis=0)
+            for idx, q in enumerate(quantiles):
+                result[f"pred_q{int(q*100):02d}_h{horizon}d"] = arr_sorted[idx]
+        else:
+            for q in quantiles:
+                result[f"pred_q{int(q*100):02d}_h{horizon}d"] = np.nan
 
         return result
 

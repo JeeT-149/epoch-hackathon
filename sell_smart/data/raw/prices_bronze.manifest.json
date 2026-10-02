@@ -1,7 +1,7 @@
 {
   "stage": "raw",
   "output_path": "C:\\Users\\Gauri\\epoch-hackathon\\sell_smart\\data\\raw\\prices_bronze.parquet",
-  "created_at": "2026-10-02T21:09:11.623426+00:00",
+  "created_at": "2026-10-02T23:22:18.398818+00:00",
   "row_count": 60565,
   "columns": [
     "sl_no",
@@ -20,5 +20,5 @@
   ],
   "config_hash": "",
   "seed": 42,
-  "data_hash": "8f736cacc5c3668a"
+  "data_hash": "79207aca1cd0bb50"
 }

@@ -91,3 +91,15 @@ def load_commodity_map(config_dir: Path | str | None = None) -> dict:
         config_dir = Path(config_dir)
     with open(config_dir / "commodity_map.yaml") as f:
         return yaml.safe_load(f)["crops"]
+
+
+def load_mandis_config(config_dir: Path | str | None = None) -> dict:
+    if config_dir is None:
+        config_dir = _ROOT / "config"
+    else:
+        config_dir = Path(config_dir)
+    mandis_path = config_dir / "mandis.yaml"
+    if mandis_path.exists():
+        with open(mandis_path) as f:
+            return yaml.safe_load(f) or {}
+    return {"mandis": []}

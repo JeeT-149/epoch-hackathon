@@ -50,11 +50,11 @@ features:
   use_weather: false          # disabled until Open-Meteo verified
   lags: [1, 2, 3, 5, 7, 14]
   rolling_windows: [7, 14, 21]
-  horizon_days: [1, 3, 5, 7, 10, 14]   # forecast horizons
+  horizon_days: [1, 3, 7, 10, 14, 21]   # PRD 6.1: H = {1, 3, 7, 10, 14, 21}
 
 # ── Forecasting ───────────────────────────────────────────────────────────────
 forecast:
-  quantiles: [0.1, 0.25, 0.5, 0.75, 0.9]
+  quantiles: [0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95]  # PRD 6.4: 7 quantiles
   lgbm:
     num_leaves: 63
     learning_rate: 0.05
@@ -65,8 +65,10 @@ forecast:
   conformal:
     alpha: 0.1               # target coverage = 1 - alpha = 90%
     min_calibration_size: 50
+    coverage_tolerance: 0.07 # PRD 14 pass rule: |cov_80 - 0.80| <= 0.07
   train_fraction: 0.70        # of non-test data
   val_fraction: 0.15
+  embargo_days: 21            # PRD: at least max(H) days between val and test
   test_fraction: 0.15         # touched once with --final flag
 
 # ── Backtest ─────────────────────────────────────────────────────────────────

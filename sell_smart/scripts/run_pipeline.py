@@ -41,18 +41,21 @@ from sellsmart.clean.calendar import infer_trading_calendar, build_gold_panel
 from sellsmart.features.build import build_features
 from sellsmart.features.leakage_guard import assert_no_leakage
 from sellsmart.forecast.lgbm_quantile import LGBMQuantileForecaster
-from sellsmart.forecast.conformal import ConformalPredictor
-from sellsmart.forecast.baselines import NaiveForecaster, RollingMeanForecaster
+from sellsmart.forecast.conformal import CQRCalibrator, ConformalPredictor
+from sellsmart.forecast.gating import evaluate_forecast_gate, save_forecast_gates, save_metrics_markdown_table
+from sellsmart.forecast.baselines import NaiveForecaster, RollingMeanForecaster, EmpiricalReturnForecaster
 from sellsmart.calibration.passport import compute_calibration_passport, save_passport
 from sellsmart.economics.netreturn import compute_net_return
+from sellsmart.economics.assumptions import build_assumptions_register
 from sellsmart.decision.options import generate_options
 from sellsmart.decision.engine import decide
 from sellsmart.decision.confidence import compute_confidence
-from sellsmart.shock.radar import detect_shocks
+from sellsmart.shock.radar import detect_shocks, evaluate_radar_state, RadarLevel
 from sellsmart.regret.receipt import compute_regret
 from sellsmart.trigger.compute import compute_trigger_signals
 from sellsmart.trigger.state import TriggerState, TriggerStateRecord
 from sellsmart.backtest.scenarios import build_scenarios
+from sellsmart.external.weather import build_weather_panel
 from sellsmart.ingest.climate_factors import (
     ClimateFactorsIngestor, encode_climate_silver, compute_climate_summary
 )
@@ -203,6 +206,14 @@ def main():
     )
     selected_mandi_ids = selected_mandis_df["mandi_id"].unique().tolist()
     print(f"   Selected {len(selected_mandi_ids)} mandis across crops: {selected_mandi_ids}")
+    
+    # Mandi count verification per crop (PRD Section 4.4 Risk Gate)
+    mandi_counts = selected_mandis_df["crop"].value_counts().to_dict()
+    print(f"   Mandi count distribution by crop: {mandi_counts}")
+    low_mandi_crops = {c: count for c, count in mandi_counts.items() if count < 6}
+    if low_mandi_crops:
+        print(f"   [RISK GATE TRIGGERED] Crops falling below PRD Section 4.4 threshold (< 6 mandis): {low_mandi_crops}")
+        print("   -> Spatial-only switching options are constrained. Stop-and-decide gate active for these commodities.")
 
     print("-> Inferring trading calendars from historical activity...")
     calendar_df = infer_trading_calendar(df_silver_flagged, open_threshold=config_dict.get("calendar", {}).get("open_threshold", 0.5))
@@ -229,7 +240,19 @@ def main():
     print(f"   Gold panel: {len(gold_panel):,} rows across {gold_panel['mandi_id'].nunique()} mandis.")
 
     print("-> Engineering past-only lag features, rolling windows, and price spreads...")
-    features_df = build_features(gold_panel, config_dict, use_calendar=True, climate_summary=climate_summary)
+    # PRD Section 4.6: Weather features behind use_weather flag (observed values only)
+    weather_df = None
+    if config_dict.get("features", {}).get("use_weather", False):
+        print("   features.use_weather is ENABLED: fetching observed Open-Meteo weather at mandi coordinates...")
+        start_date_str = str(gold_panel["date"].min())
+        end_date_str = str(gold_panel["date"].max())
+        weather_df = build_weather_panel(
+            mandis_list=mandis_meta,
+            start_date=start_date_str,
+            end_date=end_date_str,
+            cache_dir=RAW_DIR / "weather_cache",
+        )
+    features_df = build_features(gold_panel, config_dict, use_calendar=True, weather_df=weather_df)
     
     # Strictly enforce zero future leakage
     assert_no_leakage(features_df)
@@ -238,74 +261,210 @@ def main():
     print(f"[OK] Stage 4 Complete: Leakage guard passed. Wrote features to {features_path}")
 
     # ──────────────────────────────────────────────────────────────────────────
-    # STAGE 5: MODEL TRAINING & CALIBRATION PASSPORT
+    # STAGE 5: MODEL TRAINING, CQR CALIBRATION & FORECAST GATING
     # ──────────────────────────────────────────────────────────────────────────
-    print_header("Model Training & Calibration Passport", 5)
-    horizons = config_dict.get("features", {}).get("horizon_days", [1, 3, 5, 7, 14])
+    print_header("Model Training, CQR Calibration & Forecast Gating", 5)
+    horizons = config_dict.get("features", {}).get("horizon_days", [1, 3, 7, 10, 14, 21])
+    quantiles = config_dict.get("forecast", {}).get("quantiles", [0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95])
     forecaster = LGBMQuantileForecaster(config_dict, seed=42)
     
     models_trained = 0
     all_passports = []
+    all_gates = []
     
     for crop in target_crops:
-        crop_data = features_df[features_df["crop"] == crop]
+        crop_data = features_df[features_df["crop"] == crop].sort_values("date").reset_index(drop=True)
         if len(crop_data) == 0:
             continue
-        print(f"\n-> Training models for Crop: {crop.upper()} ({len(crop_data):,} rows)")
+        print(f"\n-> Training models for Crop: {crop.upper()} ({len(crop_data):,} rows across {len(horizons)} horizons x {len(quantiles)} quantiles)")
         
-        # Baselines
+        refit_days = config_dict.get("forecast", {}).get("refit_days", 14)
+        calib_days = config_dict.get("forecast", {}).get("conformal", {}).get("calib_days", 45)
+        data_lag_days = config_dict.get("forecast", {}).get("data_lag_days", 1)
+
+        # Baseline forecasters
         naive_model = NaiveForecaster()
         rolling_model = RollingMeanForecaster(window=7)
-        
+        b3_model = EmpiricalReturnForecaster(quantiles=quantiles)
+
+        # Determine time-ordered 70 / 15 / 15 split (PRD Section 6.8)
+        n_crop = len(crop_data)
+        split_train = int(n_crop * 0.70)
+        split_val = int(n_crop * 0.85)
+
+        train_data = crop_data.iloc[:split_train].copy()
+        val_data = crop_data.iloc[split_train:split_val].copy()
+        test_data = crop_data.iloc[split_val:].copy()
+
+        val_start = val_data["date"].min()
+        val_end = val_data["date"].max()
+        refit_dates = pd.date_range(val_start, val_end, freq=f"{refit_days}D")
+
         for h in horizons:
             target_col = f"target_{h}d"
             if target_col not in crop_data.columns:
                 continue
-            valid_rows = crop_data.dropna(subset=[target_col])
-            if len(valid_rows) < 30:
+
+            # ──────────────────────────────────────────────────────────────────
+            # 1. EVALUATE GATES ON SERVING CONFIGURATION:
+            #    Rolling refit every 14 days with trailing calibration (PRD §6.5)
+            # ──────────────────────────────────────────────────────────────────
+            val_chunks = []
+            for r in refit_dates:
+                chunk_end = min(r + pd.Timedelta(days=refit_days), val_end + pd.Timedelta(days=1))
+                # Purge leakage: only rows whose target outcome was known before r - data_lag_days
+                eligible_mask = crop_data["date"] + pd.Timedelta(days=h) <= r - pd.Timedelta(days=data_lag_days)
+                eligible_df = crop_data[eligible_mask].dropna(subset=[target_col, "modal_price"]).sort_values("date").copy()
+                if len(eligible_df) < 50:
+                    continue
+
+                r_calib_cutoff = r - pd.Timedelta(days=calib_days)
+                train_fit = eligible_df[eligible_df["date"] <= r_calib_cutoff].copy()
+                calib_set = eligible_df[eligible_df["date"] > r_calib_cutoff].copy()
+                if len(train_fit) < 50 or len(calib_set) < 20:
+                    split_pt = int(len(eligible_df) * 0.85)
+                    train_fit = eligible_df.iloc[:split_pt].copy()
+                    calib_set = eligible_df.iloc[split_pt:].copy()
+
+                rf_forecaster = LGBMQuantileForecaster(
+                    {"forecast": {"lgbm": config_dict.get("forecast", {}).get("lgbm", {"n_estimators": 100}), "train_fraction": 1.0, "val_fraction": 0.0}},
+                    seed=42,
+                )
+                rf_forecaster.fit(train_fit, horizon=h, crop=crop)
+                models_trained += len(quantiles)
+
+                # Calibrate CQR margins on trailing calibration window (PRD §6.6)
+                preds_calib = rf_forecaster.predict(calib_set, horizon=h, crop=crop)
+                m_calib = calib_set[["date", "mandi_id", "crop", "modal_price", target_col]].merge(
+                    preds_calib, on=["date", "mandi_id", "crop"]
+                )
+                q_calib = {q: m_calib[f"pred_q{int(q*100):02d}_h{h}d"].values for q in quantiles}
+                y_calib = m_calib[target_col].values
+
+                cqr = CQRCalibrator(min_calibration_size=20)
+                cqr.calibrate(y_calib, q_calib, pairs=[(0.25, 0.75), (0.10, 0.90), (0.05, 0.95)])
+                m80 = cqr.margins.get((0.10, 0.90), 0.0)
+                m90 = cqr.margins.get((0.05, 0.95), 0.0)
+
+                # Predict on serving chunk [r, chunk_end)
+                serving_chunk = val_data[(val_data["date"] >= r) & (val_data["date"] < chunk_end)].copy()
+                if len(serving_chunk) == 0:
+                    continue
+
+                preds_chunk = rf_forecaster.predict(serving_chunk, horizon=h, crop=crop)
+                m_chunk = (
+                    serving_chunk[["date", "mandi_id", "crop", "modal_price", target_col]]
+                    .dropna()
+                    .merge(preds_chunk, on=["date", "mandi_id", "crop"])
+                )
+
+                for q in quantiles:
+                    m_chunk[f"m1_q{int(q*100):02d}"] = m_chunk[f"pred_q{int(q*100):02d}_h{h}d"]
+                m_chunk["cqr_lo_80"] = m_chunk["m1_q10"] - m80
+                m_chunk["cqr_hi_80"] = m_chunk["m1_q90"] + m80
+                m_chunk["cqr_lo_90"] = m_chunk["m1_q05"] - m90
+                m_chunk["cqr_hi_90"] = m_chunk["m1_q95"] + m90
+                val_chunks.append(m_chunk)
+
+            if not val_chunks:
                 continue
-                
-            # Train LightGBM Quantile Regressors (q=0.10, 0.25, 0.50, 0.75, 0.90)
-            forecaster.fit(features_df, horizon=h, crop=crop, final=True, log_path=REPORTS_DIR / "test_access_log.json")
-            models_trained += 5  # 5 quantiles per horizon
-            
-            # Predict on validation/test split for conformal calibration
-            preds = forecaster.predict(features_df, horizon=h, crop=crop)
-            merged = valid_rows[["date", "mandi_id", "crop", target_col]].merge(
-                preds, on=["date", "mandi_id", "crop"], how="inner"
-            )
-            
-            y_true = merged[target_col].values
-            y_p50 = merged[f"pred_q50_h{h}d"].values
-            
-            # Conformal calibration
-            conf_pred = ConformalPredictor(alpha=0.10, min_calibration_size=20)
-            conf_pred.calibrate(y_true[:len(y_true)//2], y_p50[:len(y_p50)//2])
-            lower, upper = conf_pred.predict_interval(y_p50[len(y_p50)//2:])
-            
-            # Calibration passport
-            y_pred_quantiles = {
-                0.10: merged[f"pred_q10_h{h}d"].values[len(y_true)//2:],
-                0.25: merged[f"pred_q25_h{h}d"].values[len(y_true)//2:],
-                0.50: y_p50[len(y_p50)//2:],
-                0.75: merged[f"pred_q75_h{h}d"].values[len(y_true)//2:],
-                0.90: merged[f"pred_q90_h{h}d"].values[len(y_true)//2:],
-            }
-            passport = compute_calibration_passport(
-                y_true[len(y_true)//2:],
-                y_pred_quantiles,
-                conformal_lower=lower,
-                conformal_upper=upper,
+
+            all_val = pd.concat(val_chunks, ignore_index=True)
+            y_val = all_val[target_col].values
+            q_preds_val = {q: all_val[f"m1_q{int(q*100):02d}"].values for q in quantiles}
+            b0_preds_val = {q: all_val["modal_price"].values for q in quantiles}
+
+            # Baseline B2 (rolling mean 7d)
+            b2_series_val = rolling_model.predict(features_df.loc[all_val.index], horizon=h)
+            b2_vals_val = b2_series_val.fillna(all_val["modal_price"]).values
+            b2_preds_val = {q: b2_vals_val for q in quantiles}
+
+            # Baseline B3 (empirical return quantiles)
+            train_valid = train_data.dropna(subset=[target_col, "modal_price"])
+            b3_model.fit(train_valid, horizon=h, crop=crop)
+            b3_preds_val = b3_model.predict_quantiles(all_val, horizon=h, crop=crop)
+
+            # Evaluate Forecast Usability Gate strictly on VALIDATION period with weekly block bootstrap
+            gate = evaluate_forecast_gate(
+                y_true=y_val,
+                m1_quantile_preds=q_preds_val,
+                b0_quantile_preds=b0_preds_val,
+                b2_quantile_preds=b2_preds_val,
+                b3_quantile_preds=b3_preds_val,
                 crop=crop,
                 horizon=h,
+                coverage_tolerance=config_dict.get("forecast", {}).get("conformal", {}).get("coverage_tolerance", 0.07),
+                conformal_lower_80=all_val["cqr_lo_80"].values,
+                conformal_upper_80=all_val["cqr_hi_80"].values,
+                conformal_lower_90=all_val["cqr_lo_90"].values,
+                conformal_upper_90=all_val["cqr_hi_90"].values,
+                dates=all_val["date"].values,
             )
-            all_passports.append(passport)
+            all_gates.append(gate)
+
+            status_str = "[PASS]" if gate["forecast_usable"] else "[FAIL - RESTRICT TO WHERE]"
+            b3_display = (
+                f"{gate['skill_vs_b3']:>+6.1%}"
+                if isinstance(gate.get("skill_vs_b3"), (int, float))
+                else str(gate.get("skill_vs_b3"))
+            )
+            m1_loss_display = (
+                f"{gate['mean_pinball_loss_m1']:>6.1f}"
+                if gate.get("mean_pinball_loss_m1") is not None
+                else "   n/a"
+            )
+            b0_loss_display = (
+                f"{gate['mean_pinball_loss_b0']:>6.1f}"
+                if gate.get("mean_pinball_loss_b0") is not None
+                else "   n/a"
+            )
+            print(
+                f"   Crop={crop.upper():<7} H={h:>2}d (Val Rolling) | Pinball M1={m1_loss_display}, B0={b0_loss_display} | "
+                f"Skill B0={gate['skill_vs_b0']:>+6.1%}, B3={b3_display} | "
+                f"P80 Cov={gate['empirical_coverage_80'] if gate['empirical_coverage_80'] is not None else 0.0:>5.1%} | "
+                f"Gate: {status_str}"
+            )
+
+            # ──────────────────────────────────────────────────────────────────
+            # 2. FIT SERVING MODEL (Used downstream by Stage 6 Decision Engine)
+            # ──────────────────────────────────────────────────────────────────
+            forecaster.fit(features_df, horizon=h, crop=crop, final=False, log_path=None)
+            preds_test = forecaster.predict(features_df, horizon=h, crop=crop)
+            test_merged = test_data.dropna(subset=[target_col, "modal_price"]).merge(
+                preds_test, on=["date", "mandi_id", "crop"], how="inner"
+            )
+            if len(test_merged) > 0:
+                y_test = test_merged[target_col].values
+                q_preds_test = {q: test_merged[f"pred_q{int(q*100):02d}_h{h}d"].values for q in quantiles}
+                p80_lo = all_val["cqr_lo_80"].iloc[-1] if "cqr_lo_80" in all_val.columns else None
+                p80_hi = all_val["cqr_hi_80"].iloc[-1] if "cqr_hi_80" in all_val.columns else None
+                passport = compute_calibration_passport(
+                    y_test,
+                    q_preds_test,
+                    crop=crop,
+                    horizon=h,
+                )
+                all_passports.append(passport)
             
     print(f"\n   Total LightGBM quantile booster models fitted: {models_trained}")
     passport_path = ARTIFACTS_DIR / "calibration_passport.json"
-    with open(passport_path, "w") as f:
+    with open(passport_path, "w", encoding="utf-8") as f:
         json.dump(all_passports, f, indent=2)
     print(f"[OK] Stage 5 Complete: Calibration Passports written to {passport_path}")
+    
+    gates_path = ARTIFACTS_DIR / "forecast_gates.json"
+    save_forecast_gates(all_gates, gates_path)
+    print(f"[OK] Stage 5 Complete: Forecast Usability Gates written to {gates_path}")
+
+    # Generate metrics markdown table (PRD Sections 6.4, 6.8 & 14)
+    metrics_table_path = REPORTS_DIR / "forecast_metrics_table.md"
+    save_metrics_markdown_table(all_gates, metrics_table_path)
+    print(f"[OK] Stage 5 Complete: Comprehensive Forecast Metrics Table written to {metrics_table_path}")
+
+    # Validate assumptions register and evaluate demo_ready
+    assumptions_path = Path("docs") / "assumptions_register.md"
+    _, demo_ready = build_assumptions_register(crops_cfg, output_path=assumptions_path)
+    print(f"   Assumptions Register: {assumptions_path} (demo_ready={demo_ready})")
 
     # Build combined forecast table for all crops (used in Stage 6)
     all_forecast_frames = []
@@ -359,6 +518,18 @@ def main():
     forecast_today = combined_forecasts[
         combined_forecasts["date"] == pd.Timestamp(gold_latest_date)
     ] if not combined_forecasts.empty else pd.DataFrame()
+
+    # Crop-level forecast usability gate (PRD Section 6.8 & 14)
+    crop_usable_map = {}
+    for c in target_crops:
+        c_gates = [g for g in all_gates if g["crop"] == c]
+        if not c_gates:
+            crop_usable_map[c] = False
+        else:
+            # PRD Section 6.8: Forecast usable only if passes calibration gate and beats baseline B0
+            h7_gate = next((g for g in c_gates if g["horizon_days"] == 7), None)
+            crop_usable_map[c] = bool(h7_gate["forecast_usable"]) if h7_gate else False
+    print(f"   Crop Forecast Usability Status (h=7): {crop_usable_map}")
 
     decision_results = []
     today = date(2025, 4, 15)
@@ -450,10 +621,10 @@ def main():
             modal_price=2200.0,
             is_placeholder=(not has_placeholder),
             config=config_dict,
-            climate_summary=climate_summary,
         )
         
         # Decision engine execution
+        crop_usable = crop_usable_map.get(crop, False)
         res = decide(
             options=options,
             crop=crop,
@@ -463,16 +634,22 @@ def main():
             shock_detected=False,
             confidence_score=conf_score,
             confidence_label=conf_label,
+            forecast_usable=crop_usable,
         )
         
         decision_results.append({
             "farmer_id": farmer["farmer_id"],
             "crop": crop,
+            "is_synthetic": res.is_synthetic,
+            "price_source": res.price_source,
             "quantity_q": qty,
             "cash_deadline_days": deadline,
             "recommendation": res.recommendation.value,
             "confidence": res.confidence_label,
             "confidence_score": round(conf_score, 3),
+            "advice_message": res.advice_message,
+            "headline_gain_claim": res.headline_gain_claim or "N/A (claims disabled for synthetic crop)" if res.is_synthetic else res.headline_gain_claim,
+            "simulation_notice": res.simulation_notice or "Real observed prices",
             "best_mandi": res.best_option.mandi_id if res.best_option else m_id,
             "best_sell_date": str(res.best_option.sell_date) if res.best_option else str(today),
             "days_to_wait": res.best_option.days_from_now if res.best_option else 0,
@@ -494,24 +671,35 @@ def main():
     # ──────────────────────────────────────────────────────────────────────────
     print_header("Trigger Engine, Policy-Shock Radar & Regret Receipts", 7)
     
-    # 7.1 Policy Shock Radar
-    # Adjust z-threshold using climate shock prior probability.
-    # A higher prior (more extreme events in dataset) → lower threshold → more sensitive.
-    base_z = 3.0
-    if climate_summary:
-        prior = climate_summary.get("shock_prior_probability", 0.0)
-        # Scale: prior=0.25 (baseline equal) → z=3.0; prior=0.75 → z=2.5
-        z_adjusted = round(max(2.0, base_z - (prior - 0.25) * 2.0), 2)
-        if z_adjusted != base_z:
-            print(f"   Shock radar z-threshold adjusted to {z_adjusted} "
-                  f"(climate prior={prior:.1%})")
-    else:
-        z_adjusted = base_z
-    sample_series = gold_panel[gold_panel["crop"] == "onion"].set_index("date")["modal_price"].dropna()
-    if len(sample_series) > 30:
-        shocks = detect_shocks(sample_series, z_threshold=z_adjusted, lookback_window=30)
-        n_shocks = shocks["is_shock"].sum()
-        print(f"-> Policy-Shock Radar: Scanned {len(sample_series)} dates, detected {n_shocks} shock regime(s) (z={z_adjusted}).")
+    # 7.1 Policy Shock Radar False-Alarm Rate (PRD Section 11 & User Item 6)
+    radar_z = config_dict.get("shock", {}).get("z_threshold", 3.0)
+    total_shock_days = 0
+    total_calm_days = 0
+    mandi_shocks_map = {}
+    for m in gold_panel["mandi_id"].unique():
+        m_prices = gold_panel[gold_panel["mandi_id"] == m].set_index("date")["modal_price"].dropna()
+        if len(m_prices) >= 30:
+            shk_df = detect_shocks(m_prices, z_threshold=radar_z, lookback_window=30)
+            n_shk = int(shk_df["is_shock"].sum())
+            calm_days = len(shk_df) - n_shk
+            total_shock_days += n_shk
+            total_calm_days += calm_days
+            mandi_shocks_map[m] = n_shk
+
+    shock_rate_per_100_calm = (total_shock_days / total_calm_days * 100.0) if total_calm_days > 0 else 0.0
+    print(f"-> Policy-Shock Radar Scan: {total_shock_days} shock days detected across {total_calm_days} calm days ({len(mandi_shocks_map)} mandis).")
+    print(f"   False-Alarm Measure: {shock_rate_per_100_calm:.2f} SHOCK days per 100 calm days (at robust MAD |z| >= {radar_z}).")
+    
+    # Multi-signal radar evaluation incorporating events.csv (S1-S4)
+    events_csv = CONFIG_DIR / "events.csv"
+    radar_state = evaluate_radar_state(
+        current_date=today,
+        crop="onion",
+        gold_panel=gold_panel,
+        events_csv_path=events_csv if events_csv.exists() else None,
+        z_threshold=radar_z,
+    )
+    print(f"-> Multi-Signal Radar Status (Onion): Level={radar_state['level'].value} | Reason: {radar_state['reason']}")
     
     # 7.2 Trigger Engine State Machine Simulation
     print("-> Running Trigger Engine state machine check...")
@@ -525,7 +713,7 @@ def main():
     rec.transition(TriggerState.TRIGGERED_SELL, today + pd.Timedelta(days=3), reason="Price rose past threshold")
     print(f"   State transition: WATCHING -> {rec.state.value} (Price rose past threshold)")
 
-    # 7.3 Regret Receipt Generation
+    # 7.3 Regret Receipt Generation (TOY SCENARIO DEMO ONLY - Item 8)
     receipt = compute_regret(
         actual_net_return=2180.0,
         counterfactual_net_return=2090.0,
@@ -539,7 +727,8 @@ def main():
         days_held=5,
         is_placeholder=False,
     )
-    print(f"-> Regret Receipt generated: Farmer gained +₹{receipt.regret_per_q:.2f}/quintal over immediate sale.")
+    print(f"-> [TOY SCENARIO RECEIPT]: Hypothetical single-farmer example gained +₹{receipt.regret_per_q:.2f}/quintal over immediate sale.")
+    print("   (NOTE: Not a pipeline empirical result. True regret metrics must come from walk-forward backtest below.)")
 
     # 7.4 Walk-Forward Backtest (Issue 7 — wired in)
     # -------------------------------------------------------------------------
@@ -652,19 +841,27 @@ def main():
 - **Total Execution Time**: {elapsed:.2f} seconds
 - **Status**: SUCCESS
 
+## Data Provenance & Synthetic Flag Matrix (ADR-001)
+- **Soybean**: `price_source: real` | `is_synthetic: false` | Verified Agmarknet India Historical Prices 2024-2025.
+- **Onion**: `price_source: synthetic` | `is_synthetic: true` | Simulated prices by human decision (time constraint).
+- **Tomato**: `price_source: synthetic` | `is_synthetic: true` | Simulated prices by human decision (time constraint).
+
+> **Governance Rule**: Headline ₹ claims are allowed ONLY for crops with real prices (`price_source == "real"`). For synthetic crops (Onion and Tomato), promotional realization claims are strictly disabled and simulated disclaimers are visibly displayed.
+
 ## Summary of Executed Stages:
-1. **Stage 1 (Bronze Ingestion)**: Ingested {len(df_raw):,} total raw observations (`data/raw/prices_bronze.parquet`) and {len(df_climate_bronze):,} climate risk scenarios (`data/raw/climate_factors_bronze.parquet`).
-2. **Stage 2 (Silver Canonicalization)**: Cleaned, deduplicated, flagged outliers (rolling MAD $k=6$) across Soybean, Onion, and Tomato (`data/silver/prices_daily.parquet`); encoded climate silver scenarios (`data/silver/climate_factors_silver.parquet`).
+1. **Stage 1 (Bronze Ingestion)**: Ingested {len(df_raw):,} total raw observations (`data/raw/prices_bronze.parquet`) and {len(df_climate_bronze):,} offline climate scenarios (`data/raw/climate_factors_bronze.parquet`).
+2. **Stage 2 (Silver Canonicalization)**: Cleaned, deduplicated, flagged outliers (rolling MAD $k=6$) across Soybean, Onion, and Tomato (`data/silver/prices_daily.parquet`).
 3. **Stage 3 (Mandi Selection)**: Selected {len(selected_mandi_ids)} APMC mandis using coverage and gap constraints (`config/mandis.yaml`).
-4. **Stage 4 (Gold Feature Engineering)**: Generated past-only features with strict zero-leakage assertions and activated climate risk features (`data/gold/features_panel.parquet`).
-5. **Stage 5 (Quantile Modeling & Conformal)**: Trained {models_trained} LightGBM Quantile models across 5 horizons and 5 quantiles; computed Calibration Passports (`artifacts/calibration_passport.json`).
-6. **Stage 6 (Decision Intelligence)**: Evaluated net-return options factoring in transport, storage, climate risk confidence discount, and non-linear spoilage curves for 50 farmer scenarios.
+4. **Stage 4 (Gold Feature Engineering)**: Generated past-only features with strict zero-leakage assertions (PRD Section 4.6 weather flag: `features.use_weather = {config_dict.get('features', {}).get('use_weather', False)}`).
+5. **Stage 5 (Quantile Modeling & Forecast Gating)**: Trained {models_trained} LightGBM Quantile models across 6 horizons and 7 quantiles; evaluated baseline skill vs B0/B2, CQR calibrated intervals, and saved forecast usability gates (`artifacts/forecast_gates.json`).
+6. **Stage 6 (Decision Intelligence)**: Evaluated net-return options factoring in transport, storage, and non-linear spoilage curves for 50 farmer scenarios.
+   - Gating Enforcement: Honest "WHERE" (spatial at h=0) advice if model fails baseline/calibration gate.
    - Recommendation breakdown: `{rec_counts}`
    - Results: `reports/farmer_decision_batch_results.csv`
-7. **Stage 7 (Triggers & Receipts)**: Verified Climate-informed Shock Radar (z={z_adjusted}), state machine transitions, and generated farmer Regret Receipts.
+7. **Stage 7 (Triggers, Radar & Backtest Regret)**: Verified Price/Event Policy-Shock Radar (PRD Section 11 Signals S1-S5, z={radar_z}), false-alarm measure: `{shock_rate_per_100_calm:.2f} SHOCK days per 100 calm days`, state machine transitions, and derived empirical regret distribution from walk-forward backtest.
 """
     summary_path = REPORTS_DIR / "pipeline_execution_summary.md"
-    with open(summary_path, "w") as f:
+    with open(summary_path, "w", encoding="utf-8") as f:
         f.write(summary_report)
     print(f"\n[OK] Stage 7 Complete: Pipeline Execution Summary written to {summary_path}")
     print("\n" + "=" * 80)

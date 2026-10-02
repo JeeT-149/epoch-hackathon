@@ -64,3 +64,48 @@ class RollingMeanForecaster:
         if col in features_df.columns:
             return features_df[col].rename(f"pred_{horizon}d")
         return pd.Series(np.nan, index=features_df.index, name=f"pred_{horizon}d")
+
+
+class EmpiricalReturnForecaster:
+    """
+    B3: Empirical return distribution baseline (PRD Section 6.4).
+    Trailing-window quantiles of h-day log returns per crop and mandi cluster.
+    Forecast: y_{t+h}^{(q)} = P_t * exp(quantile(r_{t, h}, q))
+    where r_{t, h} = ln(P_{t+h} / P_t).
+    """
+
+    name = "empirical_return_quantiles"
+
+    def __init__(self, quantiles: list[float] | None = None):
+        self.quantiles = quantiles or [0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95]
+        self.log_return_quantiles: dict[tuple[str, int], dict[float, float]] = {}
+
+    def fit(self, train_df: pd.DataFrame, horizon: int, crop: str) -> None:
+        """Fit empirical return quantiles on training/trailing data."""
+        t_col = f"target_{horizon}d"
+        if t_col not in train_df.columns or "modal_price" not in train_df.columns:
+            return
+        valid = train_df[
+            (train_df["crop"] == crop)
+            & train_df[t_col].notna()
+            & train_df["modal_price"].notna()
+            & (train_df["modal_price"] > 0)
+        ]
+        if len(valid) < 10:
+            return
+        log_rets = np.log(valid[t_col].values / valid["modal_price"].values)
+        self.log_return_quantiles[(crop, horizon)] = {
+            q: float(np.quantile(log_rets, q)) for q in self.quantiles
+        }
+
+    def predict_quantiles(
+        self, df: pd.DataFrame, horizon: int, crop: str
+    ) -> dict[float, np.ndarray]:
+        """Predict price quantiles given reference prices in df['modal_price']."""
+        key = (crop, horizon)
+        base_p = df["modal_price"].values.copy()
+        if key not in self.log_return_quantiles:
+            return {q: base_p.copy() for q in self.quantiles}
+        q_dict = self.log_return_quantiles[key]
+        return {q: base_p * np.exp(q_dict[q]) for q in self.quantiles}
+

@@ -14,13 +14,11 @@ Schema (input CSV):
   Food Security          - str (Low | Medium | High)
   Economic Impact        - str (Low | Medium | High)
 
-No date or mandi column exists. This dataset represents climate risk scenarios,
-not a time series. It is used to:
-  1. Derive regional climate statistics (mean temperature, precipitation) that
-     activate the dormant weather_temp_mean / weather_rain_7d feature slots.
-  2. Build a climate_stress_index (0-1) from numeric + categorical risk factors.
-  3. Encode extreme weather types as shock priors for the shock radar.
-  4. Adjust economics confidence via disease incidence + water availability.
+No date or mandi column exists. This dataset represents cross-sectional climate risk scenarios,
+NOT a daily time series. Per PRD Section 4.6 and Rule R2:
+  - Daily price forecasting uses real observed prices and (optionally) real Open-Meteo weather.
+  - Policy-Shock Radar strictly uses price signals (S1-S5) and events.csv, NOT cross-sectional priors.
+  - This dataset is retained for offline macro risk scenario analysis and FPO stress testing.
 
 Source: ML/climate_change_agriculture_dataset.csv
 """
