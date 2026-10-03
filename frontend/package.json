@@ -9,25 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "leaflet": "^1.9.4",
-    "lucide-react": "^1.50.0",
-    "next": "16.3.8",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "react-leaflet": "^5.0.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/leaflet": "^1.9.22",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.3.8",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-=======
     "@types/leaflet": "^1.9.22",
     "clsx": "^2.1.1",
     "framer-motion": "^14.0.0",
@@ -48,6 +29,5 @@
     "tailwindcss": "^4.0.9",
     "typescript": "^5.7.3",
     "vite": "^6.2.0"
->>>>>>> 8738bbc (final commit 1)
   }
 }
