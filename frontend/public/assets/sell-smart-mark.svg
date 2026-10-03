@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title">
+  <title>Sell Smart</title>
+  <rect width="96" height="96" rx="24" fill="#50604d"/>
+  <path d="M24 54c12-2 24-12 30-29 12 8 18 20 18 34 0 10-8 18-18 18H34c-6 0-10-5-10-11V54Z" fill="#ceebc4"/>
+  <path d="M29 67c15-9 25-19 32-35" fill="none" stroke="#50604d" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="26" cy="26" r="7" fill="#ebb02d"/>
+</svg>

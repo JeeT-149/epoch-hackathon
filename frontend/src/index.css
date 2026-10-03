@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-surface: #f0fdec;
+    --color-surface-dim: #d1decd;
+    --color-surface-bright: #f0fdec;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #eaf7e6;
+    --color-surface-container: #e5f2e0;
+    --color-surface-container-high: #dfecdb;
+    --color-surface-container-highest: #d9e6d5;
+    --color-on-surface: #131e14;
+    --color-on-surface-variant: #444842;
+    --color-inverse-surface: #283328;
+    --color-inverse-on-surface: #e7f5e3;
+    --color-outline: #747871;
+    --color-outline-variant: #c4c8bf;
+    --color-surface-tint: #52634f;
+    --color-primary: #50604d;
+    --color-on-primary: #ffffff;
+    --color-primary-container: #687965;
+    --color-on-primary-container: #f7fff1;
+    --color-inverse-primary: #baccb4;
+    --color-secondary: #4c6546;
+    --color-on-secondary: #ffffff;
+    --color-secondary-container: #ceebc4;
+    --color-on-secondary-container: #526b4c;
+    --color-tertiary: #645b4f;
+    --color-on-tertiary: #ffffff;
+    --color-tertiary-container: #7d7366;
+    --color-on-tertiary-container: #fffbff;
+    --color-error: #ba1a1a;
+    --color-on-error: #ffffff;
+    --color-error-container: #ffdad6;
+    --color-on-error-container: #93000a;
+    --color-primary-fixed: #d5e8cf;
+    --color-primary-fixed-dim: #baccb4;
+    --color-on-primary-fixed: #111f10;
+    --color-on-primary-fixed-variant: #3b4b39;
+    --color-secondary-fixed: #ceebc4;
+    --color-secondary-fixed-dim: #b3cea9;
+    --color-on-secondary-fixed: #0a2008;
+    --color-on-secondary-fixed-variant: #354d30;
+    --color-tertiary-fixed: #eee0d1;
+    --color-tertiary-fixed-dim: #d1c5b6;
+    --color-on-tertiary-fixed: #211b11;
+    --color-on-tertiary-fixed-variant: #4e453a;
+    --color-background: #f0fdec;
+    --color-on-background: #131e14;
+    --color-surface-variant: #d9e6d5;
+  }
+
+  html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f0fdec;
+    color: #131e14;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Material Symbols configuration */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Theme color utility classes to support exact classes used in design */
+.bg-surface { background-color: var(--color-surface); }
+.bg-surface-dim { background-color: var(--color-surface-dim); }
+.bg-surface-bright { background-color: var(--color-surface-bright); }
+.bg-surface-container-lowest { background-color: var(--color-surface-container-lowest); }
+.bg-surface-container-low { background-color: var(--color-surface-container-low); }
+.bg-surface-container { background-color: var(--color-surface-container); }
+.bg-surface-container-high { background-color: var(--color-surface-container-high); }
+.bg-surface-container-highest { background-color: var(--color-surface-container-highest); }
+.bg-surface-variant { background-color: var(--color-surface-variant); }
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-container { background-color: var(--color-primary-container); }
+.bg-primary-fixed { background-color: var(--color-primary-fixed); }
+.bg-primary-fixed-dim { background-color: var(--color-primary-fixed-dim); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-secondary-container { background-color: var(--color-secondary-container); }
+.bg-secondary-fixed { background-color: var(--color-secondary-fixed); }
+.bg-secondary-fixed-dim { background-color: var(--color-secondary-fixed-dim); }
+.bg-tertiary { background-color: var(--color-tertiary); }
+.bg-tertiary-container { background-color: var(--color-tertiary-container); }
+.bg-tertiary-fixed { background-color: var(--color-tertiary-fixed); }
+.bg-tertiary-fixed-dim { background-color: var(--color-tertiary-fixed-dim); }
+.bg-error { background-color: var(--color-error); }
+.bg-error-container { background-color: var(--color-error-container); }
+.bg-inverse-surface { background-color: var(--color-inverse-surface); }
+
+.text-on-surface { color: var(--color-on-surface); }
+.text-on-surface-variant { color: var(--color-on-surface-variant); }
+.text-primary { color: var(--color-primary); }
+.text-on-primary { color: var(--color-on-primary); }
+.text-primary-fixed { color: var(--color-primary-fixed); }
+.text-primary-fixed-dim { color: var(--color-primary-fixed-dim); }
+.text-secondary { color: var(--color-secondary); }
+.text-on-secondary { color: var(--color-on-secondary); }
+.text-secondary-fixed { color: var(--color-secondary-fixed); }
+.text-on-secondary-container { color: var(--color-on-secondary-container); }
+.text-on-secondary-fixed { color: var(--color-on-secondary-fixed); }
+.text-tertiary { color: var(--color-tertiary); }
+.text-on-tertiary-fixed { color: var(--color-on-tertiary-fixed); }
+.text-error { color: var(--color-error); }
+.text-on-error-container { color: var(--color-on-error-container); }
+.text-outline { color: var(--color-outline); }
+.text-outline-variant { color: var(--color-outline-variant); }
+.text-inverse-on-surface { color: var(--color-inverse-on-surface); }
+.text-inverse-primary { color: var(--color-inverse-primary); }
+
+.border-outline { border-color: var(--color-outline); }
+.border-outline-variant { border-color: var(--color-outline-variant); }
+.border-surface-container { border-color: var(--color-surface-container); }
+.border-primary { border-color: var(--color-primary); }
+
+/* Spacing tokens */
+.px-margin { padding-left: 1.25rem; padding-right: 1.25rem; }
+.py-margin { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+.p-margin { padding: 1.25rem; }
+.gap-space-xs { gap: 0.25rem; }
+.gap-space-sm { gap: 0.5rem; }
+.gap-space-md { gap: 1rem; }
+.gap-space-lg { gap: 1.5rem; }
+.p-space-xs { padding: 0.25rem; }
+.p-space-sm { padding: 0.5rem; }
+.p-space-md { padding: 1rem; }
+.p-space-lg { padding: 1.5rem; }
+.pt-space-sm { padding-top: 0.5rem; }
+.pb-space-sm { padding-bottom: 0.5rem; }
+.pb-space-md { padding-bottom: 1rem; }
+.pb-space-lg { padding-bottom: 1.5rem; }

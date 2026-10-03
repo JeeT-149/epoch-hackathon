@@ -1,0 +1,2038 @@
+<USER_REQUEST>
+import React, { useState } from 'react';
+import { Language, ScreenType, ChatMessage } from '../types';
+import { ASSETS } from '../data/mockData';
+
+interface ChatsScreenProps {
+  language: Language;
+  onNavigate: (screen: ScreenType) => void;
+}
+
+export const ChatsScreen: React.FC<ChatsScreenProps> = ({ language, onNavigate }) => {
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: 'msg-1',
+      sender: 'bot',
+      text: language === 'mr'
+        ? 'नमस्कार रमेशजी! मी Sell Smart कृषी सल्लागार आहे. आज नाशिक आणि लासलगाव बाजारात कांदा आणि टोमॅटोचे दर अनुकूल आहेत. मी तुम्हाला विक्री, थांबा किंवा बाजार बदलाबाबत कशी मदत करू?'
+        : 'Namaste Ramesh ji! I am your Sell Smart Mandi Advisor. Onion modal prices in Lasalgaon are projected to surge by +₹180/qtl in 5 days. How can I help with your harvest dispatch today?',
+      timestamp: '10:14 AM',
+      chips: [
+        language === 'mr' ? 'कांदा आज काढावा की ५ दिवस थांबावे?' : 'Should I sell onion today or wait 5 days?',
+        language === 'mr' ? 'टोमॅटोसाठी पुणे की पिंपळगाव?' : 'Compare Pune vs Pimpalgaon for Tomato',
+        language === 'mr' ? 'बुधवारच्या पावसाचा धोका किती?' : 'What is the risk from Wednesday rain?',
+      ],
+    },
+  ]);
+
+  const [inputVal, setInputVal] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+
+  const handleSend = (textToSend?: string) => {
+    const text = textToSend || inputVal;
+    if (!text.trim()) return;
+
+    const userMsg: ChatMessage = {
+      id: `usr-${Date.now()}`,
+      sender: 'user',
+      text,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setInputVal('');
+    setIsTyping(true);
+
+    setTimeout(() => {
+      let botResponse = '';
+      let actionLink: { label: string; screen: ScreenType } | undefined;
+
+      const lower = text.toLowerCase();
+      if (lower.includes('onion') || lower.includes('कांदा') || lower.includes('wait') || lower.includes('थांब')) {
+        botResponse = language === 'mr'
+          ? '🎯 सल्ला: ५ दिवस थांबा! लासलगाव बाजारात सध्या ₹१,४२० भाव आहे. शनिवारपर्यंत आवक मंदावून भाव ₹१,६०० पर्यंत जाण्याचा ९०% अंदाज आहे. जर तुमच्याकडे ५० क्विंटल माल असेल तर सुमारे ₹९,००० जादा नफा होईल. फक्त चाळीत ओलावा येऊ देऊ नका.'
+          : '🎯 Advisory: WAIT 5 DAYS! Lasalgaon APMC modal price is ₹1,420/q today and is projected to hit ₹1,600/q by Saturday (+₹180/qtl). For a 50-quintal haul, you will pocket ~₹9,000 extra net profit. Ensure your curing storage remains dry during Wednesday showers.';
+        actionLink = {
+          label: language === 'mr' ? 'कांदा मंडी तपशील व अंदाज पहा' : 'View Onion Mandi Details & Forecast',
+          screen: 'mandi-details',
+        };
+      } else if (lower.includes('tomato') || lower.includes('टोमॅटो') || lower.includes('pune') || lower.includes('पुणे')) {
+        botResponse = language === 'mr'
+          ? '🚛 बाजार बदल सल्ला: पुणे गुलटेकडी बाजारात पाठवा! पिंपळगावमध्ये ₹२,१३० भाव आहे तर पुण्यात ₹२,४५० भाव मिळत आहे. ₹८० वाहतूक खर्च कापूनही तुम्हाला प्रति क्विंटल ₹२४० जादा मिळतील.'
+          : '🚛 Switch Market Advisory: Dispatch to Pune Gultekdi! Pune is trading at ₹2,450/q vs Pimpalgaon at ₹2,130/q. Even after deducting ₹80/q mini-truck freight over 145 km, your net gain is +₹240/quintal.';
+      } else if (lower.includes('rain') || lower.includes('पाऊस') || lower.includes('weather') || lower.includes('हवामान')) {
+        botResponse = language === 'mr'
+          ? '⚠️ हवामान इशारा: बुधवारी २४ मिमी मुसळधार पावसाचा अंदाज आहे. उघड्या वाहनाने माल नेणे धोकादायक आहे. शुक्रवार सकाळपर्यंत वाहतूक थांबवावी.'
+          : '⚠️ Agronomic Weather Alert: 24mm peak rainfall is expected Wednesday across Dindori valley. Avoid open transport as water damage risk is 95%. The safest transit window opens Friday morning.';
+        actionLink = {
+          label: language === 'mr' ? 'हवामान डॅशबोर्ड तपासा' : 'Check Weather Dashboard',
+          screen: 'weather',
+        };
+      } else {
+        botResponse = language === 'mr'
+          ? `मी तुमच्या "${text}" या प्रश्नाचे विश्लेषण केले आहे. सध्या नाशिक विभागात कांदा भाव चढत्या क्रमाने असून भाजीपाल्याला चांगली मागणी आहे. अचूक आकडेमोड हवी असल्यास तुमचे क्विंटल प्रमाण सांगा.`
+          : `Based on verified Agmarknet feeds for "${text}", commodity arrivals are steady across Nashik APMC. You can tell me your harvest quantity (in quintals) to calculate your exact net take-home pay.`;
+      }
+
+      const botMsg: ChatMessage = {
+        id: `bot-${Date.now()}`,
+        sender: 'bot',
+        text: botResponse,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        actionLink,
+      };
+
+      setMessages((prev) => [...prev, botMsg]);
+      setIsTyping(false);
+    }, 900);
+  };
+
+  return (
+    <div className="flex flex-col w-full h-[calc(100vh-64px)] pb-20 pt-16 max-w-xl mx-auto px-margin">
+      {/* Bot Header Ribbon */}
+      <div className="py-2.5 px-3 rounded-xl bg-surface-container flex items-center justify-between border border-surface-container-high/60 my-2">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0">
+            <span className="material-symbols-outlined text-[18px]">smart_toy</span>
+          </div>
+          <div>
+            <h3 className="font-bold text-xs text-on-surface">Sell Smart AI Agri Advisor</h3>
+            <p className="text-[10px] text-secondary font-semibold">● Powered by Mandi Intelligence & Agmarknet</p>
+          </div>
+        </div>
+        <span className="text-[11px] bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full font-bold">
+          {language === 'mr' ? 'मराठी / EN' : 'Marathi / EN'}
+        </span>
+      </div>
+
+      {/* Messages Stream */}
+      <div className="flex-1 overflow-y-auto space-y-3 py-2 no-scrollbar">
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
+          >
+            <div
+              className={`max-w-[85%] p-3.5 rounded-2xl shadow-xs text-[13.5px] leading-relaxed ${
+                msg.sender === 'user'
+                  ? 'bg-primary text-on-primary rounded-br-xs'
+                  : 'bg-surface-container-lowest text-on-surface border border-surface-container-high/60 rounded-bl-xs'
+              }`}
+            >
+              <p className="whitespace-pre-line">{msg.text}</p>
+
+              {msg.actionLink && (
+                <button
+                  onClick={() => onNavigate(msg.actionLink!.screen)}
+                  className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-on-primary text-xs font-bold shadow-xs hover:bg-primary-container active:scale-95 transition-all"
+                  type="button"
+                >
+                  <span>{msg.actionLink.label}</span>
+                  <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </button>
+              )}
+
+              <span className={`text-[10px] mt-1.5 block text-right ${msg.sender === 'user' ? 'text-primary-fixed opacity-80' : 'text-outline'}`}>
+                {msg.timestamp}
+              </span>
+            </div>
+
+            {/* Quick chips if available */}
+            {msg.chips && (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {msg.chips.map((chip, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleSend(chip)}
+                    className="px-2.5 py-1 rounded-full bg-surface-container-low hover:bg-surface-container text-primary font-semibold text-xs border border-primary/20 transition-all text-left shadow-2xs"
+                    type="button"
+                  >
+                    💬 {chip}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {isTyping && (
+          <div className="flex items-center gap-2 p-3 bg-surface-container-lowest rounded-2xl w-24 border border-surface-container-high/40 shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-primary animate-bounce"></span>
+            <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:0.2s]"></span>
+            <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:0.4s]"></span>
+          </div>
+        )}
+      </div>
+
+      {/* Input bar */}
+      <div className="pt-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
+          className="flex items-center gap-2 bg-surface-container-lowest p-2 rounded-2xl border border-surface-container-high shadow-xs"
+        >
+          <input
+            type="text"
+            value={inputVal}
+            onChange={(e) => setInputVal(e.target.value)}
+            placeholder={
+              language === 'mr'
+                ? 'कांदा, टोमॅटो भाव किंवा काढणी सल्ला विचारा...'
+                : 'Ask about onion prices, harvest timing, or mandi dispatch...'
+            }
+            className="flex-1 px-2.5 py-1 text-xs sm:text-sm bg-transparent outline-none text-on-surface placeholder:text-outline"
+          />
+
+          <button
+            type="submit"
+            disabled={!inputVal.trim()}
+            className="w-10 h-10 rounded-xl bg-primary hover:bg-primary-container text-on-primary flex items-center justify-center shrink-0 disabled:opacity-40 transition-all active:scale-95"
+          >
+            <span className="material-symbols-outlined text-[18px]">send</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+
+import React, { useState } from 'react';
+import { ScreenType, Language } from '../types';
+import { ASSETS, TRENDING_CROPS } from '../data/mockData';
+
+interface HomeScreenProps {
+  language: Language;
+  onNavigate: (screen: ScreenType) => void;
+  onOpenVoiceModal: () => void;
+  onOpenRouteModal: () => void;
+  onOpenLocationModal: () => void;
+  onOpenTelegramModal: () => void;
+}
+
+export const HomeScreen: React.FC<HomeScreenProps> = ({
+  language,
+  onNavigate,
+  onOpenVoiceModal,
+  onOpenRouteModal,
+  onOpenLocationModal,
+  onOpenTelegramModal,
+}) => {
+  const [selectedTrendingIndex, setSelectedTrendingIndex] = useState<number | null>(null);
+
+  return (
+    <div className="flex flex-col w-full pb-28 pt-16 max-w-xl mx-auto px-margin">
+      {/* Live Location Strip */}
+      <div className="pt-space-sm pb-space-sm">
+        <div className="flex items-center justify-between gap-space-sm bg-surface-container-lowest p-space-sm rounded-xl shadow-[0_2px_12px_rgba(31,42,31,0.04)] border border-surface-container-high/40">
+          <button
+            onClick={onOpenLocationModal}
+            className="flex items-center gap-2 text-left min-w-0 group"
+            type="button"
+          >
+            <span
+              className="material-symbols-outlined text-[20px] text-primary shrink-0"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              location_on
+            </span>
+            <div className="flex flex-col min-w-0">
+              <div className="flex items-center gap-1">
+                <span className="font-title-md text-[15px] font-bold text-on-surface truncate">
+                  {language === 'mr' ? 'नाशिक, महाराष्ट्र' : 'Nashik, Maharashtra'}
+                </span>
+                <span className="material-symbols-outlined text-[16px] text-outline shrink-0 group-hover:translate-y-0.5 transition-transform">
+                  expand_more
+                </span>
+              </div>
+              <span className="text-[11px] text-on-surface-variant truncate">
+                {language === 'mr' ? 'थेट बाजार भाव • दिंडोरी तालुका' : 'Live Mandi Feed • Dindori Taluka'}
+              </span>
+            </div>
+          </button>
+
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container shrink-0">
+            <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            <span className="text-[11px] font-semibold">{language === 'mr' ? 'सुरू आहे' : 'Active'}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Greeting Section */}
+      <div className="pt-2 pb-3">
+        <h2 className="text-[26px] font-extrabold text-on-surface tracking-tight leading-tight">
+          {language === 'mr' ? 'नमस्ते, रमेश 🙏' : 'Namaste, Ramesh 🙏'}
+        </h2>
+        <p className="text-[15px] text-on-surface-variant font-medium mt-0.5">
+          {language === 'mr' ? 'आज आपण काय विकत आहात?' : 'What are you selling today?'}
+        </p>
+      </div>
+
+      {/* Telegram Advisor Banner (Warm Honey/Gold Gradient) */}
+      <button
+        onClick={onOpenTelegramModal}
+        className="w-full text-left bg-gradient-to-r from-[#EBB02D] via-[#F3B737] to-[#DF9E1B] text-[#221B0B] p-4 rounded-2xl shadow-[0_6px_20px_rgba(235,176,45,0.28)] flex items-center justify-between gap-3 active:scale-[0.99] transition-transform my-1"
+        type="button"
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-full bg-[#1F2A1F]/15 flex items-center justify-center text-[#1F2A1F] shrink-0 font-bold">
+            <span className="material-symbols-outlined text-[22px]">send</span>
+          </div>
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-1 font-bold text-[15px] text-[#1F2A1F] truncate">
+              <span>{language === 'mr' ? 'टेलिग्रामवर Sell Smart शी बोला' : 'Chat with Sell Smart on Telegram'}</span>
+              <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+            </div>
+            <p className="text-[12px] font-medium text-[#1F2A1F]/90 truncate mt-0.5 underline underline-offset-2">
+              {language === 'mr'
+                ? 'विक्री / थांबा / बाजार बदल सल्ला मराठीत मिळवा'
+                : 'Get sell / wait / switch advice in मराठी, Hindi & EN'}
+            </p>
+          </div>
+        </div>
+        <div className="w-8 h-8 rounded-full bg-[#1F2A1F]/10 flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+        </div>
+      </button>
+
+      {/* Trending in Mandis Today */}
+      <div className="mt-5 flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-[18px] font-bold text-on-surface">
+              {language === 'mr' ? 'आज बाजारातील कल' : 'Trending in mandis today'}
+            </h3>
+            <p className="text-[11px] text-on-surface-variant">
+              {language === 'mr' ? 'थेट अपडेट्स • नाशिक एपीएमसी' : 'Auto-updates live • Nashik APMC'}
+            </p>
+          </div>
+          <button
+            onClick={() => onNavigate('markets')}
+            className="px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-semibold text-xs hover:bg-surface-container-highest transition-colors"
+            type="button"
+          >
+            {language === 'mr' ? 'सर्व पहा (१८)' : 'See all (18)'}
+          </button>
+        </div>
+
+        {/* Sliding Ticker */}
+        <div className="flex gap-3 overflow-x-auto pb-2 -mx-margin px-margin no-scrollbar pt-1">
+          {TRENDING_CROPS.map((crop, index) => {
+            const isSelected = selectedTrendingIndex === index;
+            return (
+              <div
+                key={crop.id}
+                onClick={() => {
+                  setSelectedTrendingIndex(index);
+                  if (crop.id === 'crop-onion') {
+                    onNavigate('mandi-details');
+                  }
+                }}
+                className={`min-w-[136px] p-3 rounded-2xl bg-surface-container-lowest border transition-all cursor-pointer shadow-sm ${
+                  isSelected ? 'border-primary ring-2 ring-primary/20 scale-[1.02]' : 'border-surface-container-high/60 hover:border-primary/50'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-1">
+                  <img
+                    src={crop.imageUrl}
+                    alt={crop.name.en}
+                    className="w-8 h-8 rounded-lg object-cover shadow-xs"
+                  />
+                  <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">
+                    <span>▲</span>
+                    <span>{crop.deltaPercent}%</span>
+                  </div>
+                </div>
+
+                <div className="mt-2">
+                  <h4 className="font-bold text-[14px] text-on-surface truncate">
+                    {crop.name[language]}
+                  </h4>
+                  <p className="text-[11px] text-on-surface-variant truncate">{crop.variety}</p>
+                </div>
+
+                <div className="mt-1.5 flex items-baseline justify-between">
+                  <span className="text-[15px] font-extrabold text-on-surface">
+                    ₹{crop.modalPrice.toLocaleString()}<span className="text-[10px] font-normal text-outline">/q</span>
+                  </span>
+                  {/* Micro sparkline */}
+                  <svg className="w-8 h-3 text-secondary" viewBox="0 0 32 12" fill="none">
+                    <path
+                      d="M1 10 L 10 7 L 18 9 L 26 3 L 31 1"
+                      stroke="#4c6546"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="text-[11px] text-center text-outline">
+          {language === 'mr'
+            ? '⇄ थेट पट्टी सरकवा • संपूर्ण मंडी माहितीसाठी पिकावर टॅप करा'
+            : '⇄ Sliding live ticker • tap any crop for full mandi comparison'}
+        </p>
+      </div>
+
+      {/* For You Near Nashik - Smart Dispatch */}
+      <div className="mt-6 flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+            <h3 className="text-[18px] font-bold text-on-surface">
+              {language === 'mr' ? 'नाशिक जवळ तुमच्यासाठी' : 'For you near Nashik'}
+            </h3>
+          </div>
+          <span className="text-xs font-semibold text-primary">
+            {language === 'mr' ? 'स्मार्ट पाठवणूक' : 'Smart Dispatch'}
+          </span>
+        </div>
+
+        {/* Card 1: Onion Wait 5 Days */}
+        <div className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(31,42,31,0.06)] border border-surface-container-high/40">
+          {/* Image with badges */}
+          <div className="relative w-full h-44 bg-surface-container">
+            <img
+              src={ASSETS.onionSacksHero}
+              alt="Fresh red onions in sacks at Lasalgaon"
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+
+            {/* Top Badge: WAIT 5 DAYS */}
+            <div className="absolute top-3 left-3 bg-[#D4E8CE] text-[#1E3E1C] px-3 py-1 rounded-full text-xs font-extrabold tracking-wide uppercase shadow-sm">
+              {language === 'mr' ? '५ दिवस थांबा' : 'WAIT 5 DAYS'}
+            </div>
+
+            {/* Bottom Overlay Info */}
+            <div className="absolute bottom-2.5 inset-x-3 flex items-center justify-between text-white">
+              <span className="text-xs font-semibold drop-shadow-sm bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-xs">
+                {language === 'mr' ? 'लासलगाव एपीएमसी' : 'Lasalgaon APMC'}
+              </span>
+              <div className="px-2.5 py-1 rounded-full bg-[#526B4C]/90 backdrop-blur-sm text-[#F7FFF1] text-xs font-bold shadow-sm">
+                {language === 'mr' ? 'अपेक्षित नफा: +₹१८०/क्विं' : 'Expected Gain: +₹180/qtl'}
+              </div>
+            </div>
+          </div>
+
+          {/* Content Body */}
+          <div className="p-4 flex flex-col gap-3">
+            <div>
+              <h4 className="text-[17px] font-bold text-on-surface">
+                {language === 'mr'
+                  ? 'कांदा: ५ दिवस थांबा, संभाव्य नफा ₹१८०/क्विंटल'
+                  : 'Onion: Wait 5 days, likely gain ₹180/quintal'}
+              </h4>
+              <p className="text-[13px] text-on-surface-variant mt-1 leading-relaxed">
+                {language === 'mr'
+                  ? 'निर्यात जहाजे पोहोचल्याने लासलगाव मंडीचा सरासरी भाव ₹१,४२० वरून ₹१,६०० पर्यंत वाढण्याची शक्यता.'
+                  : 'Lasalgaon Mandi modal price expected to rise from ₹1,420 to ₹1,600 due to export vessel arrivals.'}
+              </p>
+            </div>
+
+            {/* 3 Metric Pills */}
+            <div className="grid grid-cols-3 gap-2 bg-surface-container-low p-2.5 rounded-xl text-center">
+              <div>
+                <span className="text-[10px] uppercase font-semibold text-outline">
+                  {language === 'mr' ? 'आजचा भाव' : "Today's Modal"}
+                </span>
+                <p className="text-[14px] font-bold text-on-surface mt-0.5">₹1,420/q</p>
+              </div>
+              <div className="border-x border-outline-variant/40">
+                <span className="text-[10px] uppercase font-semibold text-secondary">
+                  {language === 'mr' ? '५ दिवसांनंतर' : 'Day 5 Forecast'}
+                </span>
+                <p className="text-[14px] font-bold text-secondary mt-0.5">₹1,600/q</p>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-semibold text-outline">
+                  {language === 'mr' ? 'साठवणूक धोका' : 'Storage Risk'}
+                </span>
+                <p className="text-[14px] font-bold text-primary mt-0.5">
+                  {language === 'mr' ? 'कमी (कोरडे)' : 'Low (Dry)'}
+                </p>
+              </div>
+            </div>
+
+            {/* Primary Action Button */}
+            <button
+              onClick={() => onNavigate('mandi-details')}
+              className="w-full h-12 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-bold text-sm flex items-center justify-center gap-2 shadow-sm active:scale-[0.99] transition-all"
+              type="button"
+            >
+              <span>{language === 'mr' ? 'नाशिक मंड्यांचे दर पहा' : 'View Nashik Mandis'}</span>
+              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Card 2: Tomato Switch Market */}
+        <div className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(31,42,31,0.06)] border border-surface-container-high/40">
+          <div className="relative w-full h-44 bg-surface-container">
+            <img
+              src={ASSETS.tomatoCrates}
+              alt="Fresh tomatoes loaded in wooden crates"
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+
+            <div className="absolute top-3 left-3 bg-[#FFE7D9] text-[#7A2700] px-3 py-1 rounded-full text-xs font-extrabold tracking-wide uppercase shadow-sm">
+              {language === 'mr' ? 'बाजार बदला' : 'SWITCH MARKET'}
+            </div>
+
+            <div className="absolute bottom-2.5 inset-x-3 flex items-center justify-between text-white">
+              <span className="text-xs font-semibold drop-shadow-sm bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-xs">
+                {language === 'mr' ? 'पुणे विरुद्ध पिंपळगाव' : 'Pune vs Pimpalgaon'}
+              </span>
+              <div className="px-2.5 py-1 rounded-full bg-[#4C6546]/90 backdrop-blur-sm text-[#F7FFF1] text-xs font-bold shadow-sm">
+                {language === 'mr' ? 'अतिरिक्त निव्वळ नफा: +₹२४०/क्विं' : 'Net Extra: +₹240/qtl'}
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 flex flex-col gap-3">
+            <div>
+              <h4 className="text-[17px] font-bold text-on-surface">
+                {language === 'mr' ? 'टोमॅटो: पुणे मंडीकडे माल वळवा' : 'Tomato: Switch to Pune mandi'}
+              </h4>
+              <p className="text-[13px] text-on-surface-variant mt-1 leading-relaxed">
+                {language === 'mr'
+                  ? '₹८० वाहतूक खर्च वजा केल्यानंतरही पुणे बाजार पिंपळगावपेक्षा ₹३२०/क्विंटल जास्त भाव देत आहे.'
+                  : 'Pune paying +₹320/qtl more than Pimpalgaon after deducting ₹80 transport cost.'}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 bg-surface-container-low p-2.5 rounded-xl text-center items-center">
+              <div>
+                <span className="text-[10px] uppercase font-semibold text-outline">
+                  {language === 'mr' ? 'पिंपळगाव' : 'Pimpalgaon'}
+                </span>
+                <p className="text-[14px] font-bold text-on-surface mt-0.5">₹2,130/q</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-primary font-bold text-[14px]">→</span>
+                <span className="text-[10px] uppercase font-semibold text-secondary">
+                  {language === 'mr' ? 'पुणे गुलटेकडी' : 'Pune Gultekdi'}
+                </span>
+                <p className="text-[14px] font-bold text-secondary">₹2,450/q</p>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-semibold text-outline">
+                  {language === 'mr' ? 'अंतर' : 'Distance'}
+                </span>
+                <p className="text-[14px] font-bold text-on-surface mt-0.5">145 km</p>
+              </div>
+            </div>
+
+            <button
+              onClick={onOpenRouteModal}
+              className="w-full h-12 rounded-xl bg-secondary-container hover:bg-secondary-container/80 text-on-secondary-container font-bold text-sm flex items-center justify-center gap-2 shadow-xs active:scale-[0.99] transition-all"
+              type="button"
+            >
+              <span>{language === 'mr' ? 'मार्ग आणि ट्रक भाडे तपासा' : 'Compare Routes & Truck Rates'}</span>
+              <span className="material-symbols-outlined text-[18px]">alt_route</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Voice Search Card */}
+        <div className="bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-surface-container-high/40 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onOpenVoiceModal}
+              className="w-12 h-12 rounded-full bg-secondary-container text-primary flex items-center justify-center shrink-0 hover:scale-105 active:scale-95 transition-transform"
+              type="button"
+              aria-label="Voice Search"
+            >
+              <span className="material-symbols-outlined text-[24px]">mic</span>
+            </button>
+            <div className="flex flex-col">
+              <h4 className="font-bold text-[15px] text-on-surface">
+                {language === 'mr' ? 'बोलून मंडी भाव जाणून घ्या?' : 'Need mandi rates by voice?'}
+              </h4>
+              <p className="text-[12px] text-on-surface-variant">
+                {language === 'mr' ? 'मराठी किंवा हिंदीमध्ये कधीही विचारा' : 'Speak in Marathi or Hindi anytime'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={onOpenVoiceModal}
+            className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 hover:bg-primary-container shadow-xs active:scale-95 transition-transform"
+            type="button"
+            aria-label="Activate voice mic"
+          >
+            <span className="material-symbols-outlined text-[20px]">graphic_eq</span>
+          </button>
+        </div>
+
+        {/* Agmarknet Verification Footnote */}
+        <div className="py-2 text-center text-outline">
+          <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-on-surface-variant">
+            <span className="material-symbols-outlined text-[15px] text-secondary">verified</span>
+            <span>Agmarknet Verified Feed</span>
+          </div>
+          <p className="text-[11px] text-outline mt-0.5 leading-relaxed max-w-sm mx-auto">
+            {language === 'mr'
+              ? 'बाजार (मोडल) दरांवर आधारित. प्रत्यक्ष दर प्रतवारीनुसार बदलू शकतात. २० मिनिटांपूर्वी अपडेट केले.'
+              : 'Based on market (modal) prices. Your actual price may differ. Data updated 20 mins ago from Agmarknet.'}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+
+import React, { useState } from 'react';
+import { Language, MandiItem } from '../types';
+import { ASSETS, BEST_MANDIS } from '../data/mockData';
+
+interface MandiDetailsScreenProps {
+  language: Language;
+  onOpenHarvestCalculator: () => void;
+  onOpenMandiModal: (mandi: MandiItem) => void;
+  onOpenTelegramModal: () => void;
+  onNavigateHome: () => void;
+}
+
+export const MandiDetailsScreen: React.FC<MandiDetailsScreenProps> = ({
+  language,
+  onOpenHarvestCalculator,
+  onOpenMandiModal,
+  onOpenTelegramModal,
+}) => {
+  const [selectedMandiId, setSelectedMandiId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'all' | 'nearest' | 'highest-net'>('all');
+  const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
+
+  const displayedMandis = BEST_MANDIS.filter((m) => {
+    if (activeTab === 'nearest') return m.distanceKm <= 20;
+    if (activeTab === 'highest-net') return m.netTakeHome >= 1420;
+    return true;
+  });
+
+  return (
+    <div className="flex-1 flex flex-col relative w-full pt-16 pb-28 bg-surface px-margin max-w-xl mx-auto">
+      <div className="flex flex-col w-full pb-6">
+        
+        {/* Top Hero Produce Showcase */}
+        <div className="relative w-full h-[210px] rounded-2xl overflow-hidden shadow-md bg-surface-container mt-2">
+          <img
+            src={ASSETS.onionSacksHero}
+            alt="Fresh red onions in burlap sacks"
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-on-background/90 via-on-background/40 to-transparent"></div>
+
+          <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end text-on-primary">
+            <div className="flex items-center gap-space-xs mb-1">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-xs font-semibold">
+                {language === 'mr' ? 'नाशिक हब' : 'Nashik Hub'}
+              </span>
+              <span className="text-xs text-surface-container-high opacity-90 font-medium">
+                {language === 'mr' ? 'गावराण / रब्बी दर्जा' : 'Garva / Rabi Quality'}
+              </span>
+            </div>
+
+            <div className="flex items-end justify-between gap-2">
+              <div className="min-w-0">
+                <h2 className="text-[24px] font-extrabold tracking-tight text-on-primary truncate">
+                  {language === 'mr' ? 'लाल कांदा (Nashik Lal)' : 'Red Onion (लाल कांदा)'}
+                </h2>
+                <p className="text-[17px] text-primary-fixed font-bold mt-0.5">
+                  ₹1,420{' '}
+                  <span className="text-xs text-inverse-on-surface opacity-80 font-normal">
+                    {language === 'mr' ? '/ क्विंटल (सरासरी भाव)' : '/ quintal (Modal)'}
+                  </span>
+                </p>
+              </div>
+
+              <div className="shrink-0 flex items-center gap-1 bg-surface-container-lowest/95 backdrop-blur-md px-2.5 py-1.5 rounded-full shadow-sm text-secondary">
+                <span className="material-symbols-outlined text-[16px] font-bold">arrow_upward</span>
+                <span className="text-xs font-bold">+4.8%</span>
+                <span className="text-[10px] text-outline hidden xs:inline">(₹65/qtl)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Harvest Advisory Banner */}
+        <div className="mt-4 p-4 rounded-2xl bg-secondary-container/40 shadow-sm relative overflow-hidden border border-secondary/20">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-secondary text-on-secondary flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+              <span className="material-symbols-outlined text-[22px]">psychology_alt</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-bold text-on-secondary-container tracking-wide uppercase">
+                  {language === 'mr' ? 'सल्ला: ५–७ दिवस थांबा' : 'Advisory: Wait 5–7 Days'}
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-semibold">
+                  {language === 'mr' ? 'उच्च विश्वासार्हता' : 'High Confidence'}
+                </span>
+              </div>
+              <p className="text-[13px] text-on-surface mt-1 leading-snug">
+                {language === 'mr'
+                  ? 'लासलगाव आणि पिंपळगाव बाजारात आवक कमी होण्याची शक्यता. अपेक्षित फायदा: '
+                  : 'Expected arrival slowdown in Lasalgaon & Pimpalgaon. Typical outcome: '}
+                <span className="font-bold text-secondary">+₹180/qtl</span>{' '}
+                <span className="text-on-surface-variant text-xs">
+                  {language === 'mr' ? '(संभाव्य कक्षा: +₹६० ते +₹२९०)' : '(Likely range: +₹60 to +₹290)'}
+                </span>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 14-Day Price Trend & Forecast (Interactive Graphic) */}
+        <div className="mt-4 rounded-2xl bg-surface-container-lowest p-4 shadow-sm border border-surface-container-high/40">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="text-[17px] font-bold text-on-surface">
+                {language === 'mr' ? '१४-दिवसीय भाव कल आणि अंदाज' : '14-Day Price Trend & Forecast'}
+              </h3>
+              <p className="text-[11px] text-on-surface-variant mt-0.5">
+                {language === 'mr'
+                  ? 'मागील ७ दिवसांचे प्रत्यक्ष भाव + पुढील ७ दिवसांचे अंदाज क्षेत्र'
+                  : 'Past 7 days modal price + 7 days forecast envelope'}
+              </p>
+            </div>
+            <span className="material-symbols-outlined text-outline text-[22px]">show_chart</span>
+          </div>
+
+          {/* Interactive Chart Canvas SVG */}
+          <div className="mt-3 relative w-full overflow-hidden">
+            <svg
+              className="w-full h-44 overflow-visible cursor-crosshair"
+              preserveAspectRatio="none"
+              viewBox="0 0 350 170"
+            >
+              <defs>
+                {/* Shaded range fill */}
+                <linearGradient id="rangeBand" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="#baccb4" stopOpacity="0.55" />
+                  <stop offset="100%" stopColor="#baccb4" stopOpacity="0.1" />
+                </linearGradient>
+                {/* Grid styling */}
+                <pattern id="gridLines" patternUnits="userSpaceOnUse" width="350" height="35">
+                  <line x1="36" x2="350" y1="35" y2="35" stroke="#d9e6d5" strokeWidth="1" strokeDasharray="3,3" />
+                </pattern>
+              </defs>
+
+              {/* Background horizontal guidelines */}
+              <rect x="36" y="10" width="314" height="120" fill="url(#gridLines)" />
+
+              {/* Y-Axis Labels */}
+              <text x="30" y="24" fill="#747871" fontSize="10" fontWeight="500" textAnchor="end">₹1,750</text>
+              <text x="30" y="60" fill="#747871" fontSize="10" fontWeight="500" textAnchor="end">₹1,600</text>
+              <text x="30" y="95" fill="#747871" fontSize="10" fontWeight="500" textAnchor="end">₹1,450</text>
+              <text x="30" y="130" fill="#747871" fontSize="10" fontWeight="500" textAnchor="end">₹1,300</text>
+
+              {/* Divider line representing 'Today' */}
+              <line x1="175" x2="175" y1="12" y2="135" stroke="#c4c8bf" strokeWidth="1.5" strokeDasharray="2,2" />
+              <rect x="156" y="6" width="38" height="14" rx="7" fill="#dfecdb" />
+              <text x="175" y="16.5" fill="#3b4b39" fontSize="9" fontWeight="bold" textAnchor="middle">TODAY</text>
+
+              {/* Target Trigger Line (₹1,650) */}
+              <line x1="36" x2="346" y1="48" y2="48" stroke="#ba1a1a" strokeWidth="1.2" strokeDasharray="4,4" opacity="0.75" />
+              <text x="344" y="44" fill="#ba1a1a" fontSize="9" fontWeight="600" textAnchor="end">
+                {language === 'mr' ? 'विक्री लक्ष्य ₹१,६५०' : 'Sell Target ₹1,650'}
+              </text>
+
+              {/* Forecast Area Band (Day 0 to +7) */}
+              <polygon
+                points="175,102 210,85 250,68 295,45 345,34 345,98 295,106 250,112 210,116 175,102"
+                fill="url(#rangeBand)"
+              />
+
+              {/* Forecast Upper & Lower Bounds */}
+              <path d="M 175 102 Q 250 56 345 34" fill="none" stroke="#687965" strokeWidth="1" strokeDasharray="2,2" />
+              <path d="M 175 102 Q 250 110 345 98" fill="none" stroke="#687965" strokeWidth="1" strokeDasharray="2,2" />
+
+              {/* Historical Trajectory (Past 7 Days to Today) */}
+              <path
+                d="M 40 126 L 62 120 L 85 124 L 108 114 L 130 110 L 152 106 L 175 102"
+                fill="none"
+                stroke="#50604d"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Forecast Median Expected Line */}
+              <path
+                d="M 175 102 L 210 92 L 250 82 L 295 64 L 345 52"
+                fill="none"
+                stroke="#4c6546"
+                strokeWidth="2.5"
+                strokeDasharray="4,4"
+                strokeLinecap="round"
+              />
+
+              {/* Historical Dots */}
+              <circle cx="40" cy="126" r="3" fill="#50604d" />
+              <circle cx="85" cy="124" r="3" fill="#50604d" />
+              <circle cx="130" cy="110" r="3" fill="#50604d" />
+
+              {/* Today Node with Badge */}
+              <circle
+                cx="175"
+                cy="102"
+                r="5"
+                fill="#f0fdec"
+                stroke="#50604d"
+                strokeWidth="3"
+                className="cursor-pointer"
+                onMouseEnter={() => setHoveredPoint('today')}
+              />
+              <rect x="140" y="112" width="70" height="18" rx="6" fill="#50604d" />
+              <text x="175" y="124" fill="#ffffff" fontSize="10" fontWeight="bold" textAnchor="middle">₹1,420</text>
+
+              {/* Day +5 Highlight Node */}
+              <circle
+                cx="295"
+                cy="64"
+                r="4.5"
+                fill="#f0fdec"
+                stroke="#4c6546"
+                strokeWidth="2.5"
+                className="cursor-pointer"
+                onMouseEnter={() => setHoveredPoint('day5')}
+              />
+              <rect x="264" y="24" width="62" height="18" rx="6" fill="#ceebc4" />
+              <text x="295" y="36.5" fill="#0a2008" fontSize="9.5" fontWeight="bold" textAnchor="middle">+5d: ₹1,600</text>
+
+              {/* X-Axis Timeline Dates */}
+              <text x="40" y="152" fill="#747871" fontSize="9.5" textAnchor="middle">7d ago</text>
+              <text x="108" y="152" fill="#747871" fontSize="9.5" textAnchor="middle">3d ago</text>
+              <text x="175" y="152" fill="#131e14" fontSize="9.5" fontWeight="bold" textAnchor="middle">Today</text>
+              <text x="250" y="152" fill="#747871" fontSize="9.5" textAnchor="middle">+3 Days</text>
+              <text x="330" y="152" fill="#747871" fontSize="9.5" textAnchor="middle">+7 Days</text>
+            </svg>
+          </div>
+
+          {/* Interactive Forecast Explanation */}
+          {hoveredPoint && (
+            <div className="mt-2 text-xs bg-surface-container p-2 rounded-lg text-on-surface-variant flex items-center justify-between">
+              <span>
+                {hoveredPoint === 'today'
+                  ? (language === 'mr' ? 'आजचा दर: ₹१,४२० • आवक स्थिर' : "Today: ₹1,420 • Steady Arrival")
+                  : (language === 'mr' ? '५ दिवसांनंतर: ₹१,६०० • नफा +₹१८०/क्विं' : "In 5 Days: ₹1,600 • Expected gain +₹180/qtl")}
+              </span>
+              <button
+                onClick={onOpenHarvestCalculator}
+                className="text-primary font-bold hover:underline"
+              >
+                {language === 'mr' ? 'नफा मोजा' : 'Calculate Profit'}
+              </button>
+            </div>
+          )}
+
+          {/* Chart Legend Matrix */}
+          <div className="mt-2 pt-3 bg-surface-container-low rounded-xl px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs text-on-surface-variant">
+            <div className="flex items-center gap-1.5">
+              <span className="w-3.5 h-1 bg-primary rounded-full inline-block"></span>
+              <span>{language === 'mr' ? 'प्रत्यक्ष' : 'Actual'}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3.5 h-2 bg-primary-fixed-dim rounded inline-block"></span>
+              <span>{language === 'mr' ? 'संभाव्य कक्षा' : 'Likely Range'}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3.5 h-0.5 border-b-2 border-dashed border-secondary inline-block"></span>
+              <span>{language === 'mr' ? 'अंदाजित' : 'Predicted'}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-0.5 border-b border-error inline-block"></span>
+              <span className="text-error">{language === 'mr' ? 'लक्ष्य ₹१,६५०' : 'Target ₹1,650'}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Best Mandis Ranking Section */}
+        <div className="mt-6 flex flex-col gap-space-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-[17px] font-bold text-on-surface">
+                {language === 'mr' ? 'आजचे सर्वोत्तम बाजार' : 'Best Mandis Today'}
+              </h3>
+              <p className="text-[11px] text-on-surface-variant">
+                {language === 'mr'
+                  ? 'वाहतूक खर्च वजा जाता सर्वाधिक निव्वळ नफ्यानुसार क्रमवारी'
+                  : 'Ranked by highest net return after transport cost'}
+              </p>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setActiveTab(activeTab === 'all' ? 'nearest' : 'all')}
+                className="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-semibold flex items-center gap-1 hover:bg-surface-container-highest transition-colors"
+                type="button"
+              >
+                <span className="material-symbols-outlined text-[15px]">tune</span>
+                <span>{activeTab === 'all' ? 'Filters' : 'Nearest'}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Mandi Cards List */}
+          {displayedMandis.map((mandi) => {
+            const isSelected = selectedMandiId === mandi.id;
+
+            return (
+              <div
+                key={mandi.id}
+                onClick={() => {
+                  setSelectedMandiId(mandi.id);
+                  onOpenMandiModal(mandi);
+                }}
+                className={`rounded-2xl bg-surface-container-lowest p-4 shadow-sm relative overflow-hidden border transition-all cursor-pointer ${
+                  isSelected ? 'border-primary ring-2 ring-primary/20' : 'border-surface-container-high/40 hover:border-primary/40'
+                }`}
+              >
+                {/* Highest Net Banner */}
+                {mandi.isHighestNet && (
+                  <div className="absolute top-0 right-0 bg-secondary-container px-3 py-1 rounded-bl-xl shadow-xs">
+                    <span className="text-[11px] font-bold text-on-secondary-container flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[13px]">star</span>
+                      <span>{language === 'mr' ? 'सर्वाधिक नफा' : 'Highest Net'}</span>
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`w-11 h-11 rounded-xl flex items-center justify-center font-bold text-lg shrink-0 ${
+                      mandi.isHighestNet
+                        ? 'bg-surface-container-high text-primary'
+                        : 'bg-surface-container text-on-surface-variant'
+                    }`}
+                  >
+                    {mandi.rank}
+                  </div>
+
+                  <div className="flex-1 min-w-0 pr-14">
+                    <h4 className="text-[16px] font-bold text-on-surface truncate">
+                      {mandi.name}
+                    </h4>
+                    <p className="text-xs text-on-surface-variant flex items-center gap-1 mt-0.5">
+                      <span className="material-symbols-outlined text-[14px]">distance</span>
+                      <span>{mandi.distanceKm} km away • {mandi.location}</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Data breakdown box */}
+                <div className="mt-3.5 p-3 rounded-xl bg-surface-container-low flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] font-medium text-outline">
+                      {language === 'mr' ? 'हाती येणारा निव्वळ दर' : 'Net Take-Home'}
+                    </span>
+                    <p className="text-[20px] text-secondary font-extrabold leading-tight">
+                      ₹{mandi.netTakeHome.toLocaleString()}{' '}
+                      <span className="text-xs font-normal text-on-surface-variant">/ qtl</span>
+                    </p>
+                  </div>
+
+                  <div className="text-right">
+                    <div className="text-xs text-on-surface-variant">
+                      {language === 'mr' ? 'मोडल भाव:' : 'Modal:'}{' '}
+                      <span className="font-semibold text-on-surface">₹{mandi.modalPrice.toLocaleString()}</span>
+                    </div>
+                    <div className="text-xs text-error font-medium mt-0.5">
+                      {language === 'mr' ? 'वाहतूक खर्च:' : 'Freight:'} -₹{mandi.freightCost}/qtl
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between text-xs text-on-surface-variant pt-2 border-t border-surface-container-high/30">
+                  <div className="flex items-center gap-1">
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        mandi.arrivalTrendType === 'positive'
+                          ? 'bg-secondary'
+                          : mandi.arrivalTrendType === 'steady'
+                          ? 'bg-outline'
+                          : 'bg-error'
+                      }`}
+                    ></span>
+                    <span>
+                      {language === 'mr' ? 'आवक:' : 'Arrival:'}{' '}
+                      {mandi.arrivalVolume.toLocaleString()} qtl ({mandi.arrivalTrend})
+                    </span>
+                  </div>
+
+                  <span className="text-primary font-semibold flex items-center gap-0.5">
+                    {language === 'mr' ? 'तपशील पहा' : 'View details'}{' '}
+                    <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Transparent Regulatory & Methodology Footnote */}
+        <div className="mt-4 px-3 py-3 rounded-xl bg-surface-container/60 flex items-start gap-2 text-on-surface-variant border border-surface-container-high/30">
+          <span className="material-symbols-outlined text-[16px] text-outline mt-0.5 shrink-0">info</span>
+          <p className="text-xs leading-relaxed text-outline">
+            {language === 'mr'
+              ? 'अगमार्कनेट मोडल लिलाव बंद भावांवर आधारित. मिनी ट्रक वाहतूक खर्च ₹१.८ प्रति किमी प्रति क्विंटल अधिक लोडिंग धरून मोजला आहे.'
+              : 'Based on Agmarknet modal auction closing prices. Transport estimated via open mini-truck rates at ₹1.8/km/quintal with standard loading allowance.'}
+          </p>
+        </div>
+
+        {/* Sticky Bottom Personalized Guidance Pill Card */}
+        <div className="fixed bottom-0 left-0 right-0 p-3 bg-surface/90 backdrop-blur-xl shadow-lg z-40 border-t border-surface-container-high/40">
+          <div className="max-w-xl mx-auto">
+            <button
+              onClick={onOpenHarvestCalculator}
+              className="w-full h-[54px] rounded-2xl bg-primary hover:bg-primary-container text-on-primary px-4 flex items-center justify-between shadow-md active:scale-[0.99] transition-all"
+              type="button"
+            >
+              <div className="flex items-center gap-3 text-left">
+                <div className="w-9 h-9 rounded-xl bg-surface-container-lowest/20 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[20px] text-on-primary">send</span>
+                </div>
+                <div>
+                  <div className="text-sm font-bold flex items-center gap-1.5 leading-tight text-white">
+                    <span>{language === 'mr' ? 'माझ्या पिकासाठी टेलिग्रामवर सल्ला घ्या' : 'Ask on Telegram for My Harvest'}</span>
+                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  </div>
+                  <p className="text-xs text-primary-fixed opacity-90 leading-tight">
+                    {language === 'mr'
+                      ? 'तुमचे क्विंटल टाका आणि अचूक वेळ ठरवा'
+                      : 'Enter your quintals & get custom timing'}
+                  </p>
+                </div>
+              </div>
+              <span className="material-symbols-outlined text-[22px] text-primary-fixed">forum</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+
+
+import React, { useState } from 'react';
+import { Language, ScreenType, MandiItem } from '../types';
+
+interface MarketsScreenProps {
+  language: Language;
+  onNavigate: (screen: ScreenType) => void;
+  onSelectMandi: (mandi: MandiItem) => void;
+}
+
+export const MarketsScreen: React.FC<MarketsScreenProps> = ({
+  language,
+  onNavigate,
+  onSelectMandi,
+}) => {
+  const [selectedCrop, setSelectedCrop] = useState<'onion' | 'tomato' | 'soybean' | 'pomegranate'>('onion');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const mandisData: MandiItem[] = [
+    {
+      id: 'lasalgaon',
+      rank: 1,
+      name: 'Lasalgaon APMC',
+      distanceKm: 24,
+      location: 'Lasalgaon, Nashik',
+      netTakeHome: 1435,
+      modalPrice: 1480,
+      freightCost: 45,
+      arrivalVolume: 18400,
+      arrivalTrend: 'Moderate flow',
+      arrivalTrendType: 'positive',
+      isHighestNet: true,
+    },
+    {
+      id: 'pimpalgaon',
+      rank: 2,
+      name: 'Pimpalgaon Baswant APMC',
+      distanceKm: 14,
+      location: 'Nearest Yard, Niphad',
+      netTakeHome: 1415,
+      modalPrice: 1440,
+      freightCost: 25,
+      arrivalVolume: 14200,
+      arrivalTrend: 'Steady',
+      arrivalTrendType: 'steady',
+    },
+    {
+      id: 'nashik-dindori',
+      rank: 3,
+      name: 'Nashik Dindori Sub-Market',
+      distanceKm: 32,
+      location: 'Dindori Road, Nashik',
+      netTakeHome: 1350,
+      modalPrice: 1410,
+      freightCost: 60,
+      arrivalVolume: 9800,
+      arrivalTrend: 'Slow trading',
+      arrivalTrendType: 'negative',
+    },
+    {
+      id: 'pune-gultekdi',
+      rank: 4,
+      name: 'Pune Gultekdi Market Yard',
+      distanceKm: 145,
+      location: 'Pune APMC',
+      netTakeHome: 1520,
+      modalPrice: 1680,
+      freightCost: 160,
+      arrivalVolume: 22000,
+      arrivalTrend: 'Heavy rush',
+      arrivalTrendType: 'positive',
+    },
+    {
+      id: 'solapur',
+      rank: 5,
+      name: 'Solapur APMC',
+      distanceKm: 260,
+      location: 'Solapur Hub',
+      netTakeHome: 1310,
+      modalPrice: 1580,
+      freightCost: 270,
+      arrivalVolume: 11500,
+      arrivalTrend: 'Steady',
+      arrivalTrendType: 'steady',
+    },
+    {
+      id: 'vashi-mumbai',
+      rank: 6,
+      name: 'Vashi Navi Mumbai APMC',
+      distanceKm: 185,
+      location: 'Turbhe, Navi Mumbai',
+      netTakeHome: 1540,
+      modalPrice: 1750,
+      freightCost: 210,
+      arrivalVolume: 26000,
+      arrivalTrend: 'Moderate flow',
+      arrivalTrendType: 'positive',
+    },
+  ];
+
+  const filteredMandis = mandisData.filter((m) =>
+    m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    m.location.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="flex flex-col w-full pb-28 pt-16 max-w-xl mx-auto px-margin">
+      <div className="pt-2 pb-3">
+        <h2 className="text-[22px] font-bold text-on-surface">
+          {language === 'mr' ? 'महाराष्ट्र कृषी उत्पन्न बाजार समित्या' : 'Maharashtra APMC Mandis'}
+        </h2>
+        <p className="text-xs text-on-surface-variant">
+          {language === 'mr' ? 'अगमार्कनेट थेट लिलाव दर आणि वाहतूक खर्च वजा जाता निव्वळ नफा' : 'Real-time Agmarknet auctions & net take-home calculation'}
+        </p>
+      </div>
+
+      {/* Commodity Selector Chips */}
+      <div className="flex gap-2 overflow-x-auto pb-2 -mx-margin px-margin no-scrollbar">
+        {[
+          { id: 'onion', label: language === 'mr' ? 'कांदा' : 'Red Onion' },
+          { id: 'tomato', label: language === 'mr' ? 'टोमॅटो' : 'Tomato' },
+          { id: 'soybean', label: language === 'mr' ? 'सोयाबीन' : 'Soybean' },
+          { id: 'pomegranate', label: language === 'mr' ? 'डाळिंब' : 'Pomegranate' },
+        ].map((item) => (
+          <button
+            key={item.id}
+            onClick={() => setSelectedCrop(item.id as any)}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 ${
+              selectedCrop === item.id
+                ? 'bg-primary text-on-primary shadow-xs'
+                : 'bg-surface-container text-on-surface hover:bg-surface-container-high'
+            }`}
+            type="button"
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Search Input */}
+      <div className="my-2 relative">
+        <span className="material-symbols-outlined absolute left-3 top-2.5 text-[20px] text-outline">
+          search
+        </span>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder={language === 'mr' ? 'बाजार समिती किंवा शहर शोधा...' : 'Search mandi name or yard...'}
+          className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface-container-lowest border border-surface-container-high text-xs sm:text-sm outline-none text-on-surface"
+        />
+      </div>
+
+      {/* Mandis List */}
+      <div className="space-y-3 mt-2">
+        {filteredMandis.map((mandi) => (
+          <div
+            key={mandi.id}
+            onClick={() => {
+              onSelectMandi(mandi);
+              if (selectedCrop === 'onion') {
+                onNavigate('mandi-details');
+              }
+            }}
+            className="p-4 rounded-2xl bg-surface-container-lowest border border-surface-container-high/60 shadow-xs hover:border-primary transition-all cursor-pointer"
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold text-[15px] text-on-surface">{mandi.name}</h3>
+                  {mandi.isHighestNet && (
+                    <span className="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">
+                      ★ Top Net
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-on-surface-variant flex items-center gap-1 mt-0.5">
+                  <span className="material-symbols-outlined text-[14px]">distance</span>
+                  <span>{mandi.distanceKm} km • {mandi.location}</span>
+                </p>
+              </div>
+
+              <div className="text-right">
+                <span className="text-[10px] text-outline font-semibold uppercase">Net Rate</span>
+                <p className="font-extrabold text-[17px] text-secondary leading-tight">
+                  ₹{mandi.netTakeHome}<span className="text-[10px] text-outline font-normal">/q</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-3 gap-2 bg-surface-container p-2 rounded-xl text-center text-xs">
+              <div>
+                <span className="text-[10px] text-outline">Modal Rate</span>
+                <p className="font-bold text-on-surface">₹{mandi.modalPrice}</p>
+              </div>
+              <div>
+                <span className="text-[10px] text-outline">Freight</span>
+                <p className="font-bold text-error">-₹{mandi.freightCost}</p>
+              </div>
+              <div>
+                <span className="text-[10px] text-outline">Daily Arrival</span>
+                <p className="font-bold text-primary">{mandi.arrivalVolume.toLocaleString()} qtl</p>
+              </div>
+            </div>
+
+            <div className="mt-2.5 flex items-center justify-between text-[11px] text-outline pt-1">
+              <span>{mandi.arrivalTrend}</span>
+              <span className="text-primary font-semibold flex items-center gap-0.5">
+                {language === 'mr' ? 'तपशील उघडा' : 'View Mandi'} →
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+
+import React, { useState } from 'react';
+import { Language, ScreenType } from '../types';
+import { CROPS_AFFECTED } from '../data/mockData';
+
+interface MyCropsScreenProps {
+  language: Language;
+  onNavigate: (screen: ScreenType) => void;
+  onOpenHarvestCalculator: () => void;
+}
+
+export const MyCropsScreen: React.FC<MyCropsScreenProps> = ({
+  language,
+  onNavigate,
+  onOpenHarvestCalculator,
+}) => {
+  const [selectedCropId, setSelectedCropId] = useState<string>('onion-alert');
+
+  const plotDetails = [
+    {
+      id: 'onion-alert',
+      acreage: '4.5 Acres',
+      sowingDate: 'Nov 12',
+      expectedYield: '85 Quintals',
+      readiness: '92% - Curing in shade',
+      soilMoisture: '68% (Saturated)',
+      action: 'Hold dispatch for 3-5 days',
+    },
+    {
+      id: 'tomato-alert',
+      acreage: '3.0 Acres',
+      sowingDate: 'Dec 05',
+      expectedYield: '40 Quintals',
+      readiness: '80% - Peak fruiting',
+      soilMoisture: '62% (Moist)',
+      action: 'Spray bio-fungicide today',
+    },
+    {
+      id: 'soybean-alert',
+      acreage: '6.0 Acres',
+      sowingDate: 'Jul 20',
+      expectedYield: '75 Quintals',
+      readiness: '65% - Pod filling',
+      soilMoisture: '54% (Favorable)',
+      action: 'Monitor seed enlargement',
+    },
+    {
+      id: 'pomegranate-alert',
+      acreage: '4.5 Acres',
+      sowingDate: 'Perennial',
+      expectedYield: '110 Quintals',
+      readiness: '75% - Maturation',
+      soilMoisture: '50% (Adequate)',
+      action: 'Clear drainage channels',
+    },
+  ];
+
+  return (
+    <div className="flex flex-col w-full pb-28 pt-16 max-w-xl mx-auto px-margin">
+      <div className="pt-2 pb-4 flex items-center justify-between">
+        <div>
+          <h2 className="text-[22px] font-bold text-on-surface">
+            {language === 'mr' ? 'माझी पिके आणि शेतजमीन' : 'My Monitored Crops'}
+          </h2>
+          <p className="text-xs text-on-surface-variant">
+            {language === 'mr' ? 'दिंडोरी तालुका • एकूण १८ एकर' : 'Dindori Taluka • 18 Total Acres'}
+          </p>
+        </div>
+
+        <button
+          onClick={onOpenHarvestCalculator}
+          className="px-3 py-1.5 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold flex items-center gap-1 hover:bg-secondary-container/80 transition-all active:scale-95"
+          type="button"
+        >
+          <span className="material-symbols-outlined text-[16px]">calculate</span>
+          <span>{language === 'mr' ? 'नफा मोजा' : 'Log Harvest'}</span>
+        </button>
+      </div>
+
+      {/* Crops List */}
+      <div className="space-y-4">
+        {CROPS_AFFECTED.map((crop) => {
+          const detail = plotDetails.find((p) => p.id === crop.id);
+          const isSelected = selectedCropId === crop.id;
+
+          return (
+            <div
+              key={crop.id}
+              onClick={() => setSelectedCropId(crop.id)}
+              className={`p-4 rounded-2xl bg-surface-container-lowest border transition-all cursor-pointer shadow-sm ${
+                isSelected
+                  ? 'border-primary ring-2 ring-primary/20'
+                  : 'border-surface-container-high/60 hover:border-primary/40'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={crop.imageUrl}
+                    alt={crop.name.en}
+                    className="w-14 h-14 rounded-xl object-cover shadow-xs"
+                  />
+                  <div>
+                    <h3 className="font-bold text-[16px] text-on-surface">
+                      {crop.name[language]}
+                    </h3>
+                    <p className="text-xs text-on-surface-variant">
+                      {crop.plot} • {detail?.acreage}
+                    </p>
+                    <span className="text-[11px] font-semibold text-primary">
+                      {crop.stage[language]}
+                    </span>
+                  </div>
+                </div>
+
+                <span
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0 ${
+                    crop.statusType === 'urgent'
+                      ? 'bg-error/15 text-error'
+                      : crop.statusType === 'alert'
+                      ? 'bg-[#EEE0D1] text-[#4E453A]'
+                      : crop.statusType === 'favorable'
+                      ? 'bg-secondary-container text-on-secondary-container'
+                      : 'bg-surface-variant text-on-surface-variant'
+                  }`}
+                >
+                  {crop.statusTag[language]}
+                </span>
+              </div>
+
+              {/* Agronomic status grid */}
+              <div className="grid grid-cols-3 gap-2 bg-surface-container p-2.5 rounded-xl text-center mt-3 text-xs">
+                <div>
+                  <span className="text-[10px] text-outline uppercase font-semibold">
+                    {language === 'mr' ? 'अपेक्षित उत्पादन' : 'Est. Yield'}
+                  </span>
+                  <p className="font-bold text-on-surface mt-0.5">{detail?.expectedYield}</p>
+                </div>
+                <div className="border-x border-outline-variant/40">
+                  <span className="text-[10px] text-outline uppercase font-semibold">
+                    {language === 'mr' ? 'माती ओलावा' : 'Soil Moisture'}
+                  </span>
+                  <p className="font-bold text-secondary mt-0.5">{detail?.soilMoisture}</p>
+                </div>
+                <div>
+                  <span className="text-[10px] text-outline uppercase font-semibold">
+                    {language === 'mr' ? 'काढणी स्थिती' : 'Readiness'}
+                  </span>
+                  <p className="font-bold text-primary mt-0.5">{detail?.readiness}</p>
+                </div>
+              </div>
+
+              <div className="mt-3 flex items-center justify-between pt-2 border-t border-surface-container-high/40 text-xs">
+                <span className="text-on-surface-variant font-medium">
+                  {language === 'mr' ? 'शिफारस: ' : 'Recommendation: '}
+                  <strong className="text-on-surface">{detail?.action}</strong>
+                </span>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (crop.id === 'onion-alert') {
+                      onNavigate('mandi-details');
+                    } else {
+                      onNavigate('weather');
+                    }
+                  }}
+                  className="text-primary font-bold flex items-center gap-1 hover:underline"
+                  type="button"
+                >
+                  <span>{language === 'mr' ? 'तपशील' : 'Details'}</span>
+                  <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+
+
+import React from 'react';
+import { Language } from '../types';
+import { ASSETS } from '../data/mockData';
+
+interface ProfileScreenProps {
+  language: Language;
+  onLanguageChange: (lang: Language) => void;
+  onOpenNotifications: () => void;
+  onOpenLocationModal: () => void;
+}
+
+export const ProfileScreen: React.FC<ProfileScreenProps> = ({
+  language,
+  onLanguageChange,
+  onOpenNotifications,
+  onOpenLocationModal,
+}) => {
+  return (
+    <div className="flex flex-col w-full pb-28 pt-16 max-w-xl mx-auto px-margin">
+      {/* Profile Card */}
+      <div className="p-4 rounded-2xl bg-surface-container-lowest border border-surface-container-high/60 shadow-sm mt-2 flex items-center gap-4">
+        <img
+          src={ASSETS.profileAvatar}
+          alt="Ramesh Jadhav"
+          className="w-16 h-16 rounded-full object-cover ring-2 ring-primary/40 shrink-0"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-[18px] font-bold text-on-surface truncate">
+              {language === 'mr' ? 'रमेश जाधव' : 'Ramesh Jadhav'}
+            </h2>
+            <span className="material-symbols-outlined text-[16px] text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>
+              verified
+            </span>
+          </div>
+          <p className="text-xs text-on-surface-variant">
+            {language === 'mr' ? 'शेतकरी • दिंडोरी, नाशिक' : 'Progressive Farmer • Dindori, Nashik'}
+          </p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-semibold">
+              {language === 'mr' ? '१८ एकर जमीन' : '18 Acres Land'}
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-semibold">
+              Kisan ID: MH-NSK-4921
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Language Preferences */}
+      <div className="mt-4 p-4 rounded-2xl bg-surface-container-lowest border border-surface-container-high/60 shadow-xs">
+        <h3 className="font-bold text-[15px] text-on-surface flex items-center gap-2">
+          <span className="material-symbols-outlined text-[18px] text-primary">language</span>
+          <span>{language === 'mr' ? 'अॅप भाषा निवडा' : 'App Language'}</span>
+        </h3>
+        <p className="text-xs text-on-surface-variant mt-0.5">
+          {language === 'mr' ? 'हवामान, भाव आणि सल्ला मिळवण्यासाठी' : 'For market alerts, weather, and AI bot guidance'}
+        </p>
+
+        <div className="grid grid-cols-2 gap-2 mt-3">
+          <button
+            onClick={() => onLanguageChange('mr')}
+            className={`p-3 rounded-xl border text-center transition-all ${
+              language === 'mr'
+                ? 'border-primary bg-secondary-container/40 text-primary font-bold shadow-xs'
+                : 'border-surface-container-high bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
+            }`}
+            type="button"
+          >
+            <div className="text-sm font-bold">मराठी</div>
+            <div className="text-[10px] opacity-75">Marathi Native</div>
+          </button>
+
+          <button
+            onClick={() => onLanguageChange('en')}
+            className={`p-3 rounded-xl border text-center transition-all ${
+              language === 'en'
+                ? 'border-primary bg-secondary-container/40 text-primary font-bold shadow-xs'
+                : 'border-surface-container-high bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
+            }`}
+            type="button"
+          >
+            <div className="text-sm font-bold">English</div>
+            <div className="text-[10px] opacity-75">English & Transliteration</div>
+          </button>
+        </div>
+      </div>
+
+      {/* Farm Location & Mandi Radius */}
+      <div className="mt-4 p-4 rounded-2xl bg-surface-container-lowest border border-surface-container-high/60 shadow-xs">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px] text-primary">location_on</span>
+            <h3 className="font-bold text-[15px] text-on-surface">
+              {language === 'mr' ? 'शेत स्थान व अंतर' : 'Farm Location & Radius'}
+            </h3>
+          </div>
+          <button
+            onClick={onOpenLocationModal}
+            className="text-xs font-bold text-primary hover:underline"
+            type="button"
+          >
+            {language === 'mr' ? 'बदला' : 'Change'}
+          </button>
+        </div>
+
+        <div className="mt-2.5 p-3 rounded-xl bg-surface-container text-xs flex items-center justify-between">
+          <div>
+            <p className="font-bold text-on-surface">Dindori Taluka, Block 4B</p>
+            <p className="text-outline text-[11px]">Nashik District, Maharashtra</p>
+          </div>
+          <span className="px-2 py-1 rounded-lg bg-surface-container-lowest font-bold text-secondary text-[11px]">
+            GPS Synced
+          </span>
+        </div>
+      </div>
+
+      {/* Telegram & WhatsApp Integration */}
+      <div className="mt-4 p-4 rounded-2xl bg-surface-container-lowest border border-surface-container-high/60 shadow-xs">
+        <h3 className="font-bold text-[15px] text-on-surface flex items-center gap-2">
+          <span className="material-symbols-outlined text-[18px] text-primary">send</span>
+          <span>{language === 'mr' ? 'थेट संदेश व अलर्ट' : 'Instant Message Alerts'}</span>
+        </h3>
+        <p className="text-xs text-on-surface-variant mt-0.5">
+          {language === 'mr' ? 'टेलिग्राम आणि व्हॉट्सअॅपवर दररोज सकाळी ७ वाजता भाव मिळवा' : 'Receive 7 AM daily APMC alerts directly on Telegram'}
+        </p>
+
+        <div className="mt-3 flex items-center justify-between p-3 rounded-xl bg-[#EAF7E6] border border-[#CEEBC4]">
+          <div className="flex items-center gap-2.5">
+            <span className="material-symbols-outlined text-[20px] text-secondary">check_circle</span>
+            <div>
+              <p className="text-xs font-bold text-on-surface">@SellSmart_NashikBot</p>
+              <p className="text-[11px] text-outline">Connected (+91 98220 •••••)</p>
+            </div>
+          </div>
+          <span className="text-[11px] font-bold text-secondary">Active</span>
+        </div>
+      </div>
+
+      {/* Notifications Shortcut */}
+      <div className="mt-4">
+        <button
+          onClick={onOpenNotifications}
+          className="w-full p-4 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-colors flex items-center justify-between text-on-surface font-semibold text-xs sm:text-sm"
+          type="button"
+        >
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">notifications_active</span>
+            <span>{language === 'mr' ? 'अलीकडील सूचना व इशारे पहा' : 'View Recent Alerts & Weather Warnings'}</span>
+          </div>
+          <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+
+import React, { useState } from 'react';
+import { Language, WeatherDay } from '../types';
+import { ASSETS, CROPS_AFFECTED, SEVEN_DAY_FORECAST } from '../data/mockData';
+
+interface WeatherScreenProps {
+  language: Language;
+  onOpenLocationModal: () => void;
+  onOpenBotDrawer: (initialQuery?: string) => void;
+  onNavigateToCropDetail: (cropId: string) => void;
+}
+
+export const WeatherScreen: React.FC<WeatherScreenProps> = ({
+  language,
+  onOpenLocationModal,
+  onOpenBotDrawer,
+  onNavigateToCropDetail,
+}) => {
+  const [selectedDayIndex, setSelectedDayIndex] = useState(0);
+  const currentDay: WeatherDay = SEVEN_DAY_FORECAST[selectedDayIndex] || SEVEN_DAY_FORECAST[0];
+
+  return (
+    <div className="flex flex-col w-full pb-28 pt-16 max-w-xl mx-auto px-margin">
+      <div className="pt-space-sm pb-space-lg flex flex-col gap-space-md">
+        
+        {/* Location & Live Status Strip */}
+        <div className="flex items-center justify-between gap-space-sm bg-surface-container-lowest p-space-sm rounded-xl shadow-[0_4px_16px_rgba(31,42,31,0.04)] border border-surface-container-high/40">
+          <button
+            onClick={onOpenLocationModal}
+            className="flex items-center gap-space-xs text-left min-w-0 group"
+            type="button"
+          >
+            <span
+              className="material-symbols-outlined text-[20px] text-primary shrink-0"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              location_on
+            </span>
+            <div className="flex flex-col min-w-0">
+              <div className="flex items-center gap-1">
+                <span className="font-title-md text-title-md text-on-surface truncate font-bold">
+                  {language === 'mr' ? 'नाशिक, महाराष्ट्र' : 'Nashik, Maharashtra'}
+                </span>
+                <span className="material-symbols-outlined text-[16px] text-outline shrink-0 group-hover:translate-y-0.5 transition-transform">
+                  expand_more
+                </span>
+              </div>
+              <span className="font-label-sm text-label-sm text-on-surface-variant truncate">
+                {language === 'mr' ? 'दिंडोरी तालुका • ब्लॉक ४बी' : 'Dindori Taluka • Block 4B'}
+              </span>
+            </div>
+          </button>
+
+          <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container shrink-0">
+            <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            <span className="font-label-sm text-label-sm font-semibold">
+              {language === 'mr' ? '१० मि. पूर्वी अपडेट' : 'Updated 10m ago'}
+            </span>
+          </div>
+        </div>
+
+        {/* Weather Hero Card with Ambient Imagery & Overlay */}
+        <div className="relative overflow-hidden rounded-2xl bg-surface-container shadow-[0_8px_24px_rgba(31,42,31,0.08)]">
+          <div
+            className="w-full h-44 bg-cover bg-center transition-all duration-300"
+            style={{ backgroundImage: `url('${ASSETS.weatherHeroBg}')` }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-inverse-surface via-inverse-surface/60 to-transparent"></div>
+
+          {/* Temperature & Condition Callout inside Hero */}
+          <div className="absolute inset-x-0 bottom-0 p-space-md flex flex-col justify-end text-inverse-on-surface">
+            <div className="flex items-end justify-between">
+              <div className="flex flex-col">
+                <div className="flex items-baseline gap-1">
+                  <span className="font-headline-xl text-[44px] leading-tight font-extrabold tracking-tight">
+                    {currentDay.tempMax}°
+                  </span>
+                  <span className="font-title-lg text-title-lg text-secondary-fixed font-bold">C</span>
+                </div>
+                <p className="font-body-md text-body-md font-medium text-inverse-on-surface/90">
+                  {language === 'mr'
+                    ? `जाणवणारे तापमान ${currentDay.tempMax + 3}°C • दमट वारे`
+                    : `Feels like ${currentDay.tempMax + 3}°C • Humid Breeze`}
+                </p>
+              </div>
+
+              <div className="flex flex-col items-end text-right">
+                <span
+                  className="material-symbols-outlined text-[36px] text-secondary-fixed"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  {currentDay.conditionIcon}
+                </span>
+                <span className="font-label-md text-label-md text-secondary-fixed font-semibold mt-0.5">
+                  {currentDay.dayLabel[language]} • {currentDay.conditionIcon === 'rainy' ? (language === 'mr' ? 'अंशतः ढगाळ' : 'Partly Cloudy') : (language === 'mr' ? 'सूर्यप्रकाश' : 'Clear Sky')}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Key Metrics 4-Grid */}
+        <div className="grid grid-cols-2 gap-space-sm">
+          {/* Rain Chance */}
+          <div className="bg-surface-container-lowest p-space-sm rounded-xl shadow-[0_2px_12px_rgba(31,42,31,0.04)] flex items-center gap-3 border border-surface-container-high/40">
+            <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary shrink-0">
+              <span className="material-symbols-outlined text-[20px]">rainy</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-[11px]">
+                {language === 'mr' ? 'पावसाची शक्यता' : 'Rain Chance'}
+              </span>
+              <span className="font-title-md text-title-md text-on-surface font-bold">
+                {currentDay.rainChance}%{' '}
+                <span className="font-label-sm text-label-sm font-normal text-error">
+                  {currentDay.rainChance > 50 ? (language === 'mr' ? 'जास्त' : 'High') : (language === 'mr' ? 'कमी' : 'Low')}
+                </span>
+              </span>
+            </div>
+          </div>
+
+          {/* Humidity */}
+          <div className="bg-surface-container-lowest p-space-sm rounded-xl shadow-[0_2px_12px_rgba(31,42,31,0.04)] flex items-center gap-3 border border-surface-container-high/40">
+            <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-primary shrink-0">
+              <span className="material-symbols-outlined text-[20px]">humidity_percentage</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-[11px]">
+                {language === 'mr' ? 'हवेतील आर्द्रता' : 'Humidity'}
+              </span>
+              <span className="font-title-md text-title-md text-on-surface font-bold">
+                {currentDay.humidity}%
+              </span>
+            </div>
+          </div>
+
+          {/* Wind Speed */}
+          <div className="bg-surface-container-lowest p-space-sm rounded-xl shadow-[0_2px_12px_rgba(31,42,31,0.04)] flex items-center gap-3 border border-surface-container-high/40">
+            <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary shrink-0">
+              <span className="material-symbols-outlined text-[20px]">air</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-[11px]">
+                {language === 'mr' ? 'वाऱ्याचा वेग' : 'Wind Speed'}
+              </span>
+              <span className="font-title-md text-title-md text-on-surface font-bold">
+                {currentDay.windSpeed} km/h{' '}
+                <span className="font-label-sm text-label-sm font-normal text-outline">
+                  {currentDay.windDirection}
+                </span>
+              </span>
+            </div>
+          </div>
+
+          {/* Soil Moisture */}
+          <div className="bg-surface-container-lowest p-space-sm rounded-xl shadow-[0_2px_12px_rgba(31,42,31,0.04)] flex items-center gap-3 border border-surface-container-high/40">
+            <div className="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-primary shrink-0">
+              <span className="material-symbols-outlined text-[20px]">water_drop</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-[11px]">
+                {language === 'mr' ? 'मातीतील ओलावा' : 'Soil Moisture'}
+              </span>
+              <span className="font-title-md text-title-md text-on-surface font-bold">
+                {currentDay.soilMoisture}%{' '}
+                <span className="font-label-sm text-label-sm font-normal text-primary">
+                  {language === 'mr' ? 'संपृक्त' : currentDay.soilStatus}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Weather Advisory Banner */}
+        <div className="bg-error-container text-on-error-container p-space-md rounded-2xl flex items-start gap-space-sm shadow-[0_4px_16px_rgba(186,26,26,0.08)] border border-error/20">
+          <span
+            className="material-symbols-outlined text-[24px] text-error shrink-0 mt-0.5"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            warning
+          </span>
+          <div className="flex flex-col">
+            <span className="font-title-md text-title-md font-bold text-on-error-container">
+              {language === 'mr' ? 'तातडीचा ४८-तास काढणी इशारा' : 'Critical 48-Hour Harvest Alert'}
+            </span>
+            <p className="font-body-md text-body-md text-on-error-container/90 mt-1 leading-relaxed text-[13px]">
+              {language === 'mr'
+                ? 'दिंडोरी खोऱ्यात अवेळी पाऊस आणि जमिनीतील जास्त ओलाव्यामुळे कांदा साठवणुकीत सड आणि बुरशीजन्य रोगांचा मोठा धोका आहे.'
+                : 'High fungal disease and storage bulb rot risk across Dindori valley due to unseasonal post-harvest showers and saturated ground.'}
+            </p>
+          </div>
+        </div>
+
+        {/* Crops Affected Section */}
+        <div className="flex flex-col gap-space-sm mt-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[20px] text-primary">eco</span>
+              <h2 className="font-title-lg text-title-lg text-on-surface font-bold">
+                {language === 'mr' ? 'हवामानाचा प्रभाव असणारी पिके' : 'Crops Affected by Weather'}
+              </h2>
+            </div>
+            <span className="font-label-sm text-label-sm text-primary font-semibold">
+              {language === 'mr' ? '४ पिकांचे निरीक्षण' : '4 Monitored'}
+            </span>
+          </div>
+
+          {CROPS_AFFECTED.map((crop) => (
+            <div
+              key={crop.id}
+              onClick={() => onNavigateToCropDetail(crop.id)}
+              className="bg-surface-container-lowest p-space-md rounded-2xl shadow-[0_4px_16px_rgba(31,42,31,0.05)] border border-surface-container-high/40 flex flex-col gap-space-sm hover:border-primary/40 transition-colors cursor-pointer"
+            >
+              <div className="flex items-start justify-between gap-space-sm">
+                <div className="flex items-center gap-space-sm">
+                  <div
+                    className="w-12 h-12 rounded-xl bg-cover bg-center shrink-0 shadow-xs"
+                    style={{ backgroundImage: `url('${crop.imageUrl}')` }}
+                  />
+                  <div>
+                    <h3 className="font-title-md text-title-md text-on-surface font-bold">
+                      {crop.name[language]}
+                    </h3>
+                    <p className="font-label-sm text-label-sm text-on-surface-variant">
+                      {crop.plot} • {crop.stage[language]}
+                    </p>
+                  </div>
+                </div>
+
+                <span
+                  className={`px-2.5 py-1 rounded-full text-xs font-bold shrink-0 ${
+                    crop.statusType === 'urgent'
+                      ? 'bg-error/15 text-error'
+                      : crop.statusType === 'alert'
+                      ? 'bg-[#EEE0D1] text-[#4E453A]'
+                      : crop.statusType === 'favorable'
+                      ? 'bg-secondary-container text-on-secondary-container'
+                      : 'bg-surface-variant text-on-surface-variant'
+                  }`}
+                >
+                  {crop.statusTag[language]}
+                </span>
+              </div>
+
+              <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed text-[13px]">
+                {crop.description[language]}
+              </p>
+
+              {crop.actionLabel && (
+                <div className="bg-surface-container p-space-sm rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[18px] text-primary">
+                      {crop.actionType === 'dispatch' ? 'local_shipping' : crop.actionType === 'spray' ? 'science' : 'info'}
+                    </span>
+                    <span className="font-label-md text-label-md text-on-surface font-medium text-xs">
+                      {crop.actionLabel[language]}
+                    </span>
+                  </div>
+                  <span
+                    className={`font-label-md text-label-md font-bold text-xs ${
+                      crop.actionType === 'dispatch'
+                        ? 'text-error'
+                        : crop.actionType === 'spray'
+                        ? 'text-tertiary'
+                        : 'text-primary'
+                    }`}
+                  >
+                    {crop.actionValue[language]}
+                  </span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* 7-Day Agronomic Forecast Section */}
+        <div className="flex flex-col gap-space-sm mt-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[20px] text-primary">calendar_month</span>
+              <h2 className="font-title-lg text-title-lg text-on-surface font-bold">
+                {language === 'mr' ? '७-दिवसीय कृषी अंदाज' : '7-Day Agronomic Outlook'}
+              </h2>
+            </div>
+            <span className="font-label-sm text-label-sm text-outline">
+              {language === 'mr' ? 'नाशिक मंडी विभाग' : 'Nashik Mandi Zone'}
+            </span>
+          </div>
+
+          {/* Horizontal Daily Scroller */}
+          <div className="flex gap-2.5 overflow-x-auto pb-1 -mx-margin px-margin no-scrollbar">
+            {SEVEN_DAY_FORECAST.map((forecast, idx) => {
+              const isSelected = selectedDayIndex === idx;
+              return (
+                <button
+                  key={forecast.day}
+                  onClick={() => setSelectedDayIndex(idx)}
+                  type="button"
+                  className={`flex flex-col items-center p-3 rounded-2xl min-w-[76px] shrink-0 transition-all ${
+                    isSelected
+                      ? 'bg-primary text-on-primary shadow-[0_4px_12px_rgba(80,96,77,0.25)] scale-105'
+                      : 'bg-surface-container-lowest text-on-surface shadow-[0_2px_8px_rgba(31,42,31,0.04)] border border-surface-container-high/40 hover:bg-surface-container-low'
+                  }`}
+                >
+                  <span className={`font-label-sm text-xs uppercase tracking-wider ${isSelected ? 'opacity-90 font-bold' : 'text-on-surface-variant'}`}>
+                    {forecast.dayLabel[language]}
+                  </span>
+                  <span
+                    className={`material-symbols-outlined text-[24px] my-2 ${
+                      isSelected ? 'text-secondary-fixed' : forecast.rainMm > 10 ? 'text-primary' : 'text-secondary'
+                    }`}
+                  >
+                    {forecast.conditionIcon}
+                  </span>
+                  <span className="font-title-md text-title-md font-bold text-[15px]">
+                    {forecast.tempMax}°
+                  </span>
+                  <span className={`font-label-sm text-xs ${isSelected ? 'opacity-80' : 'text-outline'}`}>
+                    {forecast.tempMin}°
+                  </span>
+                  <span
+                    className={`mt-2 text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
+                      isSelected
+                        ? 'bg-on-primary/20 text-white'
+                        : forecast.rainMm > 15
+                        ? 'bg-secondary-container text-on-secondary-container'
+                        : 'bg-surface-container text-on-surface-variant'
+                    }`}
+                  >
+                    {forecast.rainMm} mm
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Mandi Logistics Safety Index Card */}
+          <div className="bg-surface-container-lowest p-space-md rounded-2xl shadow-[0_4px_16px_rgba(31,42,31,0.04)] border border-surface-container-high/40 flex flex-col gap-3 mt-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[20px] text-primary">rv_hookup</span>
+                <span className="font-title-md text-title-md text-on-surface font-bold text-[15px]">
+                  {language === 'mr' ? 'मंडी वाहतूक सुरक्षितता निर्देशांक' : 'Mandi Logistics Safety Index'}
+                </span>
+              </div>
+              <span className="font-label-md text-label-md px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-bold text-xs">
+                {language === 'mr' ? '८/१० (शुक्रवारपासून)' : '8/10 from Friday'}
+              </span>
+            </div>
+
+            <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed text-[13px]">
+              {language === 'mr'
+                ? 'लासलगाव व पिंपळगाव मंड्यांकडे उघड्या ट्रॅक्टर व ट्रकने माल नेल्यास आज व बुधवारी पावसाने नुकसान होण्याचा मोठा धोका आहे. शुक्रवार सकाळपासून सुरक्षित वाहतूक सुरू करता येईल.'
+                : 'Open-top tractor and truck freight to Lasalgaon & Pimpalgaon mandis is at high risk of water-damage today and Wednesday. Best window for dry road transport opens Friday morning.'}
+            </p>
+
+            {/* Inline Rainfall Bar Visualizer */}
+            <div className="bg-surface-container p-space-sm rounded-xl flex flex-col gap-2">
+              <div className="flex justify-between items-center text-on-surface-variant font-label-sm text-xs">
+                <span>{language === 'mr' ? 'पाऊस प्रमाण आलेख' : 'Rain Volume Curve'}</span>
+                <span className="font-semibold text-primary">
+                  {language === 'mr' ? 'कमाल: बुध २४ मिमी' : 'Peak: Wed 24mm'}
+                </span>
+              </div>
+
+              <div className="flex items-end gap-2 h-14 pt-2">
+                {/* Tue */}
+                <div className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                  <div className="w-full bg-secondary rounded-t-sm" style={{ height: '60%' }}></div>
+                  <span className="font-label-sm text-[10px] text-outline">Tue</span>
+                </div>
+                {/* Wed (Peak - Red) */}
+                <div className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                  <div className="w-full bg-error rounded-t-sm" style={{ height: '95%' }}></div>
+                  <span className="font-label-sm text-[10px] text-error font-bold">Wed</span>
+                </div>
+                {/* Thu */}
+                <div className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                  <div className="w-full bg-secondary-container rounded-t-sm" style={{ height: '25%' }}></div>
+                  <span className="font-label-sm text-[10px] text-outline">Thu</span>
+                </div>
+                {/* Fri */}
+                <div className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                  <div className="w-full bg-surface-variant rounded-t-sm" style={{ height: '6%' }}></div>
+                  <span className="font-label-sm text-[10px] text-primary font-bold">Fri</span>
+                </div>
+                {/* Sat */}
+                <div className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                  <div className="w-full bg-surface-variant rounded-t-sm" style={{ height: '4%' }}></div>
+                  <span className="font-label-sm text-[10px] text-outline">Sat</span>
+                </div>
+                {/* Sun */}
+                <div className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                  <div className="w-full bg-surface-variant rounded-t-sm" style={{ height: '4%' }}></div>
+                  <span className="font-label-sm text-[10px] text-outline">Sun</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Direct CTA Banner for Bot Interaction */}
+        <button
+          onClick={() => onOpenBotDrawer('How does the rain alter my onion price and dispatch window?')}
+          className="bg-primary hover:bg-primary-container text-on-primary p-space-md rounded-2xl flex items-center justify-between gap-space-sm shadow-[0_6px_20px_rgba(80,96,77,0.22)] active:scale-[0.99] transition-all text-left"
+          type="button"
+        >
+          <div className="flex items-center gap-space-sm min-w-0">
+            <div className="w-11 h-11 rounded-full bg-primary-container flex items-center justify-center text-on-primary shrink-0">
+              <span className="material-symbols-outlined text-[22px]">smart_toy</span>
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="font-title-md text-title-md font-bold truncate text-on-primary">
+                {language === 'mr' ? 'Sell Smart बॉटकडे विचारा' : 'Ask Sell Smart Bot'}
+              </span>
+              <span className="font-body-md text-[13px] text-primary-fixed truncate">
+                {language === 'mr'
+                  ? 'पावसामुळे पिकांच्या भावावर होणारा परिणाम तपासा →'
+                  : 'Calculate how rain alters your crop price →'}
+              </span>
+            </div>
+          </div>
+          <span className="material-symbols-outlined text-[24px] text-primary-fixed shrink-0">
+            send
+          </span>
+        </button>
+
+      </div>
+    </div>
+  );
+};
+
+
+integrate these now
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-10-03T06:56:36+05:30.
+
+The user's current state is as follows:
+Active Document: c:\Users\Gauri\epoch-hackathon\frontend\src\mocks\fixtures.ts (LANGUAGE_TYPESCRIPT)
+Cursor is on line: 1
+Other open documents:
+- c:\Users\Gauri\epoch-hackathon\frontend\index.ts (LANGUAGE_TYPESCRIPT)
+- c:\Users\Gauri\epoch-hackathon\sell_smart_ml_prd_final.md (LANGUAGE_MARKDOWN)
+- c:\Users\Gauri\epoch-hackathon\frontend\src\components\OutcomeModal.tsx (LANGUAGE_TSX)
+- c:\Users\Gauri\epoch-hackathon\frontend\src\components\VoiceRecorderButton.tsx (LANGUAGE_TSX)
+- c:\Users\Gauri\epoch-hackathon\frontend\src\components\NotificationBanner.tsx (LANGUAGE_TSX)
+</ADDITIONAL_METADATA>
+<USER_SETTINGS_CHANGE>
+The user changed setting `Model Selection` from Gemini 3.8 Flash (Medium) to Gemini 3.1 Pro (Low). No need to comment on this change if the user doesn't ask about it. If reporting what model you are, please use a human readable name instead of the exact string.
+</USER_SETTINGS_CHANGE>

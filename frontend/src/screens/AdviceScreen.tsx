@@ -1,0 +1,23 @@
+import React, { useState } from 'react';
+import { Bell, ChevronRight, CloudSun, ShieldCheck } from 'lucide-react';
+import { Language, ScreenType } from '../types';
+import { api } from '../api/adapter';
+import { NotificationEvent } from '../contracts/schemas';
+import { mockWaitWithTrigger } from '../mocks/fixtures';
+import { AdviceCard, ReturnsAndMandis, StandingOrder } from './ChatsScreen';
+
+interface AdviceScreenProps { language: Language; onNavigate: (screen: ScreenType) => void; }
+
+export const AdviceScreen: React.FC<AdviceScreenProps> = ({ language, onNavigate }) => {
+  const [notifications, setNotifications] = useState<NotificationEvent[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const copy = language === 'hi' ? { title: 'आज की सलाह', subtitle: 'आपकी फसल और मंडी के लिए सरल फैसला', notifications: 'योजना की सूचनाएं', trust: 'इस सलाह पर भरोसा क्यों करें', evidence: 'कैलिब्रेशन, गेट और जोखिम रडार', weather: 'मौसम और भाव पर असर', weatherSub: 'मौसम का पूर्वानुमान और मंडी भाव पर असर देखें' } : language === 'mr' ? { title: 'आजचा सल्ला', subtitle: 'तुमच्या पिकासाठी आणि मंडीसाठी सोपा निर्णय', notifications: 'योजनेच्या सूचना', trust: 'या सल्ल्यावर विश्वास का ठेवावा', evidence: 'कॅलिब्रेशन, गेट आणि धोका रडार', weather: 'हवामान आणि भावावर परिणाम', weatherSub: 'हवामानाचा अंदाज आणि मंडी भावावर परिणाम पाहा' } : { title: 'Today’s advice', subtitle: 'A simple decision for your crop and mandi', notifications: 'Plan notifications', trust: 'Why you can trust this advice', evidence: 'Calibration, gate status and shock radar', weather: 'Weather & price factors', weatherSub: 'See the forecast and how weather may affect mandi prices' };
+  const displayReply = language === 'mr' ? { ...mockWaitWithTrigger, text: 'लक्ष्य भाव मिळेपर्यंत थांबा; भाव ₹२,४०० प्रति क्विंटल झाला की विक्री करा.' } : language === 'hi' ? { ...mockWaitWithTrigger, text: 'लक्ष्य भाव मिलने तक रुकें; भाव ₹२,४०० प्रति क्विंटल होने पर बेचें।' } : mockWaitWithTrigger;
+  const loadNotifications = async () => { setNotifications(await api.getNotifications(mockWaitWithTrigger.session_id)); setShowNotifications(true); };
+  return <div className="w-full min-h-[calc(100vh-64px)] pb-28 pt-16 max-w-xl mx-auto px-margin">
+    <div className="flex items-start justify-between gap-3 pt-3 pb-4"><div><p className="text-[11px] uppercase tracking-wider text-primary font-bold">SHETBHAV</p><h2 className="text-[23px] font-bold">{copy.title}</h2><p className="text-xs text-on-surface-variant mt-1">{copy.subtitle}</p></div><button type="button" onClick={loadNotifications} className="w-10 h-10 rounded-full bg-surface-container-lowest border border-surface-container-high flex items-center justify-center relative" aria-label={copy.notifications}><Bell size={18} />{notifications.length > 0 && <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-error" />}</button></div>
+    <button type="button" onClick={() => onNavigate('weather')} className="w-full mb-4 rounded-2xl bg-primary text-on-primary p-4 flex items-center justify-between text-left shadow-[0_6px_20px_rgba(80,96,77,0.2)]"><span className="flex items-center gap-3"><span className="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center"><CloudSun size={22} /></span><span><strong className="block text-sm">{copy.weather}</strong><span className="block text-[11px] text-primary-fixed mt-0.5">{copy.weatherSub}</span></span></span><ChevronRight size={18} /></button>
+    {showNotifications && <div className="bg-surface-container-lowest border border-surface-container-high rounded-xl p-3 mb-4"><div className="flex justify-between items-center"><strong className="text-xs">{copy.notifications}</strong><button className="text-outline" onClick={() => setShowNotifications(false)} type="button">×</button></div>{notifications.map((event) => <p key={event.id} className="text-xs mt-2">{event.message}</p>)}</div>}
+    <div className="space-y-4"><AdviceCard reply={displayReply} language={language} /><ReturnsAndMandis reply={displayReply} language={language} /><StandingOrder reply={displayReply} language={language} /><button type="button" onClick={() => onNavigate('evidence')} className="w-full bg-surface-container-lowest border border-surface-container-high rounded-xl p-4 flex items-center justify-between text-left"><span className="flex items-center gap-3"><ShieldCheck size={19} className="text-primary" /><span><strong className="block text-xs">{copy.trust}</strong><span className="text-[11px] text-on-surface-variant">{copy.evidence}</span></span></span><ChevronRight size={17} /></button></div>
+  </div>;
+};

@@ -1,14 +1,15 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "sellsmart-frontend",
   "private": true,
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "leaflet": "^1.9.4",
     "lucide-react": "^1.50.0",
     "next": "16.3.8",
@@ -26,5 +27,27 @@
     "eslint-config-next": "16.3.8",
     "tailwindcss": "^4",
     "typescript": "^5"
+=======
+    "@types/leaflet": "^1.9.22",
+    "clsx": "^2.1.1",
+    "framer-motion": "^14.0.0",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.475.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1",
+    "react-use-measure": "^2.1.7",
+    "tailwind-merge": "^3.7.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.9",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.0.9",
+    "typescript": "^5.7.3",
+    "vite": "^6.2.0"
+>>>>>>> 8738bbc (final commit 1)
   }
 }
