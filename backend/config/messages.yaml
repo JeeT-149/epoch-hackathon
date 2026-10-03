@@ -1,0 +1,38 @@
+wait_with_trigger_offer:
+  needs_native_review: true
+  en: "Trader offer: Rs {offer}/quintal. Hold {days} days and sell at {mandi}. Typical gain Rs {gain_med}/quintal (likely range {gain_low} to {gain_high}). Sell earlier if price reaches Rs {target_price}. Confidence: {confidence}."
+  mr: "व्यापाऱ्याची ऑफर ₹{offer}/क्विंटल आहे. {days} दिवस थांबा आणि {mandi} येथे विका. अपेक्षित फायदा ₹{gain_med}/क्विंटल (शक्यता ₹{gain_low} ते ₹{gain_high}). भाव ₹{target_price} झाल्यास लगेच विका. विश्वास: {confidence}."
+  hi: "व्यापारी का ऑफर ₹{offer}/क्विंटल है। {days} दिन रुकें और {mandi} में बेचें। अपेक्षित फायदा ₹{gain_med}/क्विंटल (संभावित ₹{gain_low} से ₹{gain_high})। भाव ₹{target_price} होने पर तुरंत बेचें। भरोसा: {confidence}।"
+
+accept_offer:
+  needs_native_review: true
+  en: "The trader's offer of Rs {offer}/quintal is close to the best option we found. Selling now looks reasonable. Confidence: {confidence}."
+  mr: "व्यापाऱ्याची ₹{offer}/क्विंटल ऑफर आमच्या शोधातील सर्वोत्तम पर्यायाच्या जवळ आहे. आता विकणे योग्य दिसते. विश्वास: {confidence}."
+  hi: "व्यापारी का ₹{offer}/क्विंटल का ऑफर हमारे मिले सबसे अच्छे विकल्प के करीब है। अभी बेचना ठीक लगता है। भरोसा: {confidence}।"
+
+switch_market_now:
+  needs_native_review: true
+  en: "Selling at {mandi} today gives about Rs {net}/quintal after transport, which is Rs {gain_med}/quintal more than {reference_label}. Confidence: {confidence}."
+
+trigger_fired:
+  needs_native_review: true
+  en: "Price at {mandi} reached Rs {price}/quintal. This is a good time to sell."
+
+deadline_near:
+  needs_native_review: true
+  en: "Your plan ends tomorrow. Best option now: {mandi}, about Rs {net}/quintal."
+
+shock_suspended:
+  needs_native_review: true
+  en: "Unusual market movement. Avoid long holds. Please compare offers before selling."
+
+clarify_village:
+  needs_native_review: true
+  en: "Which village or taluka are you in?"
+
+clarify_deadline:
+  needs_native_review: true
+  en: "When do you need the money? Today, within 3 days, within a week, or later?"
+
+footer_proxy:
+  en: "Based on market (modal) prices. Your actual price may differ."
