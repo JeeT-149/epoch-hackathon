@@ -52,12 +52,16 @@ def flag_outliers(
                 grp.at[idx, "dq_flags"] = flags + ["suspect_outlier"]
         return grp
 
-    result = df.groupby(["mandi_id", "crop"], group_keys=False).apply(_flag_group)
+    if df.empty:
+        return df
+
+    out_groups = [_flag_group(grp) for _, grp in df.groupby(["mandi_id", "crop"], sort=False)]
+    result = pd.concat(out_groups, ignore_index=True) if out_groups else df
     n_suspect = result["dq_flags"].apply(
         lambda f: "suspect_outlier" in (f if isinstance(f, list) else [])
     ).sum()
     logger.info(f"Outlier detection: {n_suspect:,} rows flagged as suspect_outlier.")
-    return result.reset_index(drop=True)
+    return result
 
 
 def compute_dq_scores(

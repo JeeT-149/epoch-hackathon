@@ -53,33 +53,53 @@ class Config:
         return not self.has_placeholders()
 
 
-def load_config(override_path: Path | None = None, config_dir: Path | None = None) -> Config:
+def load_config(override_path: Path | str | None = None, config_dir: Path | str | None = None) -> Config:
     """Load default.yaml and optionally merge an override file."""
     if config_dir is None:
         config_dir = _ROOT / "config"
+    else:
+        config_dir = Path(config_dir)
 
     default_path = config_dir / "default.yaml"
     with open(default_path) as f:
         data = yaml.safe_load(f)
 
-    if override_path and override_path.exists():
-        with open(override_path) as f:
-            override = yaml.safe_load(f) or {}
-        data = _deep_merge(data, override)
+    if override_path is not None:
+        override_path = Path(override_path)
+        if override_path.exists():
+            with open(override_path) as f:
+                override = yaml.safe_load(f) or {}
+            data = _deep_merge(data, override)
 
     config_hash = hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()[:16]
     return Config(data, config_hash)
 
 
-def load_crops_config(config_dir: Path | None = None) -> dict:
+def load_crops_config(config_dir: Path | str | None = None) -> dict:
     if config_dir is None:
         config_dir = _ROOT / "config"
+    else:
+        config_dir = Path(config_dir)
     with open(config_dir / "crops.yaml") as f:
         return yaml.safe_load(f)["crops"]
 
 
-def load_commodity_map(config_dir: Path | None = None) -> dict:
+def load_commodity_map(config_dir: Path | str | None = None) -> dict:
     if config_dir is None:
         config_dir = _ROOT / "config"
+    else:
+        config_dir = Path(config_dir)
     with open(config_dir / "commodity_map.yaml") as f:
         return yaml.safe_load(f)["crops"]
+
+
+def load_mandis_config(config_dir: Path | str | None = None) -> dict:
+    if config_dir is None:
+        config_dir = _ROOT / "config"
+    else:
+        config_dir = Path(config_dir)
+    mandis_path = config_dir / "mandis.yaml"
+    if mandis_path.exists():
+        with open(mandis_path) as f:
+            return yaml.safe_load(f) or {}
+    return {"mandis": []}

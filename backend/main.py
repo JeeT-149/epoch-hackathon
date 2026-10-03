@@ -42,14 +42,26 @@ from fastapi import (
     status,
 )
 from fastapi.security import APIKeyHeader
-from pydantic import BaseModel
-
-# ============================================================
-# Existing Sell Smart backend components
-# ============================================================
-
+from typing import Dict
+import uvicorn
 from .schemas import AdviceRequest, AdviceResponse
 from .mock_engine import mock_decision_engine
+
+app = FastAPI()
+
+API_KEY_NAME = "X-API-Key"
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+
+def get_api_key(api_key_header: str = Depends(api_key_header)):
+    expected_api_key = os.getenv("SELLSMART_API_KEY", "epoch_demo_secret_2026")
+    if api_key_header != expected_api_key:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Could not validate credentials"
+        )
+    return api_key_header
+
+from fastapi import Response
+from xml.sax.saxutils import escape
 from .parser import parse_request
 from .formatter import format_advice
 from .scope_guard import is_in_scope
@@ -791,13 +803,13 @@ async def twilio_webhook(
 
     return Response(
         content=xml_response,
-        media_type="application/xml",
+        media_type="application/xml"
     )
 
-
-# ============================================================
-# Local development entry point
-# ============================================================
+@app.post("/v1/advice", response_model=AdviceResponse)
+async def advice_endpoint(request: AdviceRequest, api_key: str = Depends(get_api_key)):
+    # Call the mock decision engine
+    return mock_decision_engine(request)
 
 if __name__ == "__main__":
     import uvicorn

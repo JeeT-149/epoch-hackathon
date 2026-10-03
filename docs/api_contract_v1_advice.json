@@ -1,0 +1,171 @@
+{
+  "api_version": "1.0.0",
+  "endpoint": "/v1/advice",
+  "method": "POST",
+  "content_type": "application/json",
+  "description": "Decision intelligence endpoint for farmers and field agents. Returns risk-aware selling recommendations with strict governance disclaimers.",
+  "canonical_statuses": [
+    "ACCEPT_OFFER",
+    "SWITCH_MARKET_NOW",
+    "WAIT_WITH_TRIGGER",
+    "SELL_NOW_NEAREST",
+    "NO_CONFIDENT_ADVICE"
+  ],
+  "governance_rules": {
+    "headline_gain_claims": "Allowed ONLY for crops with price_source == 'real' (Soybean). For synthetic crops (Onion/Tomato), headline ₹ claims are strictly null.",
+    "simulation_notice": "Present on all Onion and Tomato responses visibly communicating simulation provenance (ADR-001).",
+    "demo_ready": "Boolean flag indicating whether all economic parameters are verified field data. When false, promotional deployment is blocked."
+  },
+  "request_schema": {
+    "type": "object",
+    "required": ["crop"],
+    "properties": {
+      "crop": {
+        "type": "string",
+        "enum": ["soybean", "onion", "tomato"],
+        "description": "Crop name (aliases like 'kanda', 'pyaz', 'soya', 'tamatar' are auto-canonicalized)"
+      },
+      "quantity_q": {
+        "type": "number",
+        "default": 20.0,
+        "description": "Harvest quantity in quintals (1 quintal = 100 kg)"
+      },
+      "village": {
+        "type": "object",
+        "properties": {
+          "text": {"type": "string", "example": "Dewas"},
+          "lat": {"type": "number", "example": 22.96},
+          "lon": {"type": "number", "example": 76.05}
+        }
+      },
+      "cash_deadline_days": {
+        "type": "integer",
+        "default": 7,
+        "description": "Maximum days farmer can wait for cash"
+      },
+      "trader_offer_per_q": {
+        "type": ["number", "null"],
+        "default": null,
+        "description": "Farm-gate buyer offer in ₹/quintal"
+      },
+      "storage_available": {
+        "type": "boolean",
+        "default": true
+      },
+      "storage_condition": {
+        "type": "string",
+        "enum": ["ambient", "dry", "humid"],
+        "default": "ambient"
+      },
+      "quality_factor": {
+        "type": "number",
+        "default": 1.0,
+        "description": "Quality multiplier (0.5 to 1.0)"
+      },
+      "as_of": {
+        "type": ["string", "null"],
+        "format": "date",
+        "example": "2025-04-15"
+      },
+      "language": {
+        "type": "string",
+        "enum": ["en", "hi", "mr"],
+        "default": "en"
+      }
+    }
+  },
+  "sample_requests": {
+    "soybean_standard": {
+      "crop": "soybean",
+      "quantity_q": 25.0,
+      "village": {
+        "text": "Dewas",
+        "lat": 22.96,
+        "lon": 76.05
+      },
+      "cash_deadline_days": 10
+    },
+    "onion_with_trader_offer": {
+      "crop": "onion",
+      "quantity_q": 30.0,
+      "village": {
+        "text": "Lasalgaon",
+        "lat": 20.14,
+        "lon": 74.23
+      },
+      "trader_offer_per_q": 2600.0,
+      "cash_deadline_days": 14
+    }
+  },
+  "sample_responses": {
+    "SELL_NOW_NEAREST_soybean_real": {
+      "status": "SELL_NOW_NEAREST",
+      "recommendation": "SELL_NOW_NEAREST",
+      "crop": "soybean",
+      "is_synthetic": false,
+      "price_source": "real",
+      "confidence": "MEDIUM",
+      "confidence_score": 0.628,
+      "advice_message": "Recommendation: SELL_NOW_NEAREST at madhy_dewas_dewas. Expected net return: ₹4523/q.",
+      "headline_gain_claim": null,
+      "simulation_notice": null,
+      "demo_ready": false,
+      "best_option": {
+        "mandi_id": "madhy_dewas_dewas",
+        "days_from_now": 0,
+        "sell_date": "2026-10-03",
+        "expected_net_return_per_q": 4523.45
+      },
+      "trader_offer_comparison": {},
+      "reasoning": [
+        "Forecast gating rule: Model did not beat baseline or pass calibration gate. Answering 'WHERE' to sell today only; 'WHEN' (hold) recommendations are disabled.",
+        "Best net return is today at madhy_dewas_dewas."
+      ],
+      "disclaimers": [
+        "⚠ Modal price is a market-level reference, not a guaranteed realisation price.",
+        "This output is decision support under uncertainty.",
+        "⚠ DEMO NOT READY: One or more economic parameters are marked PLACEHOLDER."
+      ],
+      "meta": {
+        "pricing_rule": "Headline ₹ claims allowed only for crops with real prices (ADR-001)",
+        "modal_price_proxy_note": "Modal price is a market-level reference, not a guaranteed realisation price."
+      }
+    },
+    "ACCEPT_OFFER_onion_synthetic": {
+      "status": "ACCEPT_OFFER",
+      "recommendation": "ACCEPT_OFFER",
+      "crop": "onion",
+      "is_synthetic": true,
+      "price_source": "synthetic",
+      "confidence": "LOW",
+      "confidence_score": 0.439,
+      "advice_message": "[SIMULATED PRICES: Onion prices are simulated by human decision (time constraint). Real-world headline ₹ claims disabled.] Recommendation: ACCEPT_OFFER at mahar_nashik_lasalgaon. Note: Price levels for onion are synthetic simulation benchmarks.",
+      "headline_gain_claim": null,
+      "simulation_notice": "SIMULATED PRICES: Onion price series are synthetic by human decision (time constraint, ADR-001). Real-world headline ₹ claims are disabled.",
+      "demo_ready": false,
+      "best_option": {
+        "mandi_id": "mahar_nashik_lasalgaon",
+        "days_from_now": 0,
+        "sell_date": "2026-10-03",
+        "expected_net_return_per_q": 2473.67
+      },
+      "trader_offer_comparison": {
+        "trader_offer_per_q": 2600.0,
+        "mandi_net_return_today": 2473.67,
+        "parity_buffer_per_q": 10.0,
+        "difference_per_q": -136.33,
+        "recommendation": "accept_trader"
+      },
+      "reasoning": [
+        "Trader offer (₹2600.0/q) meets or beats mandi net return today (₹2474/q). Consider accepting on farm."
+      ],
+      "disclaimers": [
+        "⚠ Modal price is a market-level reference, not a guaranteed realisation price.",
+        "⚠ SIMULATED PRICES: Price series for this crop are synthetic by human decision (time constraint, ADR-001)."
+      ],
+      "meta": {
+        "pricing_rule": "Headline ₹ claims allowed only for crops with real prices (ADR-001)"
+      }
+    }
+  }
+}
