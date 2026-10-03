@@ -1,0 +1,382 @@
+# Mandi Selection Report
+
+## Data Provenance & Synthetic Flag Matrix (ADR-001)
+- **Soybean**: `price_source: real` | `is_synthetic: false` (Verified Agmarknet history)
+- **Onion**: `price_source: synthetic` | `is_synthetic: true` (Simulated prices by human decision)
+- **Tomato**: `price_source: synthetic` | `is_synthetic: true` (Simulated prices by human decision)
+
+> **Governance Rule**: Headline ₹ claims are allowed ONLY for crops with real prices.
+
+
+## Crop: Soybean [Provenance: REAL | is_synthetic=False]
+
+- Candidates: 326, Eligible (coverage≥0.4, gap≤14d): 187
+
+- Selected: 15
+
+| mandi_id                 | district    | market_raw   |   coverage |   longest_gap_days |   dq_score |
+|:-------------------------|:------------|:-------------|-----------:|-------------------:|-----------:|
+| madhy_dewas_dewas        | Dewas       | Dewas        |          1 |                  2 |     0.9953 |
+| madhy_damoh_damoh        | Damoh       | Damoh        |          1 |                  3 |     0.9944 |
+| madhy_dewas_khategaon    | Dewas       | Khategaon    |          1 |                  3 |     0.9944 |
+| madhy_hoshangabad_itarsi | Hoshangabad | Itarsi       |          1 |                  3 |     0.9944 |
+| madhy_ujjain_tarana      | Ujjain      | Tarana       |          1 |                  3 |     0.9944 |
+| madhy_sagar_sagar        | Sagar       | Sagar        |          1 |                  3 |     0.9944 |
+| madhy_ratlam_taal        | Ratlam      | Taal         |          1 |                  3 |     0.9944 |
+| madhy_neemuch_manasa     | Neemuch     | Manasa       |          1 |                  3 |     0.9944 |
+| madhy_khargone_khargone  | Khargone    | Khargone     |          1 |                  3 |     0.9944 |
+| madhy_khandwa_khandwa    | Khandwa     | Khandwa      |          1 |                  3 |     0.9944 |
+| madhy_indore_sanwer      | Indore      | Sanwer       |          1 |                  3 |     0.9944 |
+| madhy_ujjain_khachrod    | Ujjain      | Khachrod     |          1 |                  3 |     0.9944 |
+| madhy_harda_khirakiya    | Harda       | Khirakiya    |          1 |                  3 |     0.9933 |
+| madhy_shajapur_nalkehda  | Shajapur    | Nalkehda     |          1 |                  3 |     0.9932 |
+| madhy_mandsaur_piplya    | Mandsaur    | Piplya       |          1 |                  3 |     0.993  |
+
+
+### Rejected Mandis
+
+| mandi_id                            | district         | market_raw             |   coverage |   longest_gap_days |   dq_score | reject_reason   |
+|:------------------------------------|:-----------------|:-----------------------|-----------:|-------------------:|-----------:|:----------------|
+| andhr_kurnool_kurnool               | Kurnool          | Kurnool                |     0.0462 |                 46 |     0.2921 | low_coverage    |
+| gujar_amreli_amreli                 | Amreli           | Amreli                 |     1      |                  4 |     0.9425 | lower_dq_score  |
+| gujar_amreli_bagasara               | Amreli           | Bagasara               |     1      |                  4 |     0.9773 | lower_dq_score  |
+| gujar_amreli_dhari                  | Amreli           | Dhari                  |     0.7692 |                  6 |     0.8621 | lower_dq_score  |
+| gujar_amreli_khambha                | Amreli           | Khambha                |     0      |                999 |     0      | low_coverage    |
+| gujar_amreli_rajula                 | Amreli           | Rajula                 |     0.8154 |                  5 |     0.8692 | lower_dq_score  |
+| gujar_amreli_savarkundla            | Amreli           | Savarkundla            |     0.2308 |                 11 |     0.4642 | low_coverage    |
+| gujar_anand_anand                   | Anand            | Anand                  |     0      |                999 |     0      | low_coverage    |
+| gujar_bhavnagar_bhavnagar           | Bhavnagar        | Bhavnagar              |     0.0769 |                 27 |     0.3277 | low_coverage    |
+| gujar_bhavnagar_palitana            | Bhavnagar        | Palitana               |     0.0923 |                 31 |     0.3527 | low_coverage    |
+| gujar_dahod_dahod                   | Dahod            | Dahod                  |     1      |                  3 |     0.9923 | lower_dq_score  |
+| gujar_dahod_zalod_sanjeli           | Dahod            | Zalod(Sanjeli)         |     0.0154 |                 90 |     0.1562 | low_coverage    |
+| gujar_dahod_zalod_zalod             | Dahod            | Zalod(Zalod)           |     0.8154 |                 12 |     0.8585 | lower_dq_score  |
+| gujar_devbhumi_dwarka_bhanvad       | Devbhumi Dwarka  | Bhanvad                |     0.9077 |                  4 |     0.9261 | lower_dq_score  |
+| gujar_devbhumi_dwarka_jam_khambalia | Devbhumi Dwarka  | Jam Khambalia          |     0.0462 |                 36 |     0.3201 | low_coverage    |
+| gujar_gir_somnath_kodinar           | Gir Somnath      | Kodinar                |     0.4923 |                 21 |     0.7077 | large_gap       |
+| gujar_gir_somnath_una               | Gir Somnath      | Una                    |     0      |                999 |     0      | low_coverage    |
+| gujar_gir_somnath_veraval           | Gir Somnath      | Veraval                |     0.9077 |                  5 |     0.8351 | lower_dq_score  |
+| gujar_jamnagar_jam_jodhpur          | Jamnagar         | Jam Jodhpur            |     0.9385 |                  9 |     0.9243 | lower_dq_score  |
+| gujar_jamnagar_jamnagar             | Jamnagar         | Jamnagar               |     0.6615 |                  7 |     0.7282 | lower_dq_score  |
+| gujar_jamnagar_kalawad              | Jamnagar         | Kalawad                |     0.0769 |                  9 |     0.3783 | low_coverage    |
+| gujar_junagarh_bhesan               | Junagarh         | Bhesan                 |     0.9231 |                  5 |     0.9437 | lower_dq_score  |
+| gujar_junagarh_junagadh             | Junagarh         | Junagadh               |     0.5538 |                 14 |     0.7707 | lower_dq_score  |
+| gujar_junagarh_visavadar            | Junagarh         | Visavadar              |     0.7846 |                  5 |     0.7883 | lower_dq_score  |
+| gujar_morbi_halvad                  | Morbi            | Halvad                 |     0      |                999 |     0      | low_coverage    |
+| gujar_panchmahals_godhra_timbaroa   | Panchmahals      | Godhra(Timbaroad)      |     0      |                999 |     0      | low_coverage    |
+| gujar_porbandar_kutiyana            | Porbandar        | Kutiyana               |     0      |                999 |     0      | low_coverage    |
+| gujar_porbandar_porbandar           | Porbandar        | Porbandar              |     0.1231 |                 28 |     0.5591 | low_coverage    |
+| gujar_rajkot_dhoraji                | Rajkot           | Dhoraji                |     1      |                  3 |     0.8975 | lower_dq_score  |
+| gujar_rajkot_gondal                 | Rajkot           | Gondal                 |     0.6769 |                  6 |     0.7642 | lower_dq_score  |
+| gujar_rajkot_jasdan                 | Rajkot           | Jasdan                 |     0.9231 |                  5 |     0.9387 | lower_dq_score  |
+| gujar_rajkot_jetpur_dist_raj        | Rajkot           | Jetpur(Dist.Rajkot)    |     1      |                  4 |     0.9773 | lower_dq_score  |
+| gujar_rajkot_upleta                 | Rajkot           | Upleta                 |     0.6    |                 14 |     0.7178 | lower_dq_score  |
+| gujar_sabarkantha_bhiloda           | Sabarkantha      | Bhiloda                |     0.2462 |                 28 |     0.4226 | low_coverage    |
+| gujar_sabarkantha_dhansura          | Sabarkantha      | Dhansura               |     0      |                999 |     0      | low_coverage    |
+| gujar_sabarkantha_himatnagar        | Sabarkantha      | Himatnagar             |     0.4615 |                 16 |     0.7425 | large_gap       |
+| gujar_sabarkantha_idar              | Sabarkantha      | Idar                   |     0      |                999 |     0      | low_coverage    |
+| gujar_sabarkantha_khedbrahma        | Sabarkantha      | Khedbrahma             |     0.0308 |                  7 |     0.3955 | low_coverage    |
+| gujar_sabarkantha_malpur            | Sabarkantha      | Malpur                 |     0.0154 |                 90 |     0.0062 | low_coverage    |
+| gujar_sabarkantha_meghraj_radlava   | Sabarkantha      | Meghraj(Radlavada)     |     0      |                999 |     0      | low_coverage    |
+| gujar_sabarkantha_modasa            | Sabarkantha      | Modasa                 |     0.4923 |                 19 |     0.7464 | large_gap       |
+| gujar_sabarkantha_modasa_tintoi     | Sabarkantha      | Modasa(Tintoi)         |     0.0308 |                 13 |     0.4893 | low_coverage    |
+| gujar_sabarkantha_talod             | Sabarkantha      | Talod                  |     0.0154 |                 90 |     0.2133 | low_coverage    |
+| gujar_sabarkantha_vadali            | Sabarkantha      | Vadali                 |     0.1077 |                 29 |     0.5501 | low_coverage    |
+| gujar_sabarkantha_vijaynagar_kund   | Sabarkantha      | Vijaynagar(Kundlakap)  |     0      |                999 |     0      | low_coverage    |
+| gujar_surat_mandvi                  | Surat            | Mandvi                 |     0.1077 |                 43 |     0.5108 | low_coverage    |
+| gujar_surat_nizar                   | Surat            | Nizar                  |     0.0154 |                 90 |     0.1704 | low_coverage    |
+| gujar_surat_nizar_kukarmuda         | Surat            | Nizar(Kukarmuda)       |     0      |                999 |     0      | low_coverage    |
+| gujar_surat_nizar_pumkitalo         | Surat            | Nizar(Pumkitalov)      |     0      |                999 |     0      | low_coverage    |
+| gujar_surat_uchhal                  | Surat            | Uchhal                 |     0      |                999 |     0      | low_coverage    |
+| gujar_surat_vyra                    | Surat            | Vyra                   |     0      |                999 |     0      | low_coverage    |
+| gujar_surendranagar_dhragradhra     | Surendranagar    | Dhragradhra            |     0      |                999 |     0      | low_coverage    |
+| gujar_vadodara_baroda_savli         | Vadodara(Baroda) | Savli                  |     0      |                999 |     0      | low_coverage    |
+| madhy_agar_malwa_nalkheda_f_v       | Agar Malwa       | Nalkheda(F&V)          |     0.0923 |                  3 |     0.617  | low_coverage    |
+| madhy_agar_malwa_soyatkalan_f_v     | Agar Malwa       | Soyatkalan(F&V)        |     0      |                999 |     0      | low_coverage    |
+| madhy_alirajpur_alirajpur           | Alirajpur        | Alirajpur              |     0.9538 |                  4 |     0.9731 | lower_dq_score  |
+| madhy_alirajpur_jobat               | Alirajpur        | Jobat                  |     1      |                  4 |     0.9916 | lower_dq_score  |
+| madhy_alirajpur_jobat_f_v           | Alirajpur        | Jobat(F&V)             |     1      |                  4 |     0.9487 | lower_dq_score  |
+| madhy_anupur_anuppur                | Anupur           | Anuppur                |     0.1846 |                 45 |     0.536  | low_coverage    |
+| madhy_anupur_jaithari               | Anupur           | Jaithari               |     0      |                999 |     0      | low_coverage    |
+| madhy_anupur_kotma                  | Anupur           | Kotma                  |     0.0308 |                 15 |     0.223  | low_coverage    |
+| madhy_ashoknagar_ashoknagar         | Ashoknagar       | Ashoknagar             |     1      |                  4 |     0.9895 | lower_dq_score  |
+| madhy_ashoknagar_chanderi           | Ashoknagar       | Chanderi               |     0.2    |                  6 |     0.466  | low_coverage    |
+| madhy_ashoknagar_isagarh            | Ashoknagar       | Isagarh                |     0.8769 |                  6 |     0.9367 | lower_dq_score  |
+| madhy_ashoknagar_mungawali          | Ashoknagar       | Mungawali              |     0.7077 |                  7 |     0.8662 | lower_dq_score  |
+| madhy_ashoknagar_piprai             | Ashoknagar       | Piprai                 |     0.0923 |                 41 |     0.3246 | low_coverage    |
+| madhy_ashoknagar_shadora            | Ashoknagar       | Shadora                |     0.4615 |                 21 |     0.5856 | large_gap       |
+| madhy_badwani_anjad                 | Badwani          | Anjad                  |     0.0769 |                 46 |     0.4758 | low_coverage    |
+| madhy_badwani_anjad_f_v             | Badwani          | Anjad(F&V)             |     0      |                999 |     0      | low_coverage    |
+| madhy_badwani_badwani               | Badwani          | Badwani                |     0.1077 |                 20 |     0.5611 | low_coverage    |
+| madhy_badwani_balwadi               | Badwani          | Balwadi                |     0      |                999 |     0      | low_coverage    |
+| madhy_badwani_khetia                | Badwani          | Khetia                 |     0.3538 |                  8 |     0.5219 | low_coverage    |
+| madhy_badwani_sendhwa               | Badwani          | Sendhwa                |     0.5692 |                 10 |     0.7987 | lower_dq_score  |
+| madhy_betul_betul                   | Betul            | Betul                  |     1      |                  4 |     0.9916 | lower_dq_score  |
+| madhy_betul_bhensdehi               | Betul            | Bhensdehi              |     0.0923 |                 20 |     0.3836 | low_coverage    |
+| madhy_betul_multai                  | Betul            | Multai                 |     0.5385 |                  7 |     0.5985 | lower_dq_score  |
+| madhy_bhopal_berasia                | Bhopal           | Berasia                |     1      |                  3 |     0.9801 | lower_dq_score  |
+| madhy_bhopal_bhopal                 | Bhopal           | Bhopal                 |     1      |                  3 |     0.99   | lower_dq_score  |
+| madhy_burhanpur_burhanpur           | Burhanpur        | Burhanpur              |     0.8    |                  4 |     0.8948 | lower_dq_score  |
+| madhy_chhatarpur_badamalhera        | Chhatarpur       | Badamalhera            |     0.8308 |                  7 |     0.8987 | lower_dq_score  |
+| madhy_chhatarpur_bakswaha           | Chhatarpur       | Bakswaha               |     0.1538 |                 31 |     0.3323 | low_coverage    |
+| madhy_chhatarpur_bijawar            | Chhatarpur       | Bijawar                |     0.6308 |                 10 |     0.827  | lower_dq_score  |
+| madhy_chhatarpur_chhatarpur         | Chhatarpur       | Chhatarpur             |     0.6615 |                 18 |     0.793  | large_gap       |
+| madhy_chhatarpur_naugaon            | Chhatarpur       | Naugaon                |     0      |                999 |     0      | low_coverage    |
+| madhy_chhatarpur_rajnagar           | Chhatarpur       | Rajnagar               |     0.0923 |                 36 |     0.5136 | low_coverage    |
+| madhy_chhindwara_amarwda            | Chhindwara       | Amarwda                |     0      |                999 |     0      | low_coverage    |
+| madhy_chhindwara_chaurai            | Chhindwara       | Chaurai                |     0.2    |                 41 |     0.3676 | low_coverage    |
+| madhy_chhindwara_chhindwara         | Chhindwara       | Chhindwara             |     1      |                  4 |     0.9902 | lower_dq_score  |
+| madhy_chhindwara_chindwara_f_v      | Chhindwara       | Chindwara(F&V)         |     0.1692 |                 36 |     0.4272 | low_coverage    |
+| madhy_chhindwara_pandhurna          | Chhindwara       | Pandhurna              |     1      |                  4 |     0.9896 | lower_dq_score  |
+| madhy_chhindwara_saunsar            | Chhindwara       | Saunsar                |     0      |                999 |     0      | low_coverage    |
+| madhy_damoh_hata                    | Damoh            | Hata                   |     0.1692 |                 15 |     0.4284 | low_coverage    |
+| madhy_damoh_javera                  | Damoh            | Javera                 |     0      |                999 |     0      | low_coverage    |
+| madhy_damoh_patharia                | Damoh            | Patharia               |     0.9692 |                  3 |     0.9821 | lower_dq_score  |
+| madhy_dewas_bagli                   | Dewas            | Bagli                  |     0.0308 |                  4 |     0.4039 | low_coverage    |
+| madhy_dewas_haatpipliya             | Dewas            | Haatpipliya            |     0.9846 |                  4 |     0.9854 | lower_dq_score  |
+| madhy_dewas_kannod                  | Dewas            | Kannod                 |     0.9846 |                  5 |     0.9826 | lower_dq_score  |
+| madhy_dewas_loharda                 | Dewas            | Loharda                |     0.3385 |                 10 |     0.5101 | low_coverage    |
+| madhy_dewas_sonkatch                | Dewas            | Sonkatch               |     1      |                  3 |     0.9924 | lower_dq_score  |
+| madhy_dhar_badnawar                 | Dhar             | Badnawar               |     1      |                  3 |     0.9822 | lower_dq_score  |
+| madhy_dhar_dhamnod                  | Dhar             | Dhamnod                |     1      |                  4 |     0.9894 | lower_dq_score  |
+| madhy_dhar_dhar                     | Dhar             | Dhar                   |     1      |                  3 |     0.9884 | lower_dq_score  |
+| madhy_dhar_gandhwani                | Dhar             | Gandhwani              |     1      |                  5 |     0.9788 | lower_dq_score  |
+| madhy_dhar_kukshi                   | Dhar             | Kukshi                 |     0.7385 |                  6 |     0.8727 | lower_dq_score  |
+| madhy_dhar_manawar                  | Dhar             | Manawar                |     0.6769 |                  6 |     0.7567 | lower_dq_score  |
+| madhy_dhar_manawar_f_v              | Dhar             | Manawar(F&V)           |     0      |                999 |     0      | low_coverage    |
+| madhy_dhar_rajgarh                  | Dhar             | Rajgarh                |     1      |                  3 |     0.9928 | lower_dq_score  |
+| madhy_dindori_dindori               | Dindori          | Dindori                |     0.1385 |                 26 |     0.5423 | low_coverage    |
+| madhy_dindori_gorakhpur             | Dindori          | Gorakhpur              |     0.8769 |                  4 |     0.9375 | lower_dq_score  |
+| madhy_guna_aron                     | Guna             | Aron                   |     0.9077 |                  4 |     0.9522 | lower_dq_score  |
+| madhy_guna_binaganj                 | Guna             | Binaganj               |     0.9077 |                 10 |     0.9215 | lower_dq_score  |
+| madhy_guna_guna                     | Guna             | Guna                   |     0.7385 |                  5 |     0.8288 | lower_dq_score  |
+| madhy_guna_kumbhraj                 | Guna             | Kumbhraj               |     0.3538 |                 14 |     0.6907 | low_coverage    |
+| madhy_guna_maksudangarh             | Guna             | Maksudangarh           |     0.8923 |                  5 |     0.9457 | lower_dq_score  |
+| madhy_guna_raghogarh                | Guna             | Raghogarh              |     0.0615 |                 13 |     0.3909 | low_coverage    |
+| madhy_gwalior_dabra                 | Gwalior          | Dabra                  |     0      |                999 |     0      | low_coverage    |
+| madhy_harda_harda                   | Harda            | Harda                  |     1      |                  3 |     0.9796 | lower_dq_score  |
+| madhy_harda_sirali                  | Harda            | Sirali                 |     0.9846 |                  3 |     0.9864 | lower_dq_score  |
+| madhy_harda_timarni                 | Harda            | Timarni                |     0.9846 |                  4 |     0.9739 | lower_dq_score  |
+| madhy_hoshangabad_banapura          | Hoshangabad      | Banapura               |     0.9231 |                  4 |     0.951  | lower_dq_score  |
+| madhy_hoshangabad_banapura_f_v      | Hoshangabad      | Banapura(F&V)          |     0.3385 |                 16 |     0.6585 | low_coverage    |
+| madhy_hoshangabad_bankhedi          | Hoshangabad      | Bankhedi               |     0.3385 |                 20 |     0.582  | low_coverage    |
+| madhy_hoshangabad_itarsi_f_v        | Hoshangabad      | Itarsi(F&V)            |     0.5538 |                  6 |     0.6075 | lower_dq_score  |
+| madhy_hoshangabad_pipariya          | Hoshangabad      | Pipariya               |     0.8    |                  6 |     0.8917 | lower_dq_score  |
+| madhy_hoshangabad_pipariya_f_v      | Hoshangabad      | Pipariya(F&V)          |     0      |                999 |     0      | low_coverage    |
+| madhy_hoshangabad_semriharchand     | Hoshangabad      | Semriharchand          |     0.0308 |                 13 |     0.3786 | low_coverage    |
+| madhy_indore_gautampura             | Indore           | Gautampura             |     1      |                  4 |     0.9891 | lower_dq_score  |
+| madhy_indore_indore                 | Indore           | Indore                 |     1      |                  3 |     0.9854 | lower_dq_score  |
+| madhy_indore_mhow                   | Indore           | Mhow                   |     1      |                  3 |     0.9872 | lower_dq_score  |
+| madhy_indore_mhow_f_v               | Indore           | Mhow(F&V)              |     0      |                999 |     0      | low_coverage    |
+| madhy_jabalpur_jabalpur             | Jabalpur         | Jabalpur               |     0.5231 |                  7 |     0.7781 | lower_dq_score  |
+| madhy_jabalpur_paatan               | Jabalpur         | Paatan                 |     0.9077 |                  6 |     0.9322 | lower_dq_score  |
+| madhy_jabalpur_patan_f_v            | Jabalpur         | Patan(F&V)             |     0      |                999 |     0      | low_coverage    |
+| madhy_jabalpur_shahpura_bhiton      | Jabalpur         | Shahpura Bhitoni (F&V) |     0.0462 |                 29 |     0.5112 | low_coverage    |
+| madhy_jhabua_jhabua                 | Jhabua           | Jhabua                 |     0.7692 |                  6 |     0.8936 | lower_dq_score  |
+| madhy_jhabua_jhabua_f_v             | Jhabua           | Jhabua(F&V)            |     0      |                999 |     0      | low_coverage    |
+| madhy_jhabua_petlawad               | Jhabua           | Petlawad               |     0.9692 |                  5 |     0.9765 | lower_dq_score  |
+| madhy_jhabua_petlawad_f_v           | Jhabua           | Petlawad(F&V)          |     0      |                999 |     0      | low_coverage    |
+| madhy_jhabua_thandla                | Jhabua           | Thandla                |     0.7538 |                  7 |     0.8759 | lower_dq_score  |
+| madhy_katni_katni                   | Katni            | Katni                  |     0.0923 |                 21 |     0.4379 | low_coverage    |
+| madhy_khandwa_badwah_f_v            | Khandwa          | Badwah(F&V)            |     0      |                999 |     0      | low_coverage    |
+| madhy_khandwa_harsood               | Khandwa          | Harsood                |     1      |                  3 |     0.9924 | lower_dq_score  |
+| madhy_khandwa_mundi                 | Khandwa          | Mundi                  |     0.5385 |                 13 |     0.7595 | lower_dq_score  |
+| madhy_khandwa_pandhana              | Khandwa          | Pandhana               |     1      |                  5 |     0.9444 | lower_dq_score  |
+| madhy_khargone_badwaha              | Khargone         | Badwaha                |     0.7385 |                  9 |     0.8412 | lower_dq_score  |
+| madhy_khargone_bhikangaon           | Khargone         | Bhikangaon             |     1      |                  3 |     0.9884 | lower_dq_score  |
+| madhy_khargone_karhi                | Khargone         | Karhi                  |     0.2923 |                 15 |     0.5332 | low_coverage    |
+| madhy_khargone_kasrawad             | Khargone         | Kasrawad               |     0.0154 |                 90 |     0.1562 | low_coverage    |
+| madhy_khargone_sanawad              | Khargone         | Sanawad                |     0.5846 |                 11 |     0.8058 | lower_dq_score  |
+| madhy_khargone_segaon               | Khargone         | Segaon                 |     0.1077 |                 26 |     0.5443 | low_coverage    |
+| madhy_mandla_mandla                 | Mandla           | Mandla                 |     0      |                999 |     0      | low_coverage    |
+| madhy_mandsaur_bhanpura             | Mandsaur         | Bhanpura               |     0      |                999 |     0      | low_coverage    |
+| madhy_mandsaur_daloda               | Mandsaur         | Daloda                 |     0.9692 |                  7 |     0.9651 | lower_dq_score  |
+| madhy_mandsaur_garoth               | Mandsaur         | Garoth                 |     0.4769 |                  7 |     0.5739 | lower_dq_score  |
+| madhy_mandsaur_mandsaur             | Mandsaur         | Mandsaur               |     0.9846 |                  3 |     0.9867 | lower_dq_score  |
+| madhy_mandsaur_shamgarh             | Mandsaur         | Shamgarh               |     0.9846 |                  4 |     0.9834 | lower_dq_score  |
+| madhy_mandsaur_sitamau_f_v          | Mandsaur         | Sitamau(F&V)           |     0      |                999 |     0      | low_coverage    |
+| madhy_mandsaur_sitmau               | Mandsaur         | Sitmau                 |     0.9692 |                  4 |     0.9766 | lower_dq_score  |
+| madhy_mandsaur_suvasra              | Mandsaur         | Suvasra                |     0.0462 |                 48 |     0.4864 | low_coverage    |
+| madhy_morena_jora                   | Morena           | Jora                   |     0      |                999 |     0      | low_coverage    |
+| madhy_morena_kailaras               | Morena           | Kailaras               |     0.3846 |                 15 |     0.6288 | low_coverage    |
+| madhy_morena_morena                 | Morena           | Morena                 |     0      |                999 |     0      | low_coverage    |
+| madhy_morena_sabalgarh              | Morena           | Sabalgarh              |     0      |                999 |     0      | low_coverage    |
+| madhy_narsinghpur_gadarwada         | Narsinghpur      | Gadarwada              |     1      |                  5 |     0.9888 | lower_dq_score  |
+| madhy_narsinghpur_gadarwara_f_v     | Narsinghpur      | Gadarwara(F&V)         |     0      |                999 |     0      | low_coverage    |
+| madhy_narsinghpur_gotegaon          | Narsinghpur      | Gotegaon               |     0.7385 |                  8 |     0.8584 | lower_dq_score  |
+| madhy_narsinghpur_gotegaon_f_v      | Narsinghpur      | Gotegaon(F&V)          |     0.7231 |                  8 |     0.8521 | lower_dq_score  |
+| madhy_narsinghpur_kareli            | Narsinghpur      | Kareli                 |     1      |                  4 |     0.9897 | lower_dq_score  |
+| madhy_narsinghpur_kareli_f_v        | Narsinghpur      | Kareli(F&V)            |     1      |                  4 |     0.9773 | lower_dq_score  |
+| madhy_narsinghpur_narsinghpur       | Narsinghpur      | Narsinghpur            |     0.9538 |                  3 |     0.9616 | lower_dq_score  |
+| madhy_narsinghpur_tendukheda        | Narsinghpur      | Tendukheda             |     0.7692 |                  5 |     0.8019 | lower_dq_score  |
+| madhy_neemuch_javad                 | Neemuch          | Javad                  |     0.0308 |                  4 |     0.4039 | low_coverage    |
+| madhy_neemuch_neemuch               | Neemuch          | Neemuch                |     1      |                  4 |     0.9773 | lower_dq_score  |
+| madhy_panna_devandranagar           | Panna            | Devandranagar          |     0      |                999 |     0      | low_coverage    |
+| madhy_panna_panna                   | Panna            | Panna                  |     0.0615 |                 49 |     0.4094 | low_coverage    |
+| madhy_raisen_bareli                 | Raisen           | Bareli                 |     0.3538 |                 24 |     0.6626 | low_coverage    |
+| madhy_raisen_begamganj              | Raisen           | Begamganj              |     1      |                  3 |     0.9899 | lower_dq_score  |
+| madhy_raisen_gairatganj             | Raisen           | Gairatganj             |     0.7538 |                  9 |     0.8791 | lower_dq_score  |
+| madhy_raisen_obedullaganj           | Raisen           | Obedullaganj           |     0.3846 |                 15 |     0.6945 | low_coverage    |
+| madhy_raisen_obedullaganj_f_        | Raisen           | Obedullaganj(F&V)      |     0.2615 |                 27 |     0.6173 | low_coverage    |
+| madhy_raisen_raisen                 | Raisen           | Raisen                 |     0.1538 |                 10 |     0.4363 | low_coverage    |
+| madhy_raisen_silvani                | Raisen           | Silvani                |     0.1692 |                 14 |     0.5169 | low_coverage    |
+| madhy_raisen_udaipura               | Raisen           | Udaipura               |     0.8923 |                  3 |     0.9513 | lower_dq_score  |
+| madhy_rajgarh_biaora                | Rajgarh          | Biaora                 |     0.9846 |                  4 |     0.9826 | lower_dq_score  |
+| madhy_rajgarh_chhapiheda            | Rajgarh          | Chhapiheda             |     0.6154 |                  9 |     0.7874 | lower_dq_score  |
+| madhy_rajgarh_jeerapur              | Rajgarh          | Jeerapur               |     0.9846 |                  4 |     0.9785 | lower_dq_score  |
+| madhy_rajgarh_khilchipur            | Rajgarh          | Khilchipur             |     0.9538 |                  4 |     0.9731 | lower_dq_score  |
+| madhy_rajgarh_khujner               | Rajgarh          | Khujner                |     0.9692 |                  5 |     0.9745 | lower_dq_score  |
+| madhy_rajgarh_kurawar               | Rajgarh          | Kurawar                |     0.9231 |                  5 |     0.9425 | lower_dq_score  |
+| madhy_rajgarh_machalpur             | Rajgarh          | Machalpur              |     0.7846 |                  7 |     0.8941 | lower_dq_score  |
+| madhy_rajgarh_narsinghgarh          | Rajgarh          | Narsinghgarh           |     0.8615 |                  6 |     0.9279 | lower_dq_score  |
+| madhy_rajgarh_pachaur               | Rajgarh          | Pachaur                |     1      |                  3 |     0.9899 | lower_dq_score  |
+| madhy_rajgarh_sarangpur             | Rajgarh          | Sarangpur              |     1      |                  5 |     0.9888 | lower_dq_score  |
+| madhy_rajgarh_suthalia              | Rajgarh          | Suthalia               |     0.1538 |                 11 |     0.4334 | low_coverage    |
+| madhy_ratlam_a_lot                  | Ratlam           | A Lot                  |     1      |                  3 |     0.9859 | lower_dq_score  |
+| madhy_ratlam_alot_f_v               | Ratlam           | Alot(F&V)              |     0      |                999 |     0      | low_coverage    |
+| madhy_ratlam_jaora                  | Ratlam           | Jaora                  |     0.9385 |                  5 |     0.9476 | lower_dq_score  |
+| madhy_ratlam_ratlam                 | Ratlam           | Ratlam                 |     1      |                  3 |     0.9881 | lower_dq_score  |
+| madhy_ratlam_sailana                | Ratlam           | Sailana                |     1      |                  4 |     0.9576 | lower_dq_score  |
+| madhy_ratlam_sailana_f_v            | Ratlam           | Sailana(F&V)           |     0.0308 |                 41 |     0.2999 | low_coverage    |
+| madhy_rewa_baikunthpur              | Rewa             | Baikunthpur            |     0.0308 |                  1 |     0.4123 | low_coverage    |
+| madhy_rewa_hanumana                 | Rewa             | Hanumana               |     0      |                999 |     0      | low_coverage    |
+| madhy_rewa_rewa                     | Rewa             | Rewa                   |     0.0154 |                 90 |     0.1562 | low_coverage    |
+| madhy_sagar_bamora                  | Sagar            | Bamora                 |     0.7846 |                  7 |     0.897  | lower_dq_score  |
+| madhy_sagar_banda                   | Sagar            | Banda                  |     1      |                  3 |     0.9914 | lower_dq_score  |
+| madhy_sagar_bina                    | Sagar            | Bina                   |     0.9385 |                  4 |     0.9551 | lower_dq_score  |
+| madhy_sagar_deori                   | Sagar            | Deori                  |     0.7231 |                  7 |     0.8667 | lower_dq_score  |
+| madhy_sagar_garhakota               | Sagar            | Garhakota              |     1      |                  4 |     0.9802 | lower_dq_score  |
+| madhy_sagar_jaisinagar              | Sagar            | Jaisinagar             |     0.0308 |                  1 |     0.4123 | low_coverage    |
+| madhy_sagar_kesli                   | Sagar            | Kesli                  |     0.0462 |                 32 |     0.3314 | low_coverage    |
+| madhy_sagar_khurai                  | Sagar            | Khurai                 |     0.9846 |                  3 |     0.9859 | lower_dq_score  |
+| madhy_sagar_malthone                | Sagar            | Malthone               |     0.0154 |                 90 |     0.1562 | low_coverage    |
+| madhy_sagar_rahatgarh               | Sagar            | Rahatgarh              |     0.9231 |                  4 |     0.9583 | lower_dq_score  |
+| madhy_sagar_rehli                   | Sagar            | Rehli                  |     0.9538 |                  5 |     0.9703 | lower_dq_score  |
+| madhy_sagar_shahagarh               | Sagar            | Shahagarh              |     0.8    |                  8 |     0.9003 | lower_dq_score  |
+| madhy_satna_nagod                   | Satna            | Nagod                  |     0.0769 |                 49 |     0.4817 | low_coverage    |
+| madhy_satna_satna                   | Satna            | Satna                  |     0.6308 |                 10 |     0.7985 | lower_dq_score  |
+| madhy_sehore_ashta                  | Sehore           | Ashta                  |     1      |                  3 |     0.9924 | lower_dq_score  |
+| madhy_sehore_ichhawar               | Sehore           | Ichhawar               |     0.9846 |                  3 |     0.9814 | lower_dq_score  |
+| madhy_sehore_ichhawar_f_v           | Sehore           | Ichhawar(F&V)          |     0.7231 |                  5 |     0.7462 | lower_dq_score  |
+| madhy_sehore_jawar                  | Sehore           | Jawar                  |     1      |                  4 |     0.9876 | lower_dq_score  |
+| madhy_sehore_nasrullaganj           | Sehore           | Nasrullaganj           |     0.9538 |                  4 |     0.9514 | lower_dq_score  |
+| madhy_sehore_rehati                 | Sehore           | Rehati                 |     0.1538 |                 21 |     0.4054 | low_coverage    |
+| madhy_sehore_sehore                 | Sehore           | Sehore                 |     1      |                  3 |     0.9815 | lower_dq_score  |
+| madhy_sehore_shyampur               | Sehore           | Shyampur               |     0.4615 |                  7 |     0.7447 | lower_dq_score  |
+| madhy_seoni_chhapara_f_v            | Seoni            | Chhapara(F&V)          |     0.0462 |                 66 |     0.3073 | low_coverage    |
+| madhy_seoni_chhpara                 | Seoni            | Chhpara                |     0.0462 |                 66 |     0.3073 | low_coverage    |
+| madhy_seoni_seoni                   | Seoni            | Seoni                  |     0.0154 |                 90 |     0.2276 | low_coverage    |
+| madhy_shajapur_agar                 | Shajapur         | Agar                   |     1      |                  3 |     0.9922 | lower_dq_score  |
+| madhy_shajapur_badod                | Shajapur         | Badod                  |     1      |                  4 |     0.9867 | lower_dq_score  |
+| madhy_shajapur_berachha             | Shajapur         | Berachha               |     0.7385 |                 14 |     0.8356 | lower_dq_score  |
+| madhy_shajapur_kalapipal            | Shajapur         | Kalapipal              |     0.9692 |                  5 |     0.9705 | lower_dq_score  |
+| madhy_shajapur_maksi                | Shajapur         | Maksi                  |     0.7077 |                  6 |     0.8626 | lower_dq_score  |
+| madhy_shajapur_momanbadodiya        | Shajapur         | Momanbadodiya          |     1      |                  4 |     0.981  | lower_dq_score  |
+| madhy_shajapur_shajapur             | Shajapur         | Shajapur               |     1      |                  3 |     0.988  | lower_dq_score  |
+| madhy_shajapur_shujalpur            | Shajapur         | Shujalpur              |     0.9846 |                  3 |     0.9678 | lower_dq_score  |
+| madhy_shajapur_soyatkalan           | Shajapur         | Soyatkalan             |     0.5385 |                  6 |     0.6013 | lower_dq_score  |
+| madhy_shajapur_susner               | Shajapur         | Susner                 |     0.8923 |                  7 |     0.9235 | lower_dq_score  |
+| madhy_shehdol_beohari               | Shehdol          | Beohari                |     0      |                999 |     0      | low_coverage    |
+| madhy_shehdol_budhar                | Shehdol          | Budhar                 |     0.0154 |                 90 |     0.1562 | low_coverage    |
+| madhy_shehdol_shahdol               | Shehdol          | Shahdol                |     0.6154 |                 11 |     0.7815 | lower_dq_score  |
+| madhy_sheopur_sheopurbadod          | Sheopur          | Sheopurbadod           |     0.2462 |                 13 |     0.6219 | low_coverage    |
+| madhy_sheopur_sheopurkalan          | Sheopur          | Sheopurkalan           |     0.2308 |                 19 |     0.6275 | low_coverage    |
+| madhy_sheopur_vijaypur              | Sheopur          | Vijaypur               |     0      |                999 |     0      | low_coverage    |
+| madhy_shivpuri_badarwas             | Shivpuri         | Badarwas               |     0.9692 |                  4 |     0.9793 | lower_dq_score  |
+| madhy_shivpuri_barad                | Shivpuri         | Barad                  |     1      |                  3 |     0.9925 | lower_dq_score  |
+| madhy_shivpuri_karera               | Shivpuri         | Karera                 |     0.2    |                 24 |     0.5868 | low_coverage    |
+| madhy_shivpuri_khatora              | Shivpuri         | Khatora                |     0.4    |                 12 |     0.5898 | lower_dq_score  |
+| madhy_shivpuri_kolaras              | Shivpuri         | Kolaras                |     1      |                  3 |     0.9902 | lower_dq_score  |
+| madhy_shivpuri_pohari               | Shivpuri         | Pohari                 |     1      |                  4 |     0.9895 | lower_dq_score  |
+| madhy_shivpuri_rannod               | Shivpuri         | Rannod                 |     0      |                999 |     0      | low_coverage    |
+| madhy_shivpuri_shivpuri             | Shivpuri         | Shivpuri               |     1      |                  4 |     0.9916 | lower_dq_score  |
+| madhy_tikamgarh_jatara              | Tikamgarh        | Jatara                 |     0.0154 |                 90 |     0.3419 | low_coverage    |
+| madhy_tikamgarh_niwadi              | Tikamgarh        | Niwadi                 |     0.3077 |                 19 |     0.6582 | low_coverage    |
+| madhy_tikamgarh_palera              | Tikamgarh        | Palera                 |     0.0154 |                 90 |     0.3562 | low_coverage    |
+| madhy_tikamgarh_prithvipur          | Tikamgarh        | Prithvipur             |     0      |                999 |     0      | low_coverage    |
+| madhy_tikamgarh_tikamgarh           | Tikamgarh        | Tikamgarh              |     1      |                  4 |     0.9916 | lower_dq_score  |
+| madhy_tikamgarh_tikamgarh_f_v       | Tikamgarh        | Tikamgarh(F&V)         |     0.8462 |                  6 |     0.9101 | lower_dq_score  |
+| madhy_ujjain_badnagar               | Ujjain           | Badnagar               |     1      |                  4 |     0.9811 | lower_dq_score  |
+| madhy_ujjain_mahidpur               | Ujjain           | Mahidpur               |     1      |                  3 |     0.9777 | lower_dq_score  |
+| madhy_ujjain_mahidpur_f_v           | Ujjain           | Mahidpur(F&V)          |     1      |                  3 |     0.9758 | lower_dq_score  |
+| madhy_ujjain_nagda                  | Ujjain           | Nagda                  |     1      |                  3 |     0.9894 | lower_dq_score  |
+| madhy_ujjain_ujjain                 | Ujjain           | Ujjain                 |     1      |                  3 |     0.9881 | lower_dq_score  |
+| madhy_ujjain_unhel                  | Ujjain           | Unhel                  |     1      |                  3 |     0.9903 | lower_dq_score  |
+| madhy_umariya_umariya               | Umariya          | Umariya                |     0.4308 |                 10 |     0.7419 | lower_dq_score  |
+| madhy_vidisha_ganjbasoda            | Vidisha          | Ganjbasoda             |     1      |                  4 |     0.9903 | lower_dq_score  |
+| madhy_vidisha_gulabganj             | Vidisha          | Gulabganj              |     0.0154 |                 90 |     0.1562 | low_coverage    |
+| madhy_vidisha_kurwai                | Vidisha          | Kurwai                 |     0.2923 |                 15 |     0.649  | low_coverage    |
+| madhy_vidisha_lateri                | Vidisha          | Lateri                 |     0.6462 |                 13 |     0.8248 | lower_dq_score  |
+| madhy_vidisha_shamshabad            | Vidisha          | Shamshabad             |     1      |                  3 |     0.9851 | lower_dq_score  |
+| madhy_vidisha_sironj                | Vidisha          | Sironj                 |     1      |                  4 |     0.9916 | lower_dq_score  |
+| madhy_vidisha_vidisha               | Vidisha          | Vidisha                |     1      |                  4 |     0.9806 | lower_dq_score  |
+| rajas_baran_anta                    | Baran            | Anta                   |     0.7846 |                  5 |     0.8854 | lower_dq_score  |
+| rajas_baran_atru                    | Baran            | Atru                   |     1      |                  4 |     0.9916 | lower_dq_score  |
+| rajas_baran_baran                   | Baran            | Baran                  |     1      |                  3 |     0.9796 | lower_dq_score  |
+| rajas_baran_chhabra                 | Baran            | Chhabra                |     0.8462 |                  6 |     0.8958 | lower_dq_score  |
+| rajas_baran_chhipabarod_chh         | Baran            | Chhipabarod (Chhabra)  |     0.2769 |                 21 |     0.4546 | low_coverage    |
+| rajas_baran_kawai_salpura_a         | Baran            | Kawai Salpura (Atru)   |     0.8154 |                  5 |     0.9149 | lower_dq_score  |
+| rajas_baran_nahargarh               | Baran            | Nahargarh              |     0.8769 |                  7 |     0.9234 | lower_dq_score  |
+| rajas_baran_samraniyan              | Baran            | Samraniyan             |     0.4923 |                 16 |     0.6548 | large_gap       |
+| rajas_bhilwara_bhilwara             | Bhilwara         | Bhilwara               |     0      |                999 |     0      | low_coverage    |
+| rajas_bhilwara_bijolia              | Bhilwara         | Bijolia                |     0      |                999 |     0      | low_coverage    |
+| rajas_bundi_bundi                   | Bundi            | Bundi                  |     1      |                  6 |     0.986  | lower_dq_score  |
+| rajas_bundi_dei                     | Bundi            | Dei                    |     1      |                  6 |     0.9705 | lower_dq_score  |
+| rajas_bundi_keshoraipatan           | Bundi            | Keshoraipatan          |     0.7385 |                  9 |     0.8586 | lower_dq_score  |
+| rajas_bundi_sumerganj               | Bundi            | Sumerganj              |     0.0923 |                 23 |     0.3751 | low_coverage    |
+| rajas_chittorgarh_barisadri         | Chittorgarh      | Barisadri              |     0.5077 |                 11 |     0.775  | lower_dq_score  |
+| rajas_chittorgarh_nimbahera         | Chittorgarh      | Nimbahera              |     0.8154 |                  7 |     0.9093 | lower_dq_score  |
+| rajas_jhalawar_bhawani_mandi        | Jhalawar         | Bhawani Mandi          |     0.9692 |                  3 |     0.9678 | lower_dq_score  |
+| rajas_jhalawar_choumahla            | Jhalawar         | Choumahla              |     0.9077 |                  5 |     0.9376 | lower_dq_score  |
+| rajas_jhalawar_dag                  | Jhalawar         | Dag                    |     0      |                999 |     0      | low_coverage    |
+| rajas_jhalawar_iklera               | Jhalawar         | Iklera                 |     1      |                  6 |     0.986  | lower_dq_score  |
+| rajas_jhalawar_jhalarapatan         | Jhalawar         | Jhalarapatan           |     1      |                  4 |     0.9916 | lower_dq_score  |
+| rajas_jhalawar_khanpur              | Jhalawar         | Khanpur                |     1      |                  3 |     0.9924 | lower_dq_score  |
+| rajas_jhalawar_manohar_thana        | Jhalawar         | Manohar Thana          |     0.0923 |                  4 |     0.4035 | low_coverage    |
+| rajas_kota_itawa                    | Kota             | Itawa                  |     0.9846 |                  7 |     0.977  | lower_dq_score  |
+| rajas_kota_khatauli                 | Kota             | Khatauli               |     0.0769 |                 20 |     0.3774 | low_coverage    |
+| rajas_kota_kota                     | Kota             | Kota                   |     1      |                  4 |     0.9523 | lower_dq_score  |
+| rajas_kota_ramganjmandi             | Kota             | Ramganjmandi           |     1      |                  4 |     0.9566 | lower_dq_score  |
+| rajas_pratapgarh_arnod              | Pratapgarh       | Arnod                  |     0.0923 |                 16 |     0.3948 | low_coverage    |
+| rajas_pratapgarh_chhotisadri        | Pratapgarh       | Chhotisadri            |     0.8462 |                  5 |     0.8987 | lower_dq_score  |
+| rajas_pratapgarh_pratapgarh         | Pratapgarh       | Pratapgarh             |     0.8462 |                  4 |     0.9273 | lower_dq_score  |
+| rajas_swai_madhopur_khandar         | Swai Madhopur    | Khandar                |     0      |                999 |     0      | low_coverage    |
+| rajas_swai_madhopur_sawai_madhopur  | Swai Madhopur    | Sawai Madhopur         |     0.0923 |                 69 |     0.4173 | low_coverage    |
+| rajas_tonk_deoli                    | Tonk             | Deoli                  |     0.1077 |                 26 |     0.53   | low_coverage    |
+| rajas_tonk_dooni                    | Tonk             | Dooni                  |     0.0154 |                 90 |     0.1562 | low_coverage    |
+| rajas_tonk_uniyara                  | Tonk             | Uniyara                |     0.0308 |                 18 |     0.2896 | low_coverage    |
+| rajas_udaipur_fatehnagar            | Udaipur          | Fatehnagar             |     0.0154 |                 90 |     0.1562 | low_coverage    |
+| rajas_udaipur_udaipur_grain         | Udaipur          | Udaipur (Grain)        |     0.7385 |                 10 |     0.7962 | lower_dq_score  |
+| uttar_lalitpur_lalitpur             | Lalitpur         | Lalitpur               |     0.6769 |                  7 |     0.8403 | lower_dq_score  |
+| uttar_lalitpur_mehrauni             | Lalitpur         | Mehrauni               |     0.7231 |                  8 |     0.8217 | lower_dq_score  |
+
+
+
+## Crop: Onion [Provenance: SYNTHETIC | is_synthetic=True]
+
+- Candidates: 5, Eligible (coverage≥0.4, gap≤14d): 5
+
+- Selected: 5
+
+| mandi_id                 | district    | market_raw   |   coverage |   longest_gap_days |   dq_score |
+|:-------------------------|:------------|:-------------|-----------:|-------------------:|-----------:|
+| mahar_nashik_lasalgaon   | Nashik      | Lasalgaon    |          1 |                  2 |     0.9972 |
+| mahar_pune_manjri        | Pune        | Manjri       |          1 |                  2 |     0.9972 |
+| mahar_nashik_pimpalgaon  | Nashik      | Pimpalgaon   |          1 |                  2 |     0.9972 |
+| mahar_solapur_solapur    | Solapur     | Solapur      |          1 |                  2 |     0.9972 |
+| mahar_ahilyanagar_rahuri | Ahilyanagar | Rahuri       |          1 |                  2 |     0.9933 |
+
+
+
+## Crop: Tomato [Provenance: SYNTHETIC | is_synthetic=True]
+
+- Candidates: 4, Eligible (coverage≥0.4, gap≤14d): 4
+
+- Selected: 4
+
+| mandi_id                    | district    | market_raw   |   coverage |   longest_gap_days |   dq_score |
+|:----------------------------|:------------|:-------------|-----------:|-------------------:|-----------:|
+| mahar_ahilyanagar_sangamner | Ahilyanagar | Sangamner    |          1 |                  2 |     0.9972 |
+| mahar_nagpur_nagpur         | Nagpur      | Nagpur       |          1 |                  2 |     0.9972 |
+| mahar_nashik_nashik         | Nashik      | Nashik       |          1 |                  2 |     0.9972 |
+| mahar_pune_pimpri           | Pune        | Pimpri       |          1 |                  2 |     0.9972 |
+

@@ -1,0 +1,344 @@
+[
+  {
+    "crop": "soybean",
+    "horizon": 1,
+    "n_samples": 1633,
+    "pinball_m1": 37.33,
+    "pinball_b0": 52.44,
+    "skill_b0": 0.2882,
+    "skill_b3": 0.0011,
+    "cov_p80_standard": 0.7912,
+    "cov_p80_standard_ci": [
+      0.7708,
+      0.8102
+    ],
+    "cov_p80_adaptive": 0.7887,
+    "cov_p80_adaptive_ci": [
+      0.7683,
+      0.8078
+    ]
+  },
+  {
+    "crop": "soybean",
+    "horizon": 3,
+    "n_samples": 1603,
+    "pinball_m1": 47.85,
+    "pinball_b0": 73.91,
+    "skill_b0": 0.3526,
+    "skill_b3": -0.0075,
+    "cov_p80_standard": 0.7941,
+    "cov_p80_standard_ci": [
+      0.7737,
+      0.8132
+    ],
+    "cov_p80_adaptive": 0.7873,
+    "cov_p80_adaptive_ci": [
+      0.7666,
+      0.8066
+    ]
+  },
+  {
+    "crop": "soybean",
+    "horizon": 7,
+    "n_samples": 1543,
+    "pinball_m1": 51.55,
+    "pinball_b0": 79.63,
+    "skill_b0": 0.3526,
+    "skill_b3": -0.0221,
+    "cov_p80_standard": 0.7816,
+    "cov_p80_standard_ci": [
+      0.7603,
+      0.8015
+    ],
+    "cov_p80_adaptive": 0.7745,
+    "cov_p80_adaptive_ci": [
+      0.7529,
+      0.7946
+    ]
+  },
+  {
+    "crop": "soybean",
+    "horizon": 10,
+    "n_samples": 1499,
+    "pinball_m1": 55.9,
+    "pinball_b0": 84.84,
+    "skill_b0": 0.3411,
+    "skill_b3": -0.0445,
+    "cov_p80_standard": 0.7598,
+    "cov_p80_standard_ci": [
+      0.7376,
+      0.7808
+    ],
+    "cov_p80_adaptive": 0.7565,
+    "cov_p80_adaptive_ci": [
+      0.7341,
+      0.7776
+    ]
+  },
+  {
+    "crop": "soybean",
+    "horizon": 14,
+    "n_samples": 1439,
+    "pinball_m1": 55.66,
+    "pinball_b0": 89.42,
+    "skill_b0": 0.3776,
+    "skill_b3": 0.0015,
+    "cov_p80_standard": 0.7985,
+    "cov_p80_standard_ci": [
+      0.777,
+      0.8184
+    ],
+    "cov_p80_adaptive": 0.7714,
+    "cov_p80_adaptive_ci": [
+      0.749,
+      0.7923
+    ]
+  },
+  {
+    "crop": "soybean",
+    "horizon": 21,
+    "n_samples": 1334,
+    "pinball_m1": 60.63,
+    "pinball_b0": 97.78,
+    "skill_b0": 0.38,
+    "skill_b3": -0.0043,
+    "cov_p80_standard": 0.7826,
+    "cov_p80_standard_ci": [
+      0.7597,
+      0.8039
+    ],
+    "cov_p80_adaptive": 0.7586,
+    "cov_p80_adaptive_ci": [
+      0.7349,
+      0.7808
+    ]
+  },
+  {
+    "crop": "onion",
+    "horizon": 1,
+    "n_samples": 545,
+    "pinball_m1": 14.45,
+    "pinball_b0": 22.74,
+    "skill_b0": 0.3646,
+    "skill_b3": 0.0442,
+    "cov_p80_standard": 0.8514,
+    "cov_p80_standard_ci": [
+      0.8191,
+      0.8788
+    ],
+    "cov_p80_adaptive": 0.8128,
+    "cov_p80_adaptive_ci": [
+      0.778,
+      0.8434
+    ]
+  },
+  {
+    "crop": "onion",
+    "horizon": 3,
+    "n_samples": 535,
+    "pinball_m1": 23.51,
+    "pinball_b0": 40.7,
+    "skill_b0": 0.4224,
+    "skill_b3": 0.067,
+    "cov_p80_standard": 0.8654,
+    "cov_p80_standard_ci": [
+      0.8339,
+      0.8917
+    ],
+    "cov_p80_adaptive": 0.8318,
+    "cov_p80_adaptive_ci": [
+      0.7977,
+      0.8611
+    ]
+  },
+  {
+    "crop": "onion",
+    "horizon": 7,
+    "n_samples": 515,
+    "pinball_m1": 33.12,
+    "pinball_b0": 56.54,
+    "skill_b0": 0.4143,
+    "skill_b3": 0.0752,
+    "cov_p80_standard": 0.835,
+    "cov_p80_standard_ci": [
+      0.8004,
+      0.8645
+    ],
+    "cov_p80_adaptive": 0.8214,
+    "cov_p80_adaptive_ci": [
+      0.7859,
+      0.852
+    ]
+  },
+  {
+    "crop": "onion",
+    "horizon": 10,
+    "n_samples": 500,
+    "pinball_m1": 38.91,
+    "pinball_b0": 67.11,
+    "skill_b0": 0.4202,
+    "skill_b3": 0.0839,
+    "cov_p80_standard": 0.846,
+    "cov_p80_standard_ci": [
+      0.8117,
+      0.875
+    ],
+    "cov_p80_adaptive": 0.814,
+    "cov_p80_adaptive_ci": [
+      0.7775,
+      0.8457
+    ]
+  },
+  {
+    "crop": "onion",
+    "horizon": 14,
+    "n_samples": 480,
+    "pinball_m1": 42.91,
+    "pinball_b0": 78.53,
+    "skill_b0": 0.4536,
+    "skill_b3": 0.1295,
+    "cov_p80_standard": 0.8562,
+    "cov_p80_standard_ci": [
+      0.822,
+      0.8848
+    ],
+    "cov_p80_adaptive": 0.8271,
+    "cov_p80_adaptive_ci": [
+      0.7907,
+      0.8583
+    ]
+  },
+  {
+    "crop": "onion",
+    "horizon": 21,
+    "n_samples": 445,
+    "pinball_m1": 46.04,
+    "pinball_b0": 92.75,
+    "skill_b0": 0.5036,
+    "skill_b3": 0.2373,
+    "cov_p80_standard": 0.8067,
+    "cov_p80_standard_ci": [
+      0.7675,
+      0.8407
+    ],
+    "cov_p80_adaptive": 0.791,
+    "cov_p80_adaptive_ci": [
+      0.7508,
+      0.8262
+    ]
+  },
+  {
+    "crop": "tomato",
+    "horizon": 1,
+    "n_samples": 436,
+    "pinball_m1": 11.18,
+    "pinball_b0": 17.49,
+    "skill_b0": 0.361,
+    "skill_b3": 0.0963,
+    "cov_p80_standard": 0.8142,
+    "cov_p80_standard_ci": [
+      0.775,
+      0.8479
+    ],
+    "cov_p80_adaptive": 0.7959,
+    "cov_p80_adaptive_ci": [
+      0.7555,
+      0.831
+    ]
+  },
+  {
+    "crop": "tomato",
+    "horizon": 3,
+    "n_samples": 428,
+    "pinball_m1": 19.37,
+    "pinball_b0": 31.57,
+    "skill_b0": 0.3864,
+    "skill_b3": 0.1083,
+    "cov_p80_standard": 0.8224,
+    "cov_p80_standard_ci": [
+      0.7834,
+      0.8557
+    ],
+    "cov_p80_adaptive": 0.7991,
+    "cov_p80_adaptive_ci": [
+      0.7585,
+      0.8343
+    ]
+  },
+  {
+    "crop": "tomato",
+    "horizon": 7,
+    "n_samples": 412,
+    "pinball_m1": 29.55,
+    "pinball_b0": 46.91,
+    "skill_b0": 0.3701,
+    "skill_b3": 0.13,
+    "cov_p80_standard": 0.7985,
+    "cov_p80_standard_ci": [
+      0.7571,
+      0.8344
+    ],
+    "cov_p80_adaptive": 0.7913,
+    "cov_p80_adaptive_ci": [
+      0.7494,
+      0.8277
+    ]
+  },
+  {
+    "crop": "tomato",
+    "horizon": 10,
+    "n_samples": 400,
+    "pinball_m1": 34.9,
+    "pinball_b0": 53.17,
+    "skill_b0": 0.3437,
+    "skill_b3": 0.121,
+    "cov_p80_standard": 0.805,
+    "cov_p80_standard_ci": [
+      0.7633,
+      0.8408
+    ],
+    "cov_p80_adaptive": 0.78,
+    "cov_p80_adaptive_ci": [
+      0.7368,
+      0.8178
+    ]
+  },
+  {
+    "crop": "tomato",
+    "horizon": 14,
+    "n_samples": 384,
+    "pinball_m1": 41.54,
+    "pinball_b0": 64.46,
+    "skill_b0": 0.3556,
+    "skill_b3": 0.1415,
+    "cov_p80_standard": 0.7422,
+    "cov_p80_standard_ci": [
+      0.6962,
+      0.7834
+    ],
+    "cov_p80_adaptive": 0.7474,
+    "cov_p80_adaptive_ci": [
+      0.7016,
+      0.7883
+    ]
+  },
+  {
+    "crop": "tomato",
+    "horizon": 21,
+    "n_samples": 356,
+    "pinball_m1": 52.8,
+    "pinball_b0": 84.52,
+    "skill_b0": 0.3753,
+    "skill_b3": 0.178,
+    "cov_p80_standard": 0.736,
+    "cov_p80_standard_ci": [
+      0.6878,
+      0.7791
+    ],
+    "cov_p80_adaptive": 0.7303,
+    "cov_p80_adaptive_ci": [
+      0.682,
+      0.7738
+    ]
+  }
+]

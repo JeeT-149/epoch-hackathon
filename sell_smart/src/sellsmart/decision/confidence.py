@@ -13,7 +13,7 @@ def compute_confidence(
     config: dict,
 ) -> tuple[str, float]:
     """
-    Compute a composite confidence score and label.
+    Compute a composite confidence score and label (PRD Section 10).
 
     Returns: (label: 'HIGH'|'MEDIUM'|'LOW', score: float in [0,1])
     """

@@ -16,7 +16,11 @@ import pandas as pd
 
 def data_hash(df: pd.DataFrame) -> str:
     """Deterministic hash of a DataFrame (column names + values)."""
-    buf = pd.util.hash_pandas_object(df, index=True).values.tobytes()
+    df_clean = df.copy()
+    for col in df_clean.columns:
+        if df_clean[col].dtype == "object":
+            df_clean[col] = df_clean[col].astype(str)
+    buf = pd.util.hash_pandas_object(df_clean, index=True).values.tobytes()
     return hashlib.sha256(buf).hexdigest()[:16]
 
 

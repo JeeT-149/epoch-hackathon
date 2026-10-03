@@ -19,12 +19,18 @@ PLACEHOLDER_WARNING = (
 )
 
 SYNTHETIC_LABEL = "📊 Synthetic inputs were used in this run. See 'Synthetic inputs used' section."
+SIMULATED_PRICES_DISCLAIMER = (
+    "⚠ SIMULATED PRICES: Price series for this crop are synthetic by human decision (time constraint, ADR-001). "
+    "Headline ₹ claims are disabled. All numbers are simulation benchmarks."
+)
 
 
-def get_disclaimers(demo_ready: bool = True, has_synthetic: bool = False) -> list[str]:
+def get_disclaimers(demo_ready: bool = True, has_synthetic: bool = False, is_synthetic_crop: bool = False) -> list[str]:
     out = [MODAL_PRICE_PROXY, DECISION_SUPPORT]
     if not demo_ready:
         out.append(PLACEHOLDER_WARNING)
     if has_synthetic:
         out.append(SYNTHETIC_LABEL)
+    if is_synthetic_crop:
+        out.append(SIMULATED_PRICES_DISCLAIMER)
     return out

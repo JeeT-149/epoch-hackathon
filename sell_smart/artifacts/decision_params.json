@@ -1,0 +1,15 @@
+{
+  "min_gain_to_switch_rs": 50.0,
+  "min_gain_to_hold_rs": 67.5,
+  "trader_offer_parity_buffer_rs": 10.0,
+  "min_confidence_score": 0.25,
+  "shock_z_threshold": 3.0,
+  "tuning_split": "validation_only_with_21d_embargo",
+  "validated_on_crops": [
+    "onion",
+    "soybean",
+    "tomato"
+  ],
+  "validation_sample_count": 840,
+  "validation_mean_realized_gain": 67.5
+}
