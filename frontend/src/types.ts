@@ -1,6 +1,6 @@
 export type Language = 'en' | 'mr' | 'hi';
 
-export type ScreenType = 'home' | 'weather' | 'mandi-details' | 'chats' | 'my-crops' | 'markets' | 'evidence' | 'profile';
+export type ScreenType = 'home' | 'weather' | 'mandi-details' | 'chats' | 'my-crops' | 'markets' | 'evidence' | 'profile' | 'crop-scan';
 
 export interface WeatherDay {
   day: string;

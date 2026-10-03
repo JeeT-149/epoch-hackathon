@@ -25,6 +25,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/ml/, ''),
       },
+      '/api/analyze-crop': {
+        target: process.env.VITE_LLM_BASE_URL || 'http://localhost:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/analyze-crop/, '/analyze-crop'),
+      },
     },
   },
 });

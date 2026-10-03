@@ -16,16 +16,19 @@ import { MyCropsScreen } from './screens/MyCropsScreen';
 import { MarketsScreen } from './screens/MarketsScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { EvidenceScreen } from './screens/EvidenceScreen';
+import { CropScanScreen } from './screens/CropScanScreen';
+import { LandingScreen } from './screens/LandingScreen';
+import { LoginScreen } from './screens/LoginScreen';
 
 import { HarvestCalculatorModal } from './components/modals/HarvestCalculatorModal';
 import { RouteComparisonModal } from './components/modals/RouteComparisonModal';
-import { VoiceModal } from './components/modals/VoiceModal';
 import { LocationModal } from './components/modals/LocationModal';
 import { NotificationsModal } from './components/modals/NotificationsModal';
 import { MandiDetailPopupModal } from './components/modals/MandiDetailPopupModal';
 import { TelegramModal } from './components/modals/TelegramModal';
 
 export default function App() {
+  const [authStage, setAuthStage] = useState<'landing' | 'login' | 'app'>(() => window.localStorage.getItem('shetbhav-user') ? 'app' : 'landing');
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
   const [language, setLanguage] = useState<Language>(() => {
     const saved = window.localStorage.getItem('sell-smart-language');
@@ -36,7 +39,6 @@ export default function App() {
   // Modals state
   const [isHarvestCalcOpen, setIsHarvestCalcOpen] = useState(false);
   const [isRouteModalOpen, setIsRouteModalOpen] = useState(false);
-  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
@@ -47,14 +49,13 @@ export default function App() {
     window.localStorage.setItem('sell-smart-language', next);
   };
 
-  const handleVoiceQuery = (query: string) => {
-    setCurrentScreen('chats');
-  };
-
   const handleNavigate = (screen: ScreenType) => {
     setCurrentScreen(screen);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (authStage === 'landing') return <LandingScreen language={language} onContinue={() => setAuthStage('login')} />;
+  if (authStage === 'login') return <LoginScreen language={language} onBack={() => setAuthStage('landing')} onLogin={(name, phone) => { window.localStorage.setItem('shetbhav-user', JSON.stringify({ name, phone })); setAuthStage('app'); }} />;
 
   return (
     <div className="min-h-screen bg-surface font-body-md text-on-surface antialiased flex flex-col selection:bg-secondary-container selection:text-on-secondary-container">
@@ -74,10 +75,10 @@ export default function App() {
           <HomeScreen
             language={language}
             onNavigate={handleNavigate}
-            onOpenVoiceModal={() => setIsVoiceModalOpen(true)}
             onOpenRouteModal={() => setIsRouteModalOpen(true)}
             onOpenLocationModal={() => setIsLocationModalOpen(true)}
             onOpenTelegramModal={() => setIsTelegramModalOpen(true)}
+            onOpenCropScan={() => handleNavigate('crop-scan')}
           />
         )}
 
@@ -133,6 +134,8 @@ export default function App() {
 
         {currentScreen === 'evidence' && <EvidenceScreen language={language} />}
 
+        {currentScreen === 'crop-scan' && <CropScanScreen language={language} />}
+
         {currentScreen === 'profile' && (
           <ProfileScreen
             language={language}
@@ -160,13 +163,6 @@ export default function App() {
       <RouteComparisonModal
         isOpen={isRouteModalOpen}
         onClose={() => setIsRouteModalOpen(false)}
-        language={language}
-      />
-
-      <VoiceModal
-        isOpen={isVoiceModalOpen}
-        onClose={() => setIsVoiceModalOpen(false)}
-        onSelectQuery={handleVoiceQuery}
         language={language}
       />
 

@@ -12,13 +12,13 @@ interface HomeScreenProps {
 
   onNavigate: (screen: ScreenType) => void;
 
-  onOpenVoiceModal: () => void;
 
   onOpenRouteModal: () => void;
 
   onOpenLocationModal: () => void;
 
   onOpenTelegramModal: () => void;
+  onOpenCropScan: () => void;
 
 }
 
@@ -30,13 +30,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   onNavigate,
 
-  onOpenVoiceModal,
 
   onOpenRouteModal,
 
   onOpenLocationModal,
 
   onOpenTelegramModal,
+  onOpenCropScan,
 
 }) => {
 
@@ -47,6 +47,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
 
     <div className="flex flex-col w-full pb-28 pt-16 max-w-xl mx-auto px-margin">
+      <button type="button" onClick={onOpenCropScan} className="mt-3 mb-2 w-full rounded-2xl bg-secondary-container text-on-secondary-container p-4 flex items-center justify-between text-left shadow-xs"><span className="flex items-center gap-3"><span className="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center"><span className="material-symbols-outlined">photo_camera</span></span><span><strong className="block text-sm">{language === 'mr' ? 'पिकाचा फोटो तपासा' : language === 'hi' ? 'फसल का फोटो जांचें' : 'Check your crop photo'}</strong><span className="block text-[11px] mt-0.5">{language === 'mr' ? 'पिकण्याची अवस्था, नुकसान आणि विक्रीची वेळ' : language === 'hi' ? 'पकने, नुकसान और बेचने का समय' : 'Ripeness, damage, and when to sell'}</span></span></span><span className="material-symbols-outlined">chevron_right</span></button>
 
       {/* Live Location Strip */}
 
@@ -627,13 +628,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         {/* Voice Search Card */}
 
-        <div className="bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-surface-container-high/40 flex items-center justify-between gap-3">
+        <div className="hidden">
 
           <div className="flex items-center gap-3">
 
             <button
 
-              onClick={onOpenVoiceModal}
+              onClick={() => undefined}
 
               className="w-12 h-12 rounded-full bg-secondary-container text-primary flex items-center justify-center shrink-0 hover:scale-105 active:scale-95 transition-transform"
 
@@ -669,7 +670,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           <button
 
-            onClick={onOpenVoiceModal}
+            onClick={() => undefined}
 
             className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 hover:bg-primary-container shadow-xs active:scale-95 transition-transform"
 

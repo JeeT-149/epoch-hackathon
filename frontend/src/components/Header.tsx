@@ -37,6 +37,8 @@ export const Header: React.FC<HeaderProps> = ({
         return language === 'mr' ? 'विश्वास आणि पुरावा' : language === 'hi' ? 'भरोसा और सबूत' : 'Trust & Evidence';
       case 'profile':
         return language === 'mr' ? 'प्रोफाइल' : language === 'hi' ? 'प्रोफाइल' : 'Profile';
+      case 'crop-scan':
+        return language === 'mr' ? 'पिकाची तपासणी' : language === 'hi' ? 'फसल की जांच' : 'Crop check';
       default:
         return 'SHETBHAV';
     }

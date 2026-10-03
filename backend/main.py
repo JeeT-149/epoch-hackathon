@@ -1,4 +1,6 @@
+import json
 import os
+import re
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -12,6 +14,7 @@ print(f"Effective GROQ model: {os.getenv('GROQ_MODEL', 'openai/gpt-oss-120b')}")
 
 from fastapi import FastAPI, Request, Depends, HTTPException, status
 from fastapi.security import APIKeyHeader
+import httpx
 from typing import Dict
 from __future__ import annotations
 
@@ -337,6 +340,73 @@ async def advice_endpoint(request: AdviceRequest, api_key: str = Depends(get_api
     sender = form_data.get("From", "")
     print(f"Received from {sender}: {incoming_msg}")
     return {"status": "success"}
+
+
+class CropAnalysisRequest(BaseModel):
+    image_data: str
+    crop: str = "onion"
+    language: str = "en"
+
+
+def _language_name(code: str) -> str:
+    return {"mr": "Marathi", "hi": "Hindi", "en": "English"}.get(code, "English")
+
+
+@app.post("/analyze-crop")
+async def analyze_crop(payload: CropAnalysisRequest) -> dict:
+    """Analyze a crop photo without exposing the Groq key to the browser."""
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=503, detail="GROQ_API_KEY is not configured on the server")
+    if not payload.image_data.startswith("data:image/"):
+        raise HTTPException(status_code=400, detail="Please upload an image")
+    if len(payload.image_data) > 20 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Image is too large")
+
+    language = _language_name(payload.language)
+    prompt = f"""You are a careful agricultural assistant. Inspect this photo of {payload.crop}.
+Return only a JSON object with these keys: crop_name, ripeness, damage, sell_timing, price_range, confidence, notes.
+Write every value in {language}. Keep it simple for a small farmer.
+Describe visible ripeness and damage conservatively. Do not claim certainty from a photo.
+For price_range, say 'not available from photo' unless a price range is supplied by a market-data system.
+For sell_timing, give a practical suggestion based only on visible condition, such as 'sell now', 'sell within 1-2 days', or 'can wait'.
+Use confidence as HIGH, MEDIUM, or LOW. Mention that the photo cannot replace an in-person quality check in notes."""
+    request_body = {
+        "model": os.getenv("GROQ_VISION_MODEL", "qwen/qwen3.8-27b"),
+        "messages": [{"role": "user", "content": [
+            {"type": "text", "text": prompt},
+            {"type": "image_url", "image_url": {"url": payload.image_data}},
+        ]}],
+        "temperature": 0.2,
+        "max_completion_tokens": 600,
+        "response_format": {"type": "json_object"},
+    }
+    try:
+        async with httpx.AsyncClient(timeout=45) as client:
+            response = await client.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json=request_body,
+            )
+        if response.is_error:
+            try:
+                groq_detail = response.json().get("error", {}).get("message", response.text)
+            except json.JSONDecodeError:
+                groq_detail = response.text
+            raise HTTPException(status_code=502, detail=f"Groq rejected the photo request: {groq_detail}")
+        content = response.json()["choices"][0]["message"]["content"]
+        match = re.search(r"\{.*\}", content, re.DOTALL)
+        result = json.loads(match.group(0) if match else content)
+        if not isinstance(result, dict):
+            raise ValueError("Groq returned JSON in an unexpected shape")
+        result["source"] = "Groq vision"
+        return result
+    except HTTPException:
+        raise
+    except (httpx.HTTPError, KeyError, json.JSONDecodeError, ValueError) as exc:
+        raise HTTPException(status_code=502, detail=f"Crop analysis failed: {exc}") from exc
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"Crop analysis service error: {exc}") from exc
 
 
 if __name__ == "__main__":

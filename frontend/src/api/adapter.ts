@@ -123,6 +123,17 @@ export interface OutcomeRequestPayload {
   sale_date?: string;
 }
 
+export interface CropAnalysis {
+  crop_name?: string;
+  ripeness?: string;
+  damage?: string;
+  sell_timing?: string;
+  price_range?: string;
+  confidence?: string;
+  notes?: string;
+  source?: string;
+}
+
 export class ApiAdapter {
   private useMocks: boolean = CONFIG.USE_MOCKS;
 
@@ -312,6 +323,38 @@ export class ApiAdapter {
       console.warn('[API Warning in getBacktestSummary]:', err);
       return mockBacktestSummary;
     }
+  }
+
+  async analyzeCropImage(file: File, crop: string, language: string): Promise<CropAnalysis> {
+    const imageData = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error('Could not read image'));
+      reader.readAsDataURL(file);
+    });
+    if (this.useMocks) {
+      await new Promise((resolve) => setTimeout(resolve, 700));
+      const localized = language === 'mr'
+        ? { onion: { crop_name: 'कांदा', ripeness: 'विक्रीसाठी योग्य', damage: 'मोठे नुकसान दिसत नाही', sell_timing: '१–२ दिवसांत विका', price_range: '₹२,१००–₹२,४०० / क्विंटल', notes: 'फोटोवरून प्राथमिक अंदाज. प्रत्यक्ष गुणवत्ता तपासा.' }, tomato: { crop_name: 'टोमॅटो', ripeness: 'अर्धपिकलेला', damage: 'काही मऊ डाग', sell_timing: 'लवकर विका', price_range: '₹१,५००–₹१,९०० / क्विंटल', notes: 'वाहतुकीपूर्वी खराब फळे वेगळी करा.' }, soybean: { crop_name: 'सोयाबीन', ripeness: 'काढणीसाठी जवळ', damage: 'मोठे नुकसान दिसत नाही', sell_timing: 'हवामान कोरडे असताना विका', price_range: '₹४,४००–₹४,८०० / क्विंटल', notes: 'दाण्याची आर्द्रता प्रत्यक्ष तपासा.' } }
+        : language === 'hi'
+          ? { onion: { crop_name: 'प्याज़', ripeness: 'बेचने के लिए ठीक', damage: 'बड़ा नुकसान नहीं दिखता', sell_timing: '१–२ दिन में बेचें', price_range: '₹२,१००–₹२,४०० / क्विंटल', notes: 'फोटो पर आधारित शुरुआती अनुमान। असली गुणवत्ता जांचें।' }, tomato: { crop_name: 'टमाटर', ripeness: 'आधा पका', damage: 'कुछ नरम दाग', sell_timing: 'जल्दी बेचें', price_range: '₹१,५००–₹१,९०० / क्विंटल', notes: 'ढुलाई से पहले खराब फल अलग करें।' }, soybean: { crop_name: 'सोयाबीन', ripeness: 'कटाई के करीब', damage: 'बड़ा नुकसान नहीं दिखता', sell_timing: 'सूखे मौसम में बेचें', price_range: '₹४,४००–₹४,८०० / क्विंटल', notes: 'दाने की नमी जरूर जांचें।' } }
+          : { onion: { crop_name: 'Onion', ripeness: 'Ready to sell', damage: 'No major damage visible', sell_timing: 'Sell within 1–2 days', price_range: '₹2,100–₹2,400 / quintal', notes: 'Initial photo-based estimate. Confirm quality in person.' }, tomato: { crop_name: 'Tomato', ripeness: 'Partly ripe', damage: 'Some soft spots', sell_timing: 'Sell soon', price_range: '₹1,500–₹1,900 / quintal', notes: 'Separate damaged fruit before transport.' }, soybean: { crop_name: 'Soybean', ripeness: 'Nearly ready for harvest', damage: 'No major damage visible', sell_timing: 'Sell during a dry window', price_range: '₹4,400–₹4,800 / quintal', notes: 'Check grain moisture before sale.' } };
+      return { ...(localized[crop as keyof typeof localized] || localized.onion), confidence: 'MEDIUM', source: 'Price and crop fixture' };
+    }
+    const response = await fetch('/api/analyze-crop', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_data: imageData, crop, language }),
+    });
+    if (!response.ok) {
+      let detail = '';
+      try {
+        const body = await response.text();
+        try { detail = JSON.parse(body)?.detail || body; } catch { detail = body; }
+      } catch { /* non-JSON proxy error */ }
+      throw new Error(detail || `Crop analysis HTTP Error ${response.status}`);
+    }
+    return response.json();
   }
 }
 
