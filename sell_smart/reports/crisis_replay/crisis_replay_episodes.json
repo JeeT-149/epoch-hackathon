@@ -1,0 +1,261 @@
+{
+  "report_id": "crisis_replay_summary",
+  "z_threshold": 3.0,
+  "val_false_alarm_rate_per_100_calm": 0.0,
+  "real_episode": {
+    "crop": "soybean",
+    "mandi_id": "madhy_mandsaur_piplya",
+    "is_synthetic": false,
+    "window": [
+      "2025-05-05",
+      "2025-05-18"
+    ],
+    "net_with_radar": 2999.4,
+    "net_without_radar": 4244.4,
+    "net_delta_with_vs_without": -1245.0,
+    "radar_helped": false,
+    "reason_if_not_helped": "Transitory 4-day flash dip followed by sharp V-shaped rebound; radar hold suspension caused premature liquidation at market trough.",
+    "daily_records": [
+      {
+        "date": "2025-05-08",
+        "modal_price": 4353.0,
+        "is_open": true,
+        "robust_z": 0.23,
+        "radar_level": "NONE",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "WAIT_WITH_TRIGGER (Normal market)"
+      },
+      {
+        "date": "2025-05-09",
+        "modal_price": 3001.0,
+        "is_open": true,
+        "robust_z": -8.67,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "NO_CONFIDENT_ADVICE (Hold suspended: unusual market movement, avoid long holds.)"
+      },
+      {
+        "date": "2025-05-10",
+        "modal_price": 3001.0,
+        "is_open": true,
+        "robust_z": -8.67,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "EXECUTED (Liquidated at next open day price \u20b93001/q)"
+      },
+      {
+        "date": "2025-05-11",
+        "modal_price": 3001.0,
+        "is_open": false,
+        "robust_z": -8.67,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "CLOSED (Exited on 2025-05-10 at \u20b93001/q)"
+      },
+      {
+        "date": "2025-05-12",
+        "modal_price": 3001.0,
+        "is_open": true,
+        "robust_z": -7.05,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "CLOSED (Exited on 2025-05-10 at \u20b93001/q)"
+      },
+      {
+        "date": "2025-05-13",
+        "modal_price": 4312.0,
+        "is_open": true,
+        "robust_z": 0.16,
+        "radar_level": "NONE",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "CLOSED (Exited on 2025-05-10 at \u20b93001/q)"
+      },
+      {
+        "date": "2025-05-14",
+        "modal_price": 4270.0,
+        "is_open": true,
+        "robust_z": -0.09,
+        "radar_level": "NONE",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "CLOSED (Exited on 2025-05-10 at \u20b93001/q)"
+      },
+      {
+        "date": "2025-05-15",
+        "modal_price": 4250.0,
+        "is_open": true,
+        "robust_z": -0.16,
+        "radar_level": "NONE",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "CLOSED (Exited on 2025-05-10 at \u20b93001/q)"
+      },
+      {
+        "date": "2025-05-16",
+        "modal_price": 4195.0,
+        "is_open": true,
+        "robust_z": -0.45,
+        "radar_level": "NONE",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "CLOSED (Exited on 2025-05-10 at \u20b93001/q)"
+      },
+      {
+        "date": "2025-05-17",
+        "modal_price": 4294.5,
+        "is_open": true,
+        "robust_z": 0.34,
+        "radar_level": "NONE",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "CLOSED (Exited on 2025-05-10 at \u20b93001/q)"
+      },
+      {
+        "date": "2025-05-18",
+        "modal_price": 4294.5,
+        "is_open": false,
+        "robust_z": 0.24,
+        "radar_level": "NONE",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Hold towards 2025-05-15)",
+        "decision_with_radar": "CLOSED (Exited on 2025-05-10 at \u20b93001/q)"
+      }
+    ]
+  },
+  "synthetic_stress_episode": {
+    "crop": "onion",
+    "mandi_id": "mahar_nashik_lasalgaon",
+    "is_synthetic": true,
+    "window": [
+      "2025-03-01",
+      "2025-03-14"
+    ],
+    "net_with_radar": 1533.3,
+    "net_without_radar": 1092.0,
+    "net_delta_with_vs_without": 441.3,
+    "radar_helped": true,
+    "daily_records": [
+      {
+        "date": "2025-03-01",
+        "modal_price": 2650.0,
+        "is_open": true,
+        "robust_z": 0.29,
+        "radar_level": "NONE",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "WAIT_WITH_TRIGGER"
+      },
+      {
+        "date": "2025-03-02",
+        "modal_price": 2600.0,
+        "is_open": true,
+        "robust_z": -0.19,
+        "radar_level": "NONE",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "WAIT_WITH_TRIGGER"
+      },
+      {
+        "date": "2025-03-03",
+        "modal_price": 2620.0,
+        "is_open": true,
+        "robust_z": 0.0,
+        "radar_level": "NONE",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "WAIT_WITH_TRIGGER"
+      },
+      {
+        "date": "2025-03-04",
+        "modal_price": 1600.0,
+        "is_open": true,
+        "robust_z": -9.83,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "NO_CONFIDENT_ADVICE (Hold suspended: unusual market movement, avoid long holds.)"
+      },
+      {
+        "date": "2025-03-05",
+        "modal_price": 1550.0,
+        "is_open": true,
+        "robust_z": -10.31,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "EXECUTED (Emergency liquidation on next open day at \u20b91550/q)"
+      },
+      {
+        "date": "2025-03-06",
+        "modal_price": 1480.0,
+        "is_open": true,
+        "robust_z": -10.98,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "CLOSED (Exited on 2025-03-05 at \u20b91550/q)"
+      },
+      {
+        "date": "2025-03-07",
+        "modal_price": 1420.0,
+        "is_open": true,
+        "robust_z": -11.56,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "CLOSED (Exited on 2025-03-05 at \u20b91550/q)"
+      },
+      {
+        "date": "2025-03-08",
+        "modal_price": 1350.0,
+        "is_open": true,
+        "robust_z": -12.24,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "CLOSED (Exited on 2025-03-05 at \u20b91550/q)"
+      },
+      {
+        "date": "2025-03-09",
+        "modal_price": 1350.0,
+        "is_open": false,
+        "robust_z": -12.24,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "CLOSED (Exited on 2025-03-05 at \u20b91550/q)"
+      },
+      {
+        "date": "2025-03-10",
+        "modal_price": 1300.0,
+        "is_open": true,
+        "robust_z": -12.72,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "CLOSED (Exited on 2025-03-05 at \u20b91550/q)"
+      },
+      {
+        "date": "2025-03-11",
+        "modal_price": 1280.0,
+        "is_open": true,
+        "robust_z": -12.91,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "CLOSED (Exited on 2025-03-05 at \u20b91550/q)"
+      },
+      {
+        "date": "2025-03-12",
+        "modal_price": 1250.0,
+        "is_open": true,
+        "robust_z": -13.2,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "CLOSED (Exited on 2025-03-05 at \u20b91550/q)"
+      },
+      {
+        "date": "2025-03-13",
+        "modal_price": 1220.0,
+        "is_open": true,
+        "robust_z": -13.49,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "CLOSED (Exited on 2025-03-05 at \u20b91550/q)"
+      },
+      {
+        "date": "2025-03-14",
+        "modal_price": 1200.0,
+        "is_open": true,
+        "robust_z": -13.68,
+        "radar_level": "SHOCK",
+        "decision_without_radar": "WAIT_WITH_TRIGGER (Model forecasts seasonal recovery, hold 10d)",
+        "decision_with_radar": "CLOSED (Exited on 2025-03-05 at \u20b91550/q)"
+      }
+    ]
+  }
+}
